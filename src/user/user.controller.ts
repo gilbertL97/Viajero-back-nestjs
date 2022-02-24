@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -6,12 +6,22 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getHello(): string {
+  getUsers(): string {
     return 'Test de prueba';
   }
 
   @Get(':id')
-  getHelldo(@Param() params): string {
+  getUser(@Param() params): string {
+    return `esto es una prueba de parametros ${params.id}`;
+  }
+
+  @Post()
+  updateUser(): string {
+    return 'Test de prueba';
+  }
+
+  @Delete(':id')
+  deleteUser(@Param() params): string {
     return `esto es una prueba de parametros ${params.id}`;
   }
 }
