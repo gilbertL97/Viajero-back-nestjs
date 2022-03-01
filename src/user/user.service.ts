@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Observable } from 'rxjs';
 
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,7 +26,16 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  /* updateUser() {}
+  async updateUser(id: number, userDto: CreateUserDto): Promise<UserEntity> {
+    const user = this.userRepository.findOne(id);
+    if (!user) throw new ForbiddenException('The users does not exist');
+    {
+      
+    }
+    return this.userRepository.update(user);
+  }
 
-  deleteUser() {}*/
+  async deleteUser(id: number): Promise<UserEntity> {
+    return this.deleteUser(id);
+  }
 }
