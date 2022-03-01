@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('usuario')
+@Entity('usuarios')
 export class UserEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
@@ -12,4 +12,6 @@ export class UserEntity {
   password: string;
   @Column({ type: 'bool', nullable: false, default: true })
   active: boolean;
+  @Column({ type: 'varchar', length: 10, nullable: false, default: 'client' })
+  role: string;
 }
