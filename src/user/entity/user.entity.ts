@@ -12,11 +12,11 @@ import {
 export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   name: string;
   @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   email: string;
-  @Column({ type: 'varchar', length: 300, nullable: false })
+  @Column({ type: 'varchar', length: 300, nullable: false, select: false }) //esto es para no retornar el dato
   password: string;
   @Column({ type: 'bool', nullable: false, default: true })
   active: boolean;
@@ -25,7 +25,6 @@ export class UserEntity extends BaseEntity {
     length: 10,
     nullable: false,
     default: 'client',
-    select: false, //esto es para no retornar el dato
   })
   role: string;
   @BeforeInsert() // hashear contraseña

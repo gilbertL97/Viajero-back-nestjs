@@ -1,6 +1,5 @@
-import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Observable } from 'rxjs';
 
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,20 +26,21 @@ export class UserService {
   async createUser(userDto: CreateUserDto): Promise<UserEntity> {
     const user = this.userRepository.create(userDto);
     const newUser = await this.userRepository.save(user);
-    // delete newUser.password; // para no devolver en la res el atributo password en user
+    delete newUser.password; // para no devolver en la res el atributo password en user
     return newUser;
   }
 
   async updateUser(
     id: number,
-    _updateUserDto: UpdateUserDto,
+    updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
     const user = await this.getUser(id);
-    const editedUser = Object.assign(user, UpdateUserDto);
+    const editedUser = Object.assign(user, updateUserDto);
     return await this.userRepository.save(editedUser);
   }
 
-  /*async deleteUser(id: number): Promise<UserEntity> {
-    return await (id);
-  }*/
+  async deleteUser(id: number): Promise<UserEntity> {
+    const user = await this.getUser(id);
+    return await this.userRepository.remove(user);
+  }
 }
