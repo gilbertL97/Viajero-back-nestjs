@@ -1,17 +1,37 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { hash } from 'bcryptjs';
+import {
+  BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('usuarios')
-export class UserEntity {
+export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column({ type: 'varchar', length: 25, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false })
   name: string;
-  @Column({ type: 'varchar', length: 25, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   email: string;
-  @Column({ type: 'varchar', length: 25, nullable: false })
+  @Column({ type: 'varchar', length: 300, nullable: false })
   password: string;
   @Column({ type: 'bool', nullable: false, default: true })
   active: boolean;
-  @Column({ type: 'varchar', length: 10, nullable: false, default: 'client' })
+  @Column({
+    type: 'varchar',
+    length: 10,
+    nullable: false,
+    default: 'client',
+    select: false, //esto es para no retornar el dato
+  })
   role: string;
+  @BeforeInsert() // hashear contraseña
+  @BeforeUpdate()
+  async hashPasword() {
+    if (!this.password) return;
+    this.password = await hash(this.password, 10);
+  }
 }

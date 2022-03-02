@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
@@ -9,7 +18,7 @@ export class UserController {
 
   @Get()
   getUsers(): Promise<UserEntity[]> {
-   return this.userService.getUsers();
+    return this.userService.getUsers();
   }
 
   @Get(':id')
@@ -22,13 +31,16 @@ export class UserController {
     return this.userService.createUser(createUserDto);
   }
 
-  @Post()
-  updateUser(): string {
-    return 'Test de prueba';
+  @Patch(':id')
+  updateUser(
+    @Param('id') id: string,
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserEntity> {
+    console.log(createUserDto.email);
+    console.log(createUserDto.name);
+    return this.userService.updateUser(parseInt(id), createUserDto);
   }
 
   @Delete(':id')
-  deleteUser(@Param() params): string {
-    return `esto es una prueba de parametros ${params.id}`;
-  }
+  deleteUser(@Param('id') id: string) {}
 }
