@@ -1,6 +1,13 @@
-import { OmitType } from '@nestjs/mapped-types';
-import { CreateUserDto } from './create-user.dto';
+import { Exclude } from 'class-transformer';
+import { IsString, IsEmail } from 'class-validator';
 
-export class FilterUserDto extends OmitType(CreateUserDto, [
-  'password',
-] as const) {}
+export class FilterUserDto {
+  @Exclude()
+  @IsString()
+  name: string;
+  @Exclude()
+  @IsEmail()
+  email: string;
+  @Exclude()
+  role: string;
+}

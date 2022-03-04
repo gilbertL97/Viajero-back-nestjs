@@ -1,9 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { FilterUserDto } from './dto/filter-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
 
@@ -14,19 +13,22 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async getUsers(userfilterDto: FilterUserDto): Promise<UserEntity[]> {
-    return await this.userRepository.find(userfilterDto);
+  async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
   }
 
   async getUser(id: number): Promise<UserEntity> {
     const user: UserEntity = await this.userRepository.findOne(id);
-    if (!user) throw new ForbiddenException('The users does not exist');
+    if (!user)
+      throw new ForbiddenException(`The users whit id:"${id}" does not exist`);
     return user;
   }
 
   async createUser(userDto: CreateUserDto): Promise<UserEntity> {
     const user = this.userRepository.create(userDto);
-    const newUser = await this.userRepository.save(user);
+    const newUser = await this.userRepository.save(user).catch(() => {
+      throw new BadRequestException('duplicate name or email');
+    });
     delete newUser.password; // para no devolver en la res el atributo password en user
     return newUser;
   }
