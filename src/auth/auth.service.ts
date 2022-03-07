@@ -7,10 +7,10 @@ import { LoginUserDto } from 'src/user/dto/login-user.dto';
 export class AuthService {
   constructor(private userService: UserService) {}
 
-  async validateUser(userLoginDto: LoginUserDto): Promise<any> {
-    const user = await this.userService.findUserByName(userLoginDto.name);
-    // console.log(compare(userLoginDto.password, user.password));
-    if (user && (await compare(userLoginDto.password, user.password))) {
+  async validateUser(username, password): Promise<any> {
+    const user = await this.userService.findUserByName(username);
+    console.log('entro a validar aqui');
+    if (user && (await compare(password, user.password))) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;

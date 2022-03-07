@@ -17,7 +17,6 @@ import { UserEntity } from './entity/user.entity';
 import { RoleValidationPipes } from './pipes/role-validation.pipes';
 import { UserService } from './user.service';
 
-
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
