@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -45,5 +49,12 @@ export class UserService {
   async deleteUser(id: number): Promise<UserEntity> {
     const user = await this.getUser(id);
     return await this.userRepository.remove(user);
+  }
+  async findUserByName(name: string): Promise<UserEntity> {
+    return await this.userRepository
+      .createQueryBuilder('usuarios')
+      .where({ name })
+      .addSelect('usuarios.password')
+      .getOne();
   }
 }
