@@ -7,12 +7,16 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  UnprocessableEntityException,
 } from '@nestjs/common';
+import { compare, compareSync } from 'bcryptjs';
+import { use } from 'passport';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
+import { RoleValidationPipes } from './pipes/role-validation.pipes';
 import { UserService } from './user.service';
+
 
 @Controller('user')
 export class UserController {
@@ -32,16 +36,16 @@ export class UserController {
 
   @Post()
   createUser(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
-    const data = this.userService.createUser(createUserDto)
+    const data = this.userService.createUser(createUserDto);
     return data;
   }
 
   @Patch(':id')
   updateUser(
-    @Param('id', ParseIntPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Param('id', ParseIntPipe) id: number,
+    @Body(RoleValidationPipes) updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
-    const data = this.userService.updateUser(parseInt(id), updateUserDto);
+    const data = this.userService.updateUser(id, updateUserDto);
     return data;
   }
 
