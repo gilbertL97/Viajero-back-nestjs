@@ -7,11 +7,10 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { compare, compareSync } from 'bcryptjs';
-import { use } from 'passport';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { RoleValidationPipes } from './pipes/role-validation.pipes';
@@ -21,6 +20,7 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   getUsers(): Promise<UserEntity[]> {
     const data = this.userService.getUsers();
