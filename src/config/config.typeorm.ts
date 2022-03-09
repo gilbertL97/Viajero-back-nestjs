@@ -1,4 +1,5 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModuleAsyncOptions } from '@nestjs/jwt';
 import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
@@ -24,11 +25,20 @@ export class ConfigTypeorm {
     };
   }
 }
-
 export const typeOrmConfigAsync: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
   useFactory: async (
     configService: ConfigService,
   ): Promise<TypeOrmModuleOptions> => ConfigTypeorm.getOrmConfig(configService),
   inject: [ConfigService],
+};
+
+export const getSecretKeyConfig: JwtModuleAsyncOptions = {
+  imports: [ConfigModule],
+  useFactory: async (configService: ConfigService) => {
+    return {
+      secret: configService.get<string>(Configuration.SECRET_KEY),
+      signOptions: { expiresIn: '60m' },
+    };
+  },
 };
