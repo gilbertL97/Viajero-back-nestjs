@@ -16,11 +16,11 @@ import { UserEntity } from './entity/user.entity';
 import { RoleValidationPipes } from './pipes/role-validation.pipes';
 import { UserService } from './user.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   getUsers(): Promise<UserEntity[]> {
     const data = this.userService.getUsers();
@@ -49,8 +49,8 @@ export class UserController {
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string): Promise<UserEntity> {
-    const data = this.userService.deleteUser(parseInt(id));
+  deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
+    const data = this.userService.deleteUser(id);
     return data;
   }
 }

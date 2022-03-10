@@ -14,8 +14,8 @@ dot.config();
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: 'process.env.SECRET_KEY',
-      signOptions: { expiresIn: '60s' },
+      secret: process.env.SECRET_KEY,
+      signOptions: { expiresIn: '60m' },
     }),
   ],
   controllers: [AuthController],

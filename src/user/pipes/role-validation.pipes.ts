@@ -10,7 +10,7 @@ export class RoleValidationPipes implements PipeTransform {
     UserRole.CONSULT,
     UserRole.MARKAGENT,
   ];
-
+  //este es un pipe para validar los roles q me entren en la peticion
   transform(value: UpdateUserDto) {
     console.log(value.role);
     if (value.role) {
