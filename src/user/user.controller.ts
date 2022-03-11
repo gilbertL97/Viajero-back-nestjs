@@ -34,7 +34,9 @@ export class UserController {
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
+  createUser(
+    @Body(RoleValidationPipes) createUserDto: CreateUserDto,
+  ): Promise<UserEntity> {
     const data = this.userService.createUser(createUserDto);
     return data;
   }

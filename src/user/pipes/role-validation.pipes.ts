@@ -5,7 +5,6 @@ import { UserRole } from '../user.role';
 export class RoleValidationPipes implements PipeTransform {
   readonly allowedRoles = [
     UserRole.ADMIN,
-    UserRole.CLIENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
     UserRole.MARKAGENT,

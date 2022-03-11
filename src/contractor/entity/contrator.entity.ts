@@ -1,18 +1,24 @@
-import { from } from 'rxjs';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/user/entity/user.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('clientes')
-export class ContratorEntity extends BaseEntity{
-  @PrimaryGeneratedColumn('increment')
-  id: number;
-  @Column({ nullable: false, unique: true })
-  idUsuario: number;
+export class ContratorEntity extends BaseEntity {
+  @OneToOne(() => UserEntity, { primary: true, cascade: true })
+  @JoinColumn({ name: 'id_user' })
+  id_user: number;
   @Column({ type: 'varchar', length: 20, nullable: false })
   telf: string;
   @Column({ type: 'varchar', length: 200, nullable: false })
-  addres: string;
+  direc: string;
   @Column({ type: 'varchar', length: 150, nullable: true })
-  file: string;
+  archivo: string;
   @Column({ type: 'varchar', length: 30, nullable: false })
   poliza: string;
 }

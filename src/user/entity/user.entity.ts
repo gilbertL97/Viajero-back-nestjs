@@ -1,4 +1,5 @@
 import { hash } from 'bcryptjs';
+import { UserRole } from '../user.role';
 import {
   BaseEntity,
   BeforeInsert,
@@ -24,7 +25,6 @@ export class UserEntity extends BaseEntity {
     type: 'varchar',
     length: 10,
     nullable: false,
-    default: 'client',
   })
   role: string;
   @BeforeInsert() // hashear contraseña
