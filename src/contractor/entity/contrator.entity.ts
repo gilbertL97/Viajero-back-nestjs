@@ -1,12 +1,5 @@
 import { UserEntity } from 'src/user/entity/user.entity';
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity('clientes')
 export class ContratorEntity extends BaseEntity {
