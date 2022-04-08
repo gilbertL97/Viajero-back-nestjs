@@ -55,4 +55,7 @@ export class UserController {
     const data = this.userService.deleteUser(id);
     return data;
   }
+
+  /* deleteMultipleUsers(): Promise<void>{   
+  }*/
 }

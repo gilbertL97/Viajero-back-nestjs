@@ -57,4 +57,11 @@ export class UserService {
       .addSelect('usuarios.password')
       .getOne();
   }
+  /*async deleteMultiple(id: number[]): Promise<void> {
+  
+    const users: UserEntity[]= id.filter(await this.getUser)
+    });
+  
+  await this.userRepository.remove(users);*/
 }
+
