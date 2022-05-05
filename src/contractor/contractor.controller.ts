@@ -1,7 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
+
 import { ContractorService } from './contractor.service';
 import { CreateContratorDto } from './dto/create-contrator.dto';
+import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
 
 @Controller('contractor')
@@ -10,16 +20,35 @@ export class ContractorController {
 
   @Get()
   async getContracts(): Promise<ContratorEntity[]> {
-    return this.contractService.getContrators();
+    const data = this.contractService.getContrators();
+    return data;
   }
-  /* @Post()
-  async createContract(
+  @Get(':id')
+  getContract(@Param('id', ParseIntPipe) id: number): Promise<ContratorEntity> {
+    const data = this.contractService.getContractor(id);
+    return data;
+  }
+  @Post()
+  createContract(
     @Body() createContractor: CreateContratorDto,
-    @Body() createUserDto: CreateUserDto,
-  ) {
-    return this.contractService.createContractor(
-      createContractor,
-      createUserDto,
-    );
-  }*/
+  ): Promise<ContratorEntity> {
+    const data = this.contractService.createContractor(createContractor);
+    return data;
+  }
+
+  @Patch(':id')
+  async updateContract(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateContratDto: UpdateContratorDto,
+  ): Promise<ContratorEntity> {
+    const data = this.contractService.updateContractor(id, updateContratDto);
+    return data;
+  }
+  @Delete(':id')
+  async deletContract(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ContratorEntity> {
+    const data = this.contractService.deleteContractor(id);
+    return data;
+  }
 }

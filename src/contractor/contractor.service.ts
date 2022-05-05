@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { use } from 'passport';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -19,21 +23,25 @@ export class ContractorService {
   async getContrators(): Promise<ContratorEntity[]> {
     return await this.contractRepository.find();
   }
+
   async getContractor(id: number): Promise<ContratorEntity> {
     const contractor = await this.contractRepository.findOne(id);
     if (!contractor)
       throw new NotFoundException('The contractor does not exist');
     return contractor;
   }
-  /* async createContractor(createContractorDto: CreateContratorDto) {
-    const {name:} = createContractorDto;
-    const user = await this.userService.createUser(CcreateUserDto);
-
-    const contr = this.contractRepository.create(createContractorDto);
-    contr.id_user = user.id;
-    const contractorSaved = await this.contractRepository.save(contr);
-    return { user, contractorSaved };
-  }*/
+  async createContractor(
+    createContractorDto: CreateContratorDto,
+  ): Promise<ContratorEntity> {
+    const contractor: ContratorEntity =
+      this.contractRepository.create(createContractorDto);
+    const newContractor = await this.contractRepository
+      .save(contractor)
+      .catch(() => {
+        throw new BadRequestException('duplicate name or email');
+      });
+    return newContractor;
+  }
   async updateContractor(
     id: number,
     updateContractorDto: UpdateContratorDto,
