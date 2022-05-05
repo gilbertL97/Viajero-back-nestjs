@@ -1,11 +1,20 @@
 import { UserEntity } from 'src/user/entity/user.entity';
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('clientes')
 export class ContratorEntity extends BaseEntity {
   @OneToOne(() => UserEntity, { primary: true, cascade: true })
-  @JoinColumn({ name: 'id_user' })
+  @JoinColumn()
   id_user: number;
+  @PrimaryGeneratedColumn('increment')
+  id_cliente: number;
   @Column({ type: 'varchar', length: 20, nullable: false })
   telf: string;
   @Column({ type: 'varchar', length: 200, nullable: false })

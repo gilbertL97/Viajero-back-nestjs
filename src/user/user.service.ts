@@ -48,7 +48,7 @@ export class UserService {
 
   async deleteUser(id: number): Promise<UserEntity> {
     const user = await this.getUser(id);
-    return await this.userRepository.remove(user);
+    if (user) return await this.userRepository.remove(user);
   }
   async findUserByName(name: string): Promise<UserEntity> {
     return await this.userRepository
@@ -64,4 +64,3 @@ export class UserService {
   
   await this.userRepository.remove(users);*/
 }
-

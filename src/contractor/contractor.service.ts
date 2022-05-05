@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { use } from 'passport';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -24,14 +25,15 @@ export class ContractorService {
       throw new NotFoundException('The contractor does not exist');
     return contractor;
   }
-  async createContractor(
-    createContractorDto: CreateContratorDto,
-    createUserDto: CreateUserDto,
-  ): Promise<ContratorEntity> {
-    this.userService.createUser(createUserDto);
+  /* async createContractor(createContractorDto: CreateContratorDto) {
+    const {name:} = createContractorDto;
+    const user = await this.userService.createUser(CcreateUserDto);
+
     const contr = this.contractRepository.create(createContractorDto);
-    return await this.contractRepository.save(contr);
-  }
+    contr.id_user = user.id;
+    const contractorSaved = await this.contractRepository.save(contr);
+    return { user, contractorSaved };
+  }*/
   async updateContractor(
     id: number,
     updateContractorDto: UpdateContratorDto,

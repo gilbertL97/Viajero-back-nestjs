@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MinLength,
+  MaxLength,
+  IsEmail,
+} from 'class-validator';
 
 export class CreateContratorDto {
   @IsString()
@@ -19,4 +25,20 @@ export class CreateContratorDto {
   @IsNotEmpty()
   @MaxLength(20)
   poliza: string;
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(4)
+  @MaxLength(30)
+  name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(50)
+  email: string;
+
+  @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(250)
+  password: string;
 }
