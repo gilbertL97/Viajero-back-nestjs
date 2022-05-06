@@ -1,8 +1,10 @@
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -12,10 +14,7 @@ import { ContratorEntity } from './contrator.entity';
 export class TravelerEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @OneToOne(() => ContratorEntity, { primary: true, cascade: true })
-  @JoinColumn()
-  id_user: number;
-  id_cliente: number;
+
   @Column({ type: 'char', length: 10, nullable: false })
   sexo: string;
   @Column({ type: 'date', nullable: true })
@@ -42,4 +41,12 @@ export class TravelerEntity extends BaseEntity {
   nacionalidad: number;
   @Column({ type: 'integer', nullable: true })
   pais_origen: number;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
+
+  @ManyToOne(() => ContratorEntity, (contractor) => contractor.traveler, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'contractor' })
+  contractor: ContratorEntity;
 }

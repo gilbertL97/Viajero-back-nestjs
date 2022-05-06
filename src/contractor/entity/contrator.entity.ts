@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from '@nestjs/common';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TravelerEntity } from './traveler.entity';
 
 @Entity('clientes')
 export class ContratorEntity extends BaseEntity {
@@ -14,4 +22,8 @@ export class ContratorEntity extends BaseEntity {
   file: string;
   @Column({ type: 'varchar', length: 30, nullable: false })
   poliza: string;
+  @OneToOne((_) => TravelerEntity, (traveler) => traveler.contractor, {
+    cascade: true,
+  })
+  traveler: TravelerEntity;
 }
