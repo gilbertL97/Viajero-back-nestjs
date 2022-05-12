@@ -5,10 +5,9 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ContratorEntity } from './contrator.entity';
+import { ContratorEntity } from '../../contractor/entity/contrator.entity';
 
 @Entity('viajeros')
 export class TravelerEntity extends BaseEntity {
@@ -44,7 +43,7 @@ export class TravelerEntity extends BaseEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @ManyToOne(() => ContratorEntity, (contractor) => contractor.traveler, {
+  @ManyToOne(() => ContratorEntity, (contractor) => contractor.travelers, {
     eager: true,
   })
   @JoinColumn({ name: 'contractor' })

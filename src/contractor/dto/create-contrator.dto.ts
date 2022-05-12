@@ -1,5 +1,10 @@
-import { IsString, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import {
+  IsString,
+  IsNotEmpty,
+  MinLength,
+  MaxLength,
+  IsEmail,
+} from 'class-validator';
 
 export class CreateContratorDto {
   @IsString()
@@ -7,6 +12,12 @@ export class CreateContratorDto {
   @MinLength(5)
   @MaxLength(100)
   client: string;
+
+  @IsEmail()
+  @IsNotEmpty()
+  @MinLength(6)
+  @MaxLength(50)
+  email: string;
 
   @IsString()
   @IsNotEmpty()

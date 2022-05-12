@@ -4,9 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { use } from 'passport';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateContratorDto } from './dto/create-contrator.dto';

@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
+import { EditProfileUserDto } from './dto/edit-profile-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { RoleValidationPipes } from './pipes/role-validation.pipes';
@@ -58,4 +59,13 @@ export class UserController {
 
   /* deleteMultipleUsers(): Promise<void>{   
   }*/
+
+  @Patch(':id')
+  updateProfile(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() editProfile: EditProfileUserDto,
+  ): Promise<UserEntity> {
+    const data = this.userService.updateProfile(id, editProfile);
+    return data;
+  }
 }

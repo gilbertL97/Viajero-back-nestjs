@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { typeOrmConfigAsync } from './config/config.typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ContractorModule } from './contractor/contractor.module';
+import { TravelerModule } from './traveler/traveler.module';
+import { CoverageModule } from './coverage/coverage.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { ContractorModule } from './contractor/contractor.module';
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
     AuthModule,
     ContractorModule,
+    TravelerModule,
+    CoverageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { EditProfileUserDto } from './dto/edit-profile-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
 
@@ -43,6 +44,14 @@ export class UserService {
   ): Promise<UserEntity> {
     const user = await this.getUser(id);
     const editedUser = Object.assign(user, updateUserDto);
+    return await this.userRepository.save(editedUser);
+  }
+  async updateProfile(
+    id: number,
+    updateProfile: EditProfileUserDto,
+  ): Promise<UserEntity> {
+    const user = await this.getUser(id);
+    const editedUser = Object.assign(user, updateProfile);
     return await this.userRepository.save(editedUser);
   }
 
