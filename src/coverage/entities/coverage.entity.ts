@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('cobertura')
 export class CoverageEntity extends BaseEntity {
@@ -10,4 +17,8 @@ export class CoverageEntity extends BaseEntity {
   price: number;
   @Column({ type: 'boolean', nullable: false })
   daily: boolean;
+  @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {
+    cascade: true,
+  })
+  travelers: TravelerEntity[];
 }

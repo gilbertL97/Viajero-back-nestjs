@@ -1,3 +1,4 @@
+import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import {
   BaseEntity,
   Column,
@@ -5,41 +6,54 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
+import { CountryEntity } from './country.entity';
 
 @Entity('viajeros')
 export class TravelerEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-
-  @Column({ type: 'char', length: 10, nullable: false })
-  sexo: string;
+  @Column({ type: 'varchar', length: 150, nullable: false })
+  Name: string;
+  @Column({ type: 'char', length: 10, nullable: true })
+  sex: string;
   @Column({ type: 'date', nullable: true })
-  fecha_nacimiento: Date;
+  born_date: Date;
   @Column({ type: 'varchar', length: 50, nullable: true })
-  correo: string;
-  @Column({ type: 'integer', nullable: true })
-  tipo_cobertura: number;
+  email: string;
+  @Column({ type: 'varchar', nullable: false })
+  passport: string;
+
   @Column({ type: 'date', nullable: true })
-  fecha_venta: Date;
-  @Column({ type: 'date', nullable: true })
-  fecha_fin_poliza: Date;
+  sale_date: Date;
+
+  @Column({ type: 'date', nullable: false })
+  start_date: Date;
+
+  @Column({ type: 'date', nullable: false })
+  end_date_policy: Date;
+
   @Column({ type: 'integer', nullable: true })
-  cant_dias_alto_riesgo: number;
+  number_high_risk_days: number;
+
   @Column({ type: 'integer', nullable: false })
-  cant_dias: number;
+  number_days: number;
+
   @Column({ type: 'numeric', nullable: true })
-  importe_dias_alto_riesgo: number;
+  amount_days_high_risk: number;
+
   @Column({ type: 'numeric', nullable: true })
-  importe_dias_cubierto: number;
+  amount_days_covered: number;
+
   @Column({ type: 'numeric', nullable: true })
-  importe_total: number;
-  @Column({ type: 'integer', nullable: true })
-  nacionalidad: number;
-  @Column({ type: 'integer', nullable: true })
-  pais_origen: number;
+  total_amount: number;
+
+  @Column({ type: 'numeric', nullable: true })
+  state: number;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
@@ -48,4 +62,22 @@ export class TravelerEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'contractor' })
   contractor: ContratorEntity;
+
+  @ManyToOne(() => CountryEntity, (country) => country.travelers, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'origin_country' })
+  origin_country: CountryEntity;
+
+  @ManyToOne(() => CountryEntity, (country) => country.travelers, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'nationality' })
+  nationality: CountryEntity;
+
+  @ManyToOne(() => CoverageEntity, (country) => country.travelers, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'coverage' })
+  coverage: CoverageEntity;
 }

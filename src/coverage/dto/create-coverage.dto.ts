@@ -5,6 +5,7 @@ import {
   MaxLength,
   IsNumber,
   IsBoolean,
+  IsNumberString,
 } from 'class-validator';
 
 export class CreateCoverageDto {
@@ -14,7 +15,7 @@ export class CreateCoverageDto {
   @MaxLength(50)
   name: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   price: number;
 

@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TravelerEntity } from './traveler.entity';
 @Entity('pais')
 export class CountryEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
@@ -14,4 +21,7 @@ export class CountryEntity extends BaseEntity {
   nombre_corto: string;
   @Column({ type: 'varchar', length: 150, nullable: false })
   nombre_comun: string;
+
+  @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {})
+  travelers: TravelerEntity[];
 }
