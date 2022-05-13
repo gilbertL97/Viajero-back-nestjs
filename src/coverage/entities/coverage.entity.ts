@@ -1,13 +1,13 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('tipo_cobertura')
+@Entity('cobertura')
 export class CoverageEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   name: string;
   @Column({ type: 'varchar', nullable: false })
-  precio: number;
+  price: number;
   @Column({ type: 'boolean', nullable: false })
-  diario: boolean;
+  daily: boolean;
 }

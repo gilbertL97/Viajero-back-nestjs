@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { TravelerEntity } from '../../traveler/entities/traveler.entity';
+import { TravelerEntity } from '../../traveler/entity/traveler.entity';
 
 @Entity('tomadores_seguros')
 export class ContratorEntity extends BaseEntity {

@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
@@ -15,7 +14,6 @@ export class ContractorService {
   constructor(
     @InjectRepository(ContratorEntity)
     private readonly contractRepository: Repository<ContratorEntity>,
-    private userService: UserService,
   ) {}
   async getContrators(): Promise<ContratorEntity[]> {
     return await this.contractRepository.find();
