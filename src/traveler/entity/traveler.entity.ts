@@ -6,13 +6,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
 import { CountryEntity } from './country.entity';
 
-@Entity('viajeros')
+@Entity('viajeross')
 export class TravelerEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;

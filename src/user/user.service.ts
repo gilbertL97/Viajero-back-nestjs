@@ -52,6 +52,7 @@ export class UserService {
   ): Promise<UserEntity> {
     const user = await this.getUser(id);
     const editedUser = Object.assign(user, updateProfile);
+    console.log(id); //aqui
     return await this.userRepository.save(editedUser);
   }
 

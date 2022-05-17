@@ -10,9 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
-import { CreateUserDto } from './dto/create-user.dto';
-import { EditProfileUserDto } from './dto/edit-profile-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUser } from 'src/common/decorator/user.decorator';
+import { UpdateUserDto, EditProfileUserDto, CreateUserDto } from './dto';
 import { UserEntity } from './entity/user.entity';
 import { RoleValidationPipes } from './pipes/role-validation.pipes';
 import { UserService } from './user.service';
@@ -42,6 +41,17 @@ export class UserController {
     return data;
   }
 
+  @Patch('/update_profile')
+  updateProfile(
+    @GetUser() user: UserEntity,
+    @Body() editProfile: EditProfileUserDto,
+  ): Promise<UserEntity> {
+    console.log(user);
+    console.log(editProfile);
+    const userId: number = user.id;
+    const data = this.userService.updateProfile(userId, editProfile);
+    return data;
+  }
   @Patch(':id')
   updateUser(
     @Param('id', ParseIntPipe) id: number,
@@ -59,13 +69,4 @@ export class UserController {
 
   /* deleteMultipleUsers(): Promise<void>{   
   }*/
-
-  @Patch(':id')
-  updateProfile(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() editProfile: EditProfileUserDto,
-  ): Promise<UserEntity> {
-    const data = this.userService.updateProfile(id, editProfile);
-    return data;
-  }
 }
