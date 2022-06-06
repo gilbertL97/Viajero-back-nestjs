@@ -16,22 +16,22 @@ export class TravelerController {
   constructor(private readonly travelerService: TravelerService) {}
 
   @Post()
-  create(@Body() createTravelerDto: CreateTravelerDto) {
+  createTraveler(@Body() createTravelerDto: CreateTravelerDto) {
     return this.travelerService.create(createTravelerDto);
   }
 
   @Get()
-  findAll() {
+  getTravelers() {
     return this.travelerService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  getTraveler(@Param('id') id: string) {
     return this.travelerService.findOne(+id);
   }
 
   @Patch(':id')
-  update(
+  updateTraveler(
     @Param('id') id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
   ) {
@@ -39,7 +39,7 @@ export class TravelerController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  deleteTraveler(@Param('id') id: string) {
     return this.travelerService.remove(+id);
   }
 }

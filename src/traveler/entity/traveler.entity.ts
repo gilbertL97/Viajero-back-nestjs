@@ -1,6 +1,8 @@
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import {
   BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -79,4 +81,10 @@ export class TravelerEntity extends BaseEntity {
   })
   @JoinColumn({ name: 'coverage' })
   coverage: CoverageEntity;
+
+  /* @BeforeInsert() //verificar antes q de insertar q se el passaporte no se repite
+  @BeforeUpdate() //y si se repite el pasaporte q tenga un dieferemcia de al menos 2 dias de la fecha de fin de la anterior  async hashPasword() {
+  async dontRepeatPassport() {
+    
+  }*/
 }
