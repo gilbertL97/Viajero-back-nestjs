@@ -1,13 +1,15 @@
 import { hash } from 'bcryptjs';
-import { UserRole } from '../user.role';
 import {
   BaseEntity,
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 
 @Entity('usuarios')
 export class UserEntity extends BaseEntity {
@@ -19,7 +21,7 @@ export class UserEntity extends BaseEntity {
   email: string;
   @Column({ type: 'varchar', length: 300, nullable: false, select: false }) //esto es para no retornar el dato
   password: string;
-  @Column({ type: 'bool', nullable: false, default: true })
+  @Column({ type: 'boolean', nullable: false, default: true })
   active: boolean;
   @Column({
     type: 'varchar',
@@ -27,6 +29,13 @@ export class UserEntity extends BaseEntity {
     nullable: false,
   })
   role: string;
+
+  @ManyToMany(() => ContratorEntity, (contractor) => contractor.users)
+  @JoinTable({
+    name: 'usuarios_tomadores_de_seguro',
+  })
+  contractors: ContratorEntity[];
+
   @BeforeInsert() // hashear contraseña
   @BeforeUpdate()
   async hashPasword() {

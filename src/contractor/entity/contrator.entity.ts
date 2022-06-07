@@ -3,7 +3,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -32,7 +31,8 @@ export class ContratorEntity extends BaseEntity {
   })
   travelers: TravelerEntity[];
 
-  @ManyToMany(() => UserEntity)
-  @JoinTable()
+  @ManyToMany(() => UserEntity, (user) => user.contractors, {
+    cascade: ['remove'],
+  })
   users: UserEntity[];
 }

@@ -46,8 +46,6 @@ export class UserController {
     @GetUser() user: UserEntity,
     @Body() editProfile: EditProfileUserDto,
   ): Promise<UserEntity> {
-    console.log(user);
-    console.log(editProfile);
     const userId: number = user.id;
     const data = this.userService.updateProfile(userId, editProfile);
     return data;
@@ -61,12 +59,13 @@ export class UserController {
     return data;
   }
 
+  /*@Delete('/deleteMultiple/:ids')
+  deleteMultipleUsers(@Param('ids', IntArrayPipe) ids: number[]): boolean {
+    return true;
+  }*/
   @Delete(':id')
   deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     const data = this.userService.deleteUser(id);
     return data;
   }
-
-  /* deleteMultipleUsers(): Promise<void>{   
-  }*/
 }

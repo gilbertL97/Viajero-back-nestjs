@@ -1,6 +1,8 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumberString,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -26,4 +28,8 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   role: string;
+
+  @IsOptional()
+  @IsNumberString()
+  contractor: string;
 }

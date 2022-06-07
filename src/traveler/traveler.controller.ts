@@ -10,36 +10,44 @@ import {
 import { TravelerService } from './traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
+import { TravelerEntity } from './entity/traveler.entity';
 
 @Controller('traveler')
 export class TravelerController {
   constructor(private readonly travelerService: TravelerService) {}
 
   @Post()
-  createTraveler(@Body() createTravelerDto: CreateTravelerDto) {
-    return this.travelerService.create(createTravelerDto);
+  async createTraveler(
+    @Body() createTravelerDto: CreateTravelerDto,
+  ): Promise<TravelerEntity> {
+    const data = await this.travelerService.create(createTravelerDto);
+    return data;
   }
 
   @Get()
-  getTravelers() {
-    return this.travelerService.findAll();
+  async getTravelers(): Promise<TravelerEntity[]> {
+    const data = await this.travelerService.findAll();
+    return data;
   }
 
   @Get(':id')
-  getTraveler(@Param('id') id: string) {
-    return this.travelerService.findOne(+id);
+  async getTraveler(@Param('id') id: string): Promise<TravelerEntity> {
+    const data = await this.travelerService.findOne(+id);
+    return data;
   }
 
   @Patch(':id')
-  updateTraveler(
+  async updateTraveler(
     @Param('id') id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
-  ) {
-    return this.travelerService.update(+id, updateTravelerDto);
+  ): Promise<TravelerEntity> {
+    const data = await this.travelerService.update(+id, updateTravelerDto);
+    return data;
   }
 
   @Delete(':id')
-  deleteTraveler(@Param('id') id: string) {
-    return this.travelerService.remove(+id);
+  async deleteTraveler(@Param('id') id: string): Promise<TravelerEntity> {
+    const data = await this.travelerService.remove(+id);
+    return data;
   }
 }
