@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
-import { CountryEntity } from './country.entity';
+import { CountryEntity } from '../../country/entities/country.entity';
 
 @Entity('viajeros')
 export class TravelerEntity extends BaseEntity {

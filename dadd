@@ -1,0 +1,217 @@
+[33mcommit f07b9258e9c6e021b55509bd8ec15bfb79dd1336[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Jun 8 12:54:11 2022 -0400
+
+    Refactorizando la estructura de carpetas
+
+[33mcommit a6ce163d53ada7c4189ba14c61ff1b427edfe8c9[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Tue Jun 7 14:20:05 2022 -0400
+
+    terminnando crud de traveleers viajeros
+
+[33mcommit 37e5d60d70b72522fedf2383474948602acdeb16[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Jun 6 16:14:19 2022 -0400
+
+    comenzando con los viajeros
+
+[33mcommit dab6cc7a86670f7ca3516b60a4739120e5985c90[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Jun 2 13:46:04 2022 -0400
+
+    terminando los edit porfile y
+    comenzando los clientes-users
+
+[33mcommit a997503597e3c754bdb2e6698212073ca0c5fcb8[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Tue May 17 10:11:38 2022 -0400
+
+    modificando para q cada user edite su perfil
+
+[33mcommit 217f245efa183b1b16f00a8fe9a9004c54e46fce[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri May 13 15:25:56 2022 -0400
+
+    comnezando con viajeros
+
+[33mcommit 26fd47ddb1c0538e75a486dcb9be5f6f66116be1[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri May 13 11:05:06 2022 -0400
+
+    comnezando con los planes de viajes
+
+[33mcommit 2bae7ea5b6a0cdb0f03a845194e2316c9b6a0226[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu May 12 11:11:09 2022 -0400
+
+    nuevoas modulos y endpoint
+
+[33mcommit c91a46485aadc01c8f7da0331cfab6fdb13ac568[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri May 6 16:39:43 2022 -0400
+
+    comenzando el crud de viajeros
+
+[33mcommit 52fc2b38661e84a39b93d109a1d92dbb97f914a4[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu May 5 16:54:42 2022 -0400
+
+    terminando crud de contractor
+
+[33mcommit 54f23880741569ce621c587e53ec7f6fa02a39b4[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu May 5 09:20:01 2022 -0400
+
+    ultimas actualizaciones
+
+[33mcommit 07e9449f0e831bfee948dccde341c3728af8a207[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri Apr 8 11:37:49 2022 -0400
+
+    terminando las entitys en contratcor
+
+[33mcommit f1e89e551b4eec60d0542f8364c84efd62b3c46a[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Mar 24 17:16:44 2022 -0400
+
+    habilitando cors en mi locahost para el front
+
+[33mcommit a93f3ffae72033da471fc182600977fe64dd080b[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri Mar 11 14:14:07 2022 -0500
+
+    comenzando modulo contratante
+
+[33mcommit 77647ae81389f7f797328a0b8d5f84fe0ab034f3[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Mar 10 17:11:20 2022 -0500
+
+    comenzando contratantes
+
+[33mcommit d3557e8a1f4595aeb43b5a95ec7a08c78f9f5f87[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Mar 9 17:00:19 2022 -0500
+
+    terminando autenticacion
+
+[33mcommit 5572c08fe34bcef539ed4afc3d0d3d64437c7469[m
+Merge: 0efbd84 bbccd24
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Mar 9 16:55:49 2022 -0500
+
+    Merge branch 'main' of https://github.com/gilbertL97/Viajero
+
+[33mcommit 0efbd84e33175e2a874d67deca17e7af6af92e79[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Mar 9 16:49:50 2022 -0500
+
+    terminando la autenticacion
+
+[33mcommit bbccd24b0a2d0401a86895973f7dbf0beb7d9541[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Tue Mar 8 17:19:28 2022 -0500
+
+    empezando con jwt autenticacion
+
+[33mcommit f726eccfacd499d110ffdc952fef8039235f1a98[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Mar 7 17:09:57 2022 -0500
+
+    comenzando jwt
+
+[33mcommit 541db72b76ea7d2fda2279fe51473b590d2cd6fe[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Mar 7 14:56:04 2022 -0500
+
+    comenzando la autorizacion
+
+[33mcommit f6a6cd659b8e2bd1886ea43804f393644c1cf113[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Mar 7 14:55:13 2022 -0500
+
+    comenzando la autorizacion
+
+[33mcommit 6fecab58ccbf8dc4a4229bd6ca79200ad4f88042[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri Mar 4 14:45:35 2022 -0500
+
+    ultimos detalles de la validaciones para user
+
+[33mcommit 857b7ac5c8db79cea48e5268664257a8fa3b52a8[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Mar 3 09:56:41 2022 -0500
+
+    agregando funcionalidades de filtros de busqueda
+
+[33mcommit 00db07b370d722e724355edcbc320115d2ad896b[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Mar 2 16:18:27 2022 -0500
+
+    terminando por hoy
+
+[33mcommit 8db8f6f21d0fb949b5399508cf351f11c0509847[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Mar 2 14:48:04 2022 -0500
+
+    modulo de usuario terminado
+
+[33mcommit 053a2d4d556ec16b0d53ffce9cb04cc42b5cd18e[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Tue Mar 1 16:53:05 2022 -0500
+
+    duda en el update q me falta
+
+[33mcommit 0f804e1fb17075bcaf8e8a55e252ba722407d32f[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Tue Mar 1 13:36:21 2022 -0500
+
+    terminando CRUD usuarios
+
+[33mcommit aff1df298fd5288da67ef684e8acf97f94a11953[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Feb 28 16:53:55 2022 -0500
+
+    comenzando el servicio de usuario
+
+[33mcommit 5eec24fd921bb022cacc405271fb2e25acf7631a[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Feb 28 16:23:51 2022 -0500
+
+    terminando la entidad usuario
+
+[33mcommit 07203b0fae68ae0ea9c4f236ed9ae6cdc24cd3bd[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Mon Feb 28 13:32:37 2022 -0500
+
+    terminando la configuracion
+
+[33mcommit c23a4ed1229f4b2d4ad62b80e19cf0fe265d03f5[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Fri Feb 25 09:52:12 2022 -0500
+
+    terminando el modulo de configuracion
+
+[33mcommit 9b633bb641a59812ed340ce889b07016aab33c5a[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Feb 24 16:35:30 2022 -0500
+
+    terminando la configuracion de las variables de entorno
+
+[33mcommit ef124bedf126dc3139b0feea5fdd5bc8b90bb98d[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Feb 24 11:02:09 2022 -0500
+
+    Configurando las variables de entorno
+
+[33mcommit c4942c93bca217ea112fa25d4c09751070877697[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Wed Feb 23 16:25:06 2022 -0500
+
+    empezando con el modulo usuario
+
+[33mcommit 802944e141674710ca3d042601c8b83023a9446b[m
+Author: Gilbert Luis <gilbertluis97@gmail.com>
+Date:   Thu Feb 17 17:12:40 2022 -0500
+
+    first commit
