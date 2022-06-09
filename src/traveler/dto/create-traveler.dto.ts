@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
-import { CountryEntity } from '../entity/country.entity';
+import { CountryEntity } from '../../country/entities/country.entity';
 
 export class CreateTravelerDto {
   @IsString()

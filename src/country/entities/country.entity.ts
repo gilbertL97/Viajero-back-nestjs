@@ -7,20 +7,20 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TravelerEntity } from '../../traveler/entity/traveler.entity';
-@Entity('pais')
+@Entity('paises')
 export class CountryEntity extends BaseEntity {
-  @PrimaryColumn()
-  id: number;
-  @Column({ type: 'varchar', length: 2, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 4, nullable: false, unique: true })
   iso2: string;
-  @Column({ type: 'varchar', length: 3, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 5, nullable: false, unique: true })
   iso: string;
   @Column({ type: 'varchar', length: 250, nullable: true })
-  nombre_largo: string;
+  long_name: string;
   @Column({ type: 'varchar', length: 150, nullable: true })
-  nombre_corto: string;
+  short_name: string;
   @Column({ type: 'varchar', length: 150, nullable: false })
-  nombre_comun: string;
+  comun_name: string;
+  @Column({ type: 'integer', length: 15, nullable: false, unique: true })
+  indec: number;
 
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {})
   travelers: TravelerEntity[];

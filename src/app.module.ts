@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ContractorModule } from './contractor/contractor.module';
 import { TravelerModule } from './traveler/traveler.module';
 import { CoverageModule } from './coverage/coverage.module';
+import { CountryModule } from './country/country.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CoverageModule } from './coverage/coverage.module';
     ContractorModule,
     TravelerModule,
     CoverageModule,
+    CountryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
