@@ -8,20 +8,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-<<<<<<< HEAD:src/modules/traveler/dto/create-traveler.dto.ts
-<<<<<<< HEAD:src/modules/traveler/dto/create-traveler.dto.ts
-import { ContratorEntity } from 'src/modules/contractor/entity/contrator.entity';
-import { CoverageEntity } from 'src/modules/coverage/entities/coverage.entity';
-=======
-import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
-import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
->>>>>>> parent of f07b925 (Refactorizando la estructura de carpetas):src/traveler/dto/create-traveler.dto.ts
-import { CountryEntity } from '../entity/country.entity';
-=======
+
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { CountryEntity } from '../../country/entities/country.entity';
->>>>>>> b938de94cb083b6b9b65e8073ebb37fd84214672:src/traveler/dto/create-traveler.dto.ts
 
 export class CreateTravelerDto {
   @IsString()

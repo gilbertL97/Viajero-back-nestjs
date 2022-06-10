@@ -1,3 +1,4 @@
+import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import {
   BaseEntity,
@@ -11,7 +12,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
-import { CountryEntity } from '../../country/entities/country.entity';
 
 @Entity('viajeross')
 export class TravelerEntity extends BaseEntity {
