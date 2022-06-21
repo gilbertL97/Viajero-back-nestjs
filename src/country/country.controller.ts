@@ -10,36 +10,47 @@ import {
 import { CountryService } from './country.service';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
+import { CountryEntity } from './entities/country.entity';
 
 @Controller('country')
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}
 
   @Post()
-  createCountry(@Body() createCountryDto: CreateCountryDto) {
-    return this.countryService.create(createCountryDto);
+  async createCountry(
+    @Body() createCountryDto: CreateCountryDto,
+  ): Promise<CountryEntity> {
+    const data = await this.countryService.create(createCountryDto);
+    return data;
   }
 
   @Get()
-  getCountries() {
-    return this.countryService.findAll();
+  async getCountries(): Promise<CountryEntity[]> {
+    const data = await this.countryService.findAll();
+    return data;
   }
 
   @Get(':id')
-  async getCountry(@Param('id') id: string) {
-    return this.countryService.findOne(id);
+  async getCountry(@Param('id') id: string): Promise<CountryEntity> {
+    const iso = id.toLocaleUpperCase();
+    const data = await this.countryService.findOne(iso);
+    return data;
   }
 
   @Patch(':id')
-  updateCountry(
+  async updateCountry(
     @Param('id') id: string,
     @Body() updateCountryDto: UpdateCountryDto,
-  ) {
-    return this.countryService.update(id, updateCountryDto);
+  ): Promise<CountryEntity> {
+    const iso = id.toLocaleUpperCase();
+    const data = await this.countryService.update(id, updateCountryDto);
+    return data;
   }
 
   @Delete(':id')
-  deleteCountry(@Param('id') id: string) {
-    return this.countryService.remove(id);
+  async deleteCountry(@Param('id') id: string): Promise<CountryEntity> {
+    const iso = id.toLocaleUpperCase();
+    const data = await this.countryService.remove(id);
+    return data;
   }
 }

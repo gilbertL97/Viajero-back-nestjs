@@ -4,26 +4,52 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DateHelper } from 'src/common/helper/date.helper';
+import { ContractorService } from 'src/contractor/contractor.service';
+import { CountryService } from 'src/country/country.service';
+import { CountryEntity } from 'src/country/entities/country.entity';
+import { CoverageService } from 'src/coverage/coverage.service';
 import { Repository } from 'typeorm';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';
+import { TravelerRepository } from './traveler.repository';
 
 @Injectable()
 export class TravelerService {
   constructor(
     @InjectRepository(TravelerEntity)
-    private readonly travelerRepository: Repository<TravelerEntity>,
+    private readonly travelerRepository: TravelerRepository,
+    private readonly contratctoService: ContractorService,
+    private readonly countryService: CountryService,
+    private readonly coverageService: CoverageService,
   ) {}
 
   async create(createTravelerDto: CreateTravelerDto): Promise<TravelerEntity> {
-    const traveler = this.travelerRepository.create(createTravelerDto);
-    const newTraveler = await this.travelerRepository
-      .save(traveler)
-      .catch(() => {
-        throw new BadRequestException('error in database');
-      });
-    return newTraveler;
+    let nationality: CountryEntity;
+    if (createTravelerDto.nationality)
+      nationality = await this.countryService.findOne(
+        createTravelerDto.nationality,
+      );
+    let origin_country: CountryEntity;
+    if (createTravelerDto.origin_country)
+      origin_country = await this.countryService.findOne(
+        createTravelerDto.origin_country,
+      );
+    const contractor = await this.contratctoService.getContractor(
+      +createTravelerDto.contractor,
+    );
+    const coverage = await this.coverageService.getCoverage(
+      +createTravelerDto.coverage,
+    );
+    const traveler = this.travelerRepository.createTraveler(
+      createTravelerDto,
+      coverage,
+      contractor,
+      nationality,
+      origin_country,
+    );
+    return traveler;
   }
 
   async findAll(): Promise<TravelerEntity[]> {
@@ -49,4 +75,11 @@ export class TravelerService {
     const traveler = await this.findOne(id);
     return this.travelerRepository.remove(traveler);
   }
+
+  // validateContractor(traveler: CreateTravelerDto) {
+  //   const contractor = this.contratctoService.getContractor(
+  //     traveler.contractor.id,
+  //   );
+  //   const country1 = this.countryService.findOne(traveler?.origin_country.iso);
+  // }
 }

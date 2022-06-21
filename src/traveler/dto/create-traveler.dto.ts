@@ -2,16 +2,11 @@ import {
   IsDateString,
   IsEmail,
   IsNumberString,
-  IsObject,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
-
-import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
-import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
-import { CountryEntity } from '../../country/entities/country.entity';
 
 export class CreateTravelerDto {
   @IsString()
@@ -34,16 +29,19 @@ export class CreateTravelerDto {
 
   @IsString()
   @MinLength(6)
-  @MaxLength(20)
+  @MaxLength(50)
   passport: string;
 
+  //@Type(() => string)
   @IsOptional()
   @IsDateString()
   sale_date: Date;
 
+  //@Type(() => string)
   @IsDateString()
   start_date: Date;
 
+  // @Type(() => string)
   @IsDateString()
   end_date_policy: Date;
 
@@ -51,17 +49,17 @@ export class CreateTravelerDto {
   @IsNumberString()
   number_high_risk_days: number;
 
-  @IsObject()
-  contractor: ContratorEntity;
+  @IsNumberString()
+  contractor: string;
 
   @IsOptional()
-  @IsObject()
-  origin_country: CountryEntity;
+  @IsNumberString()
+  origin_country: string;
 
   @IsOptional()
-  @IsObject()
-  nationality: CountryEntity;
+  @IsNumberString()
+  nationality: string;
 
-  @IsObject()
-  coverage: CoverageEntity;
+  @IsNumberString()
+  coverage: string;
 }
