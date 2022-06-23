@@ -2,6 +2,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import {
   BaseEntity,
   Column,
+  DeleteDateColumn,
   Entity,
   ManyToMany,
   OneToMany,
@@ -25,6 +26,8 @@ export class ContratorEntity extends BaseEntity {
   file: string;
   @Column({ type: 'varchar', length: 30, nullable: false })
   poliza: string;
+  @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
+  deleteAt: Date;
 
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {
     cascade: true,

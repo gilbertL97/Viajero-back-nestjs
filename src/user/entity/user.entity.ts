@@ -4,6 +4,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -29,6 +30,8 @@ export class UserEntity extends BaseEntity {
     nullable: false,
   })
   role: string;
+  @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
+  deleteAt: Date;
 
   @ManyToMany(() => ContratorEntity, (contractor) => contractor.users)
   @JoinTable({

@@ -2,6 +2,7 @@ import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import {
   BaseEntity,
   Column,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -17,6 +18,10 @@ export class CoverageEntity extends BaseEntity {
   price: number;
   @Column({ type: 'boolean', nullable: false })
   daily: boolean;
+  @Column({ type: 'integer' })
+  high_risk: number;
+  @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
+  deleteAt: Date;
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {
     cascade: true,
   })

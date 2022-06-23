@@ -53,11 +53,15 @@ export class CreateTravelerDto {
   contractor: string;
 
   @IsOptional()
-  @IsNumberString()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(3)
   origin_country: string;
 
   @IsOptional()
-  @IsNumberString()
+  @IsString()
+  @MinLength(3)
+  @MaxLength(3)
   nationality: string;
 
   @IsNumberString()

@@ -4,12 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DateHelper } from 'src/common/helper/date.helper';
 import { ContractorService } from 'src/contractor/contractor.service';
 import { CountryService } from 'src/country/country.service';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageService } from 'src/coverage/coverage.service';
-import { Repository } from 'typeorm';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';
@@ -18,7 +16,7 @@ import { TravelerRepository } from './traveler.repository';
 @Injectable()
 export class TravelerService {
   constructor(
-    @InjectRepository(TravelerEntity)
+    @InjectRepository(TravelerRepository)
     private readonly travelerRepository: TravelerRepository,
     private readonly contratctoService: ContractorService,
     private readonly countryService: CountryService,
@@ -42,7 +40,8 @@ export class TravelerService {
     const coverage = await this.coverageService.getCoverage(
       +createTravelerDto.coverage,
     );
-    const traveler = this.travelerRepository.createTraveler(
+
+    const traveler = await this.travelerRepository.createTraveler(
       createTravelerDto,
       coverage,
       contractor,
@@ -56,14 +55,14 @@ export class TravelerService {
     return this.travelerRepository.find();
   }
 
-  async findOne(id: number): Promise<TravelerEntity> {
+  async findOne(id: string): Promise<TravelerEntity> {
     const traveler = await this.travelerRepository.findOne(id);
     if (!traveler) throw new NotFoundException('The traveler does not exist');
     return traveler;
   }
 
   async update(
-    id: number,
+    id: string,
     updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
     const traveler = await this.findOne(id);
@@ -71,15 +70,8 @@ export class TravelerService {
     return this.travelerRepository.save(updateTraveler);
   }
 
-  async remove(id: number): Promise<TravelerEntity> {
+  async remove(id: string): Promise<TravelerEntity> {
     const traveler = await this.findOne(id);
     return this.travelerRepository.remove(traveler);
   }
-
-  // validateContractor(traveler: CreateTravelerDto) {
-  //   const contractor = this.contratctoService.getContractor(
-  //     traveler.contractor.id,
-  //   );
-  //   const country1 = this.countryService.findOne(traveler?.origin_country.iso);
-  // }
 }

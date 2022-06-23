@@ -32,7 +32,7 @@ export class TravelerController {
 
   @Get(':id')
   async getTraveler(@Param('id') id: string): Promise<TravelerEntity> {
-    const data = await this.travelerService.findOne(+id);
+    const data = await this.travelerService.findOne(id);
     return data;
   }
 
@@ -41,13 +41,13 @@ export class TravelerController {
     @Param('id') id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
-    const data = await this.travelerService.update(+id, updateTravelerDto);
+    const data = await this.travelerService.update(id, updateTravelerDto);
     return data;
   }
 
   @Delete(':id')
   async deleteTraveler(@Param('id') id: string): Promise<TravelerEntity> {
-    const data = await this.travelerService.remove(+id);
+    const data = await this.travelerService.remove(id);
     return data;
   }
 }

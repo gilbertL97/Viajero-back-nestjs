@@ -7,18 +7,19 @@ import {
   BeforeUpdate,
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
 import { DateHelper } from 'src/common/helper/date.helper';
 
-@Entity('viajeross')
+@Entity('viajeros')
 export class TravelerEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryColumn({ type: 'varchar' })
+  id: string;
   @Column({ type: 'varchar', length: 150, nullable: false })
   name: string;
   @Column({ type: 'char', length: 10, nullable: true })
@@ -48,17 +49,19 @@ export class TravelerEntity extends BaseEntity {
   @Column({ type: 'numeric', nullable: true })
   amount_days_high_risk: number;
 
-  @Column({ type: 'numeric', nullable: true })
+  @Column({ type: 'numeric', nullable: false })
   amount_days_covered: number;
 
   @Column({ type: 'numeric', nullable: false })
   total_amount: number;
 
-  @Column({ type: 'boolean', nullable: false })
+  @Column({ type: 'boolean', nullable: false, default: 'true' })
   state: boolean;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
+  @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
+  deleteAt: Date;
 
   @ManyToOne(() => ContratorEntity, (contractor) => contractor.travelers, {
     eager: true,
@@ -90,15 +93,8 @@ export class TravelerEntity extends BaseEntity {
     
   }*/
   @BeforeInsert()
-  @AfterLoad()
-  @BeforeUpdate()
-  stateVerifi() {
-    const fechaHoy = Date.now();
-    if (
-      DateHelper.daysDifference(new Date('2022-06-17'), this.end_date_policy) >
-      0
-    )
-      this.state = true;
-    else this.state = false;
+  makeId() {
+    // la llave primaria es el pasaporte + fecha de comienzo +mas la fecha de fin si se repite hay um error
+    this.id = this.passport + this.start_date;
   }
 }
