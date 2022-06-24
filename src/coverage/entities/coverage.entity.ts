@@ -18,7 +18,7 @@ export class CoverageEntity extends BaseEntity {
   price: number;
   @Column({ type: 'boolean', nullable: false })
   daily: boolean;
-  @Column({ type: 'integer' })
+  @Column({ type: 'integer', default: 2 })
   high_risk: number;
   @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
   deleteAt: Date;

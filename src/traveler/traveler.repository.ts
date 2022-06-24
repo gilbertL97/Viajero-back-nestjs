@@ -6,6 +6,7 @@ import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';
+import { CalculateDaysTraveler } from './helper/calculate-days.traveler';
 
 @EntityRepository(TravelerEntity)
 export class TravelerRepository extends Repository<TravelerEntity> {
@@ -42,18 +43,21 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       nationality,
       origin_country,
     });
-    traveler.number_days = this.calculateNumberDays(createTravelerDto);
+    traveler.number_days =
+      CalculateDaysTraveler.calculateNumberDays(createTravelerDto);
     traveler.amount_days_high_risk =
-      this.totalAmountHighRisk(createTravelerDto);
-    traveler.amount_days_covered = this.totalAmountCoveredDays(
+      CalculateDaysTraveler.totalAmountHighRisk(createTravelerDto);
+    traveler.amount_days_covered = CalculateDaysTraveler.totalAmountCoveredDays(
       traveler.coverage,
       traveler.number_days,
     );
-    traveler.total_amount = traveler.amount_days_covered;
+    traveler.total_amount = CalculateDaysTraveler.totalAmount(
+      traveler.amount_days_covered,
+      traveler.amount_days_high_risk,
+    );
     const newTraveler = await this.save(traveler).catch(() => {
       throw new BadRequestException('error in database');
     });
     return newTraveler;
   }
-
 }

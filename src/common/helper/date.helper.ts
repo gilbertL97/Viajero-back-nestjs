@@ -12,13 +12,8 @@ export class DateHelper {
     console.log(test, initialDate, finalDate);
     return test;
   }
-  public static timeDifferenceAux(initialDate: Date, finalDate: Date) {
-    return new Date(initialDate).getTime() - new Date(finalDate).getTime();
-  }
-  public static daysDifferenceAux(initialDate: Date, finalDate: Date) {
-    const test =
-      this.timeDifference(initialDate, finalDate) / (1000 * 60 * 60 * 24); // milisegundos ,segundos, minutos , horas
-    console.log(test, initialDate, finalDate);
-    return test;
+  //para saber el estado de de los dias con respecto a hoy
+  public static dayState(finalDate: Date) {
+    return new Date(finalDate).getTime() - new Date().getTime();
   }
 }

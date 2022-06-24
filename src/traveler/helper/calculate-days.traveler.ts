@@ -28,4 +28,11 @@ export class CalculateDaysTraveler {
     if (!coverage.daily) return coverage.price;
     return coverage.price * days;
   }
+  public static totalAmount(
+    amountDays: number,
+    amountHighRisk: number | undefined,
+  ): number {
+    if (amountHighRisk) return amountHighRisk + amountDays;
+    return amountDays;
+  }
 }

@@ -4,6 +4,7 @@ import {
   AfterLoad,
   BaseEntity,
   BeforeInsert,
+  BeforeRecover,
   BeforeUpdate,
   Column,
   CreateDateColumn,
@@ -87,11 +88,14 @@ export class TravelerEntity extends BaseEntity {
   @JoinColumn({ name: 'coverage_id' })
   coverage: CoverageEntity;
 
-  /* @BeforeInsert() //verificar antes q de insertar q se el passaporte no se repite
-  @BeforeUpdate() //y si se repite el pasaporte q tenga un dieferemcia de al menos 2 dias de la fecha de fin de la anterior  async hashPasword() {
-  async dontRepeatPassport() {
-    
-  }*/
+  @BeforeInsert()
+  @BeforeUpdate()
+  @AfterLoad() //este metodo actualiza el state
+  async verifyStatus() {
+    if (DateHelper.dayState(this.end_date_policy) < 0) this.state = false;
+    else this.state = true;
+    console.log(DateHelper.dayState(this.end_date_policy));
+  }
   @BeforeInsert()
   makeId() {
     // la llave primaria es el pasaporte + fecha de comienzo +mas la fecha de fin si se repite hay um error
