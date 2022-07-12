@@ -20,6 +20,7 @@ export class CreateTravelerDto {
   @MaxLength(1)
   sex: string;
 
+  @IsOptional()
   @IsDateString()
   born_date: Date;
 

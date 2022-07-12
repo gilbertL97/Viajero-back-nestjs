@@ -4,7 +4,6 @@ import {
   AfterLoad,
   BaseEntity,
   BeforeInsert,
-  BeforeRecover,
   BeforeUpdate,
   Column,
   CreateDateColumn,

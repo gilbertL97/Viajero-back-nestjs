@@ -40,7 +40,7 @@ export class UserService {
       console.log(userDto.role);
       if (userDto.contractor) {
         const contrator = await this.contractorService.getContractor(
-          parseInt(userDto.contractor),
+          userDto.contractor,
         );
         user.contractors = [contrator];
       }
@@ -57,13 +57,16 @@ export class UserService {
   ): Promise<UserEntity> {
     const user = await this.getUser(id);
     const editedUser = Object.assign(user, updateUserDto);
-    if (updateUserDto.role === UserRole.CLIENT) {
-      // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
-      console.log(updateUserDto.role);
+
+    // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
+    console.log('el rol del usuario es ' + editedUser.role);
+    if (editedUser.role === UserRole.CLIENT) {
+      console.log('contractor numero ' + updateUserDto.contractor);
       if (updateUserDto.contractor) {
         const contrator = await this.contractorService.getContractor(
-          parseInt(updateUserDto.contractor),
+          updateUserDto.contractor,
         );
+        console.log(editedUser);
         editedUser.contractors = [contrator]; //solo un contractor
       }
     }

@@ -35,7 +35,7 @@ export class ContratorEntity extends BaseEntity {
   travelers: TravelerEntity[];
 
   @ManyToMany(() => UserEntity, (user) => user.contractors, {
-    cascade: ['remove'],
+    cascade: ['soft-remove'],
   })
   users: UserEntity[];
 }

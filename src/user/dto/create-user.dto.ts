@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsNumberString,
   IsOptional,
   IsString,
@@ -30,6 +31,6 @@ export class CreateUserDto {
   role: string;
 
   @IsOptional()
-  @IsNumberString()
-  contractor: string;
+  @IsNumber()
+  contractor: number;
 }

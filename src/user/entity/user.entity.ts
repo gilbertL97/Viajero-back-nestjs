@@ -33,7 +33,9 @@ export class UserEntity extends BaseEntity {
   @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
   deleteAt: Date;
 
-  @ManyToMany(() => ContratorEntity, (contractor) => contractor.users)
+  @ManyToMany(() => ContratorEntity, (contractor) => contractor.users, {
+    eager: true,
+  })
   @JoinTable({
     name: 'usuarios_tomadores_de_seguro',
   })
