@@ -24,6 +24,10 @@ export class CoverageController {
   async findAll() {
     return this.coverageService.getCoverages();
   }
+  @Get('/active')
+  async findAllActive() {
+    return this.coverageService.getCoveragesActives();
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {

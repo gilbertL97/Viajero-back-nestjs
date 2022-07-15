@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContractorService } from 'src/contractor/contractor.service';
+import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryService } from 'src/country/country.service';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageService } from 'src/coverage/coverage.service';
+import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';
@@ -52,7 +54,9 @@ export class TravelerService {
   }
 
   async findAll(): Promise<TravelerEntity[]> {
-    return this.travelerRepository.find();
+    return this.travelerRepository.find({
+      relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+    });
   }
 
   async findOne(id: string): Promise<TravelerEntity> {
@@ -73,5 +77,21 @@ export class TravelerService {
   async remove(id: string): Promise<TravelerEntity> {
     const traveler = await this.findOne(id);
     return this.travelerRepository.remove(traveler);
+  }
+  async findOneTravelerWithCoverage(
+    coverage: CoverageEntity,
+  ): Promise<TravelerEntity> {
+    const traveler =
+      this.travelerRepository.finOneTravelerWithCoverage(coverage);
+    if (!traveler) throw new BadRequestException('The traveler does not exist');
+    return traveler;
+  }
+  async findOneTravelerWithContractor(
+    contractor: ContratorEntity,
+  ): Promise<TravelerEntity> {
+    const traveler =
+      this.travelerRepository.finOneTravelerWithContractor(contractor);
+    if (!traveler) throw new BadRequestException('The traveler does not exist');
+    return traveler;
   }
 }

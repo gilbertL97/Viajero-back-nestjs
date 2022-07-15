@@ -1,9 +1,13 @@
 import {
   BadRequestException,
+  ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TravelerService } from 'src/traveler/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
 import { UpdateCoverageDto } from './dto/update-coverage.dto';
@@ -14,6 +18,8 @@ export class CoverageService {
   constructor(
     @InjectRepository(CoverageEntity)
     private readonly coverageRepository: Repository<CoverageEntity>,
+    @Inject(forwardRef(() => TravelerService))
+    private readonly travelerService: TravelerService,
   ) {}
 
   async createCoverage(
@@ -31,10 +37,12 @@ export class CoverageService {
   async getCoverages(): Promise<CoverageEntity[]> {
     return this.coverageRepository.find();
   }
-
+  async getCoveragesActives(): Promise<CoverageEntity[]> {
+    return this.coverageRepository.find({ where: { isActive: true } });
+  }
   async getCoverage(id: number): Promise<CoverageEntity> {
     const coverage = await this.coverageRepository.findOne(id);
-    if (!coverage) throw new NotFoundException('doe not exist coverage');
+    if (!coverage) throw new NotFoundException('does not exist coverage');
     return coverage;
   }
 
@@ -49,6 +57,12 @@ export class CoverageService {
 
   async deleteCoverage(id: number): Promise<CoverageEntity> {
     const coverage = await this.getCoverage(id);
-    return await this.coverageRepository.remove(coverage);
+    const traveler = await this.travelerService.findOneTravelerWithCoverage(
+      coverage,
+    );
+    if (!traveler) return this.coverageRepository.remove(coverage);
+    coverage.isActive = false;
+    await this.coverageRepository.save(coverage);
+    throw new ConflictException('cant delete the Coverage');
   }
 }

@@ -1,12 +1,15 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CoverageService } from './coverage.service';
 import { CoverageController } from './coverage.controller';
 import { CoverageEntity } from './entities/coverage.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ContractorService } from 'src/contractor/contractor.service';
+import { TravelerModule } from 'src/traveler/traveler.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CoverageEntity])],
+  imports: [
+    TypeOrmModule.forFeature([CoverageEntity]),
+    forwardRef(() => TravelerModule),
+  ],
   controllers: [CoverageController],
   providers: [CoverageService],
   exports: [CoverageService],

@@ -1,9 +1,13 @@
 import {
   BadRequestException,
+  ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TravelerService } from 'src/traveler/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
@@ -14,13 +18,18 @@ export class ContractorService {
   constructor(
     @InjectRepository(ContratorEntity)
     private readonly contractRepository: Repository<ContratorEntity>,
+    @Inject(forwardRef(() => TravelerService))
+    private readonly travelerService: TravelerService,
   ) {}
   async getContrators(): Promise<ContratorEntity[]> {
-    return await this.contractRepository.find();
+    return await this.contractRepository.find({ relations: ['users'] });
   }
 
   async getContractor(id: number): Promise<ContratorEntity> {
-    const contractor = await this.contractRepository.findOne(id);
+    const contractor = await this.contractRepository.findOne({
+      where: { id: id },
+      relations: ['users'],
+    });
     if (!contractor)
       throw new NotFoundException('The contractor does not exist');
     return contractor;
@@ -47,6 +56,13 @@ export class ContractorService {
   }
   async deleteContractor(id: number): Promise<ContratorEntity> {
     const contractor = await this.getContractor(id);
-    return await this.contractRepository.remove(contractor);
+    const traveler = await this.travelerService.findOneTravelerWithContractor(
+      contractor,
+    );
+    console.log(traveler);
+    if (!traveler) return this.contractRepository.remove(contractor);
+    contractor.active = false;
+    await this.contractRepository.save(contractor);
+    throw new ConflictException('cant delete the Contractor');
   }
 }

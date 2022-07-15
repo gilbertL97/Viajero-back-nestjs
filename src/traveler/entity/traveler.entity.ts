@@ -69,21 +69,15 @@ export class TravelerEntity extends BaseEntity {
   @JoinColumn({ name: 'contractor' })
   contractor: ContratorEntity;
 
-  @ManyToOne(() => CountryEntity, (country) => country.travelers, {
-    eager: true,
-  })
+  @ManyToOne(() => CountryEntity, (country) => country.travelers, {})
   @JoinColumn({ name: 'origin_country_id' })
   origin_country: CountryEntity;
 
-  @ManyToOne(() => CountryEntity, (country) => country.travelers, {
-    eager: true,
-  })
+  @ManyToOne(() => CountryEntity, (country) => country.travelers, {})
   @JoinColumn({ name: 'nationality_id' })
   nationality: CountryEntity;
 
-  @ManyToOne(() => CoverageEntity, (country) => country.travelers, {
-    eager: true,
-  })
+  @ManyToOne(() => CoverageEntity, (country) => country.travelers, {})
   @JoinColumn({ name: 'coverage_id' })
   coverage: CoverageEntity;
 
@@ -98,6 +92,6 @@ export class TravelerEntity extends BaseEntity {
   @BeforeInsert()
   makeId() {
     // la llave primaria es el pasaporte + fecha de comienzo +mas la fecha de fin si se repite hay um error
-    this.id = this.passport + this.start_date;
+    this.id = this.passport + this.start_date + this.name;
   }
 }

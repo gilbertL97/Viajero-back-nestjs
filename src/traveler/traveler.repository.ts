@@ -60,4 +60,14 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     });
     return newTraveler;
   }
+  async finOneTravelerWithCoverage(
+    coverageOption: CoverageEntity,
+  ): Promise<TravelerEntity> {
+    return this.findOne({ where: { coverage: coverageOption } });
+  }
+  async finOneTravelerWithContractor(
+    contractorOption: ContratorEntity,
+  ): Promise<TravelerEntity> {
+    return this.findOne({ where: { contractor: contractorOption } });
+  }
 }

@@ -23,7 +23,7 @@ export class UserService {
   ) {}
 
   async getUsers(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({ relations: ['contractors'] });
   }
 
   async getUser(id: number): Promise<UserEntity> {

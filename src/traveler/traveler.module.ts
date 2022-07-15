@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TravelerService } from './traveler.service';
 import { TravelerController } from './traveler.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,11 +10,12 @@ import { TravelerRepository } from './traveler.repository';
 @Module({
   imports: [
     TypeOrmModule.forFeature([TravelerRepository]),
-    ContractorModule,
-    CoverageModule,
-    CountryModule,
+    forwardRef(() => ContractorModule),
+    forwardRef(() => CoverageModule),
+    forwardRef(() => CountryModule),
   ],
   controllers: [TravelerController],
   providers: [TravelerService],
+  exports: [TravelerService],
 })
 export class TravelerModule {}
