@@ -28,6 +28,14 @@ export class ContractorService {
   async getContractor(id: number): Promise<ContratorEntity> {
     const contractor = await this.contractRepository.findOne({
       where: { id: id },
+    });
+    if (!contractor)
+      throw new NotFoundException('The contractor does not exist');
+    return contractor;
+  }
+  async getContractorWithUsers(id: number): Promise<ContratorEntity> {
+    const contractor = await this.contractRepository.findOne({
+      where: { id: id },
       relations: ['users'],
     });
     if (!contractor)
@@ -55,13 +63,13 @@ export class ContractorService {
     return await this.contractRepository.save(editedContract);
   }
   async deleteContractor(id: number): Promise<ContratorEntity> {
-    const contractor = await this.getContractor(id);
+    const contractor = await this.getContractorWithUsers(id);
     const traveler = await this.travelerService.findOneTravelerWithContractor(
       contractor,
     );
     console.log(traveler);
     if (!traveler) return this.contractRepository.remove(contractor);
-    contractor.active = false;
+    contractor.isActive = false;
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');
   }

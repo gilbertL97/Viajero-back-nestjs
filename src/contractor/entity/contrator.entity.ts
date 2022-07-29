@@ -2,8 +2,6 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import {
   BaseEntity,
   Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   ManyToMany,
   OneToMany,
@@ -23,12 +21,12 @@ export class ContratorEntity extends BaseEntity {
   telf: string;
   @Column({ type: 'varchar', length: 250, nullable: false })
   addres: string;
-  @Column({ type: 'varchar', length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 150, nullable: false, unique: true })
   file: string;
   @Column({ type: 'varchar', length: 30, nullable: false })
   poliza: string;
   @Column({ type: 'boolean', default: true })
-  active: boolean;
+  isActive: boolean;
 
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {})
   travelers: TravelerEntity[];

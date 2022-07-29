@@ -54,13 +54,18 @@ export class TravelerService {
   }
 
   async findAll(): Promise<TravelerEntity[]> {
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
     return this.travelerRepository.find({
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
     });
   }
 
   async findOne(id: string): Promise<TravelerEntity> {
-    const traveler = await this.travelerRepository.findOne(id);
+    const traveler = await this.travelerRepository.findOne({
+      where: { id: id },
+      relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+    });
+    //await new Promise((resolve) => setTimeout(resolve, 5000));
     if (!traveler) throw new NotFoundException('The traveler does not exist');
     return traveler;
   }

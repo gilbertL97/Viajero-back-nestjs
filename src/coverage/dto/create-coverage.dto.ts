@@ -22,4 +22,8 @@ export class CreateCoverageDto {
   @IsBoolean()
   @IsNotEmpty()
   daily: boolean;
+
+  @IsNumber()
+  @IsNotEmpty()
+  high_risk: number;
 }
