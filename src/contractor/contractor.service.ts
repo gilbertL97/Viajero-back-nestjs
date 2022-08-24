@@ -60,6 +60,7 @@ export class ContractorService {
   ): Promise<ContratorEntity> {
     const contractor = await this.getContractor(id);
     const editedContract = Object.assign(contractor, updateContractorDto);
+    console.log(editedContract);
     return await this.contractRepository.save(editedContract);
   }
   async deleteContractor(id: number): Promise<ContratorEntity> {

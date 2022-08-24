@@ -1,7 +1,9 @@
 import { ValidationPipe } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import setDefaultUser from './script/default-user';
 
 /*const corsConfig: CorsOptions = {
   origin: 'http://localhost:3000', //http://localhost:3000/
@@ -18,6 +20,9 @@ async function bootstrap() {
   }); /*, { cors: true })*/
   const port: number = parseInt(process.env.PORT);
   app.setGlobalPrefix('viajero');
+  const config = app.get(ConfigService);
+  setDefaultUser(config);
+  console.log('entro aqui');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
