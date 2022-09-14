@@ -33,6 +33,12 @@ export class ContractorService {
       throw new NotFoundException('The contractor does not exist');
     return contractor;
   }
+    async getContratorsActive(): Promise<ContratorEntity[]> {
+    return await this.contractRepository.find({
+      relations: ['users'],
+      where: { isActive: true },
+    });
+  }
   async getContractorWithUsers(id: number): Promise<ContratorEntity> {
     const contractor = await this.contractRepository.findOne({
       where: { id: id },
