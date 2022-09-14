@@ -23,6 +23,11 @@ export class ContractorController {
     const data = this.contractService.getContrators();
     return data;
   }
+   @Get('/active')
+  async getContractsActive(): Promise<ContratorEntity[]> {
+    const data = this.contractService.getContratorsActive();
+    return data;
+  }
   @Get(':id')
   getContract(@Param('id', ParseIntPipe) id: number): Promise<ContratorEntity> {
     const data = this.contractService.getContractor(id);
