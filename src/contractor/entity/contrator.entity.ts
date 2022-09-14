@@ -15,11 +15,11 @@ export class ContratorEntity extends BaseEntity {
   id: number;
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   client: string;
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   email: string;
-  @Column({ type: 'varchar', length: 20, nullable: false })
+  @Column({ type: 'varchar', length: 20, nullable: true})
   telf: string;
-  @Column({ type: 'varchar', length: 250, nullable: false })
+  @Column({ type: 'varchar', length: 250, nullable: true })
   addres: string;
   @Column({ type: 'varchar', length: 150, nullable: false, unique: true })
   file: string;
