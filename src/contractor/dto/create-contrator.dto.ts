@@ -14,23 +14,29 @@ export class CreateContratorDto {
   @MaxLength(100)
   client: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(5)
+  @MaxLength(50)
+  file: string;
+
   @IsEmail()
   @IsNotEmpty()
   @MinLength(6)
   @MaxLength(50)
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumberString()
   @MinLength(8)
   @MaxLength(15)
   telf: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @MinLength(15)
   @MaxLength(200)
   addres: string;
+
 
   @IsNotEmpty()
   @MaxLength(20)
