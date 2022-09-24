@@ -13,6 +13,7 @@ import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';
+import { CalculateDaysTraveler } from './helper/calculate-days.traveler';
 import { TravelerRepository } from './traveler.repository';
 
 @Injectable()
@@ -75,8 +76,11 @@ export class TravelerService {
     updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
     const traveler = await this.findOne(id);
-    const updateTraveler = Object.assign(traveler, updateTravelerDto);
-    return this.travelerRepository.save(updateTraveler);
+    return this.travelerRepository.updateTraveler(
+      traveler,
+      updateTravelerDto,
+      traveler.coverage,
+    );
   }
 
   async remove(id: string): Promise<TravelerEntity> {

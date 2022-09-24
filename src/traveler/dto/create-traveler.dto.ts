@@ -1,6 +1,7 @@
 import {
   IsDateString,
   IsEmail,
+  IsNumber,
   IsNumberString,
   IsOptional,
   IsString,
@@ -47,11 +48,11 @@ export class CreateTravelerDto {
   end_date_policy: Date;
 
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   number_high_risk_days: number;
 
-  @IsNumberString()
-  contractor: string;
+  @IsNumber()
+  contractor: number;
 
   @IsOptional()
   @IsString()
@@ -65,6 +66,6 @@ export class CreateTravelerDto {
   @MaxLength(3)
   nationality: string;
 
-  @IsNumberString()
-  coverage: string;
+  @IsNumber()
+  coverage: number;
 }

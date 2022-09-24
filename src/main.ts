@@ -21,7 +21,7 @@ async function bootstrap() {
   const port: number = parseInt(process.env.PORT);
   app.setGlobalPrefix('viajero');
   const config = app.get(ConfigService);
-  setDefaultUser(config);
+  //setDefaultUser(config);
   console.log('entro aqui');
   app.useGlobalPipes(
     new ValidationPipe({

@@ -11,7 +11,7 @@ import {
 export class CreateCoverageDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(5)
+  @MinLength(4)
   @MaxLength(50)
   name: string;
 
@@ -23,7 +23,7 @@ export class CreateCoverageDto {
   @IsNotEmpty()
   daily: boolean;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   high_risk: number;
 }

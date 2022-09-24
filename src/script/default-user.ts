@@ -14,7 +14,6 @@ const setDefaultUser = async (config: ConfigService) => {
     .getOne();
 
   if (!defaultUser) {
-   
     const adminUser = userRepository.create({
       name: config.get<string>(Configuration.DEFAULT_ADMIN_USER),
       email: config.get<string>(Configuration.DEFAULT_ADMIN_email),

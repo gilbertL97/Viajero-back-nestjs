@@ -14,16 +14,14 @@ export class CoverageEntity extends BaseEntity {
   id: number;
   @Column({ type: 'varchar', length: 50, nullable: false })
   name: string;
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'numeric', nullable: false })
   price: number;
   @Column({ type: 'boolean', nullable: false })
   daily: boolean;
-  @Column({ type: 'integer', default: 2 })
+  @Column({ type: 'numeric', default: 2 })
   high_risk: number;
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
-  @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
-  deleteAt: Date;
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {
     cascade: true,
   })

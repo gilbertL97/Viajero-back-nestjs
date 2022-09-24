@@ -9,7 +9,11 @@ export class DateHelper {
     const test = Math.ceil(
       this.timeDifference(initialDate, finalDate) / (1000 * 60 * 60 * 24), // milisegundos ,segundos, minutos , horas
     );
-    console.log(test, initialDate, finalDate);
+    console.log(
+      test,
+      initialDate,
+      finalDate + 'esto es una prueba haber si entra',
+    );
     return test;
   }
   //para saber el estado de de los dias con respecto a hoy

@@ -5,6 +5,7 @@ import {
   MaxLength,
   IsEmail,
   IsNumberString,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateContratorDto {
