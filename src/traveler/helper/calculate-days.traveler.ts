@@ -16,7 +16,7 @@ export class CalculateDaysTraveler {
       const highRiskActivity = coverage.high_risk; // esta es la actividad de alto riesgo hay q ver de q manera se hace parametrizable
       return highRiskActivity * number_high_risk_days;
     }
-    return null;
+    return 0;
   }
   public static totalAmountCoveredDays(
     coverage: CoverageEntity,

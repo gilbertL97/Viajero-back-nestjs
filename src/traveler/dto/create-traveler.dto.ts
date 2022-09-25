@@ -2,7 +2,6 @@ import {
   IsDateString,
   IsEmail,
   IsNumber,
-  IsNumberString,
   IsOptional,
   IsString,
   MaxLength,
@@ -18,7 +17,7 @@ export class CreateTravelerDto {
   @IsOptional()
   @IsString()
   @MinLength(1)
-  @MaxLength(1)
+  @MaxLength(2)
   sex: string;
 
   @IsOptional()

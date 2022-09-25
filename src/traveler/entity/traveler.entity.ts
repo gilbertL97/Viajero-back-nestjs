@@ -22,7 +22,7 @@ export class TravelerEntity extends BaseEntity {
   id: string;
   @Column({ type: 'varchar', length: 150, nullable: false })
   name: string;
-  @Column({ type: 'char', length: 10, nullable: true })
+  @Column({ type: 'char', length: 2, nullable: true })
   sex: string;
   @Column({ type: 'date', nullable: true })
   born_date: Date;
