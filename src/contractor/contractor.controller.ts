@@ -7,32 +7,48 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { GetUser } from 'src/common/decorator/user.decorator';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { UserRole } from 'src/user/user.role';
 
 import { ContractorService } from './contractor.service';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
 
+@UseGuards(JwtAuthGuard)
 @Controller('contractor')
 export class ContractorController {
   constructor(private readonly contractService: ContractorService) {}
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
   @Get()
-  async getContracts(): Promise<ContratorEntity[]> {
-    const data = this.contractService.getContrators();
+  async getContracts(@GetUser() user: UserEntity): Promise<ContratorEntity[]> {
+    const data = this.contractService.getContrators(user);
     return data;
   }
-   @Get('/active')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Get('/active')
   async getContractsActive(): Promise<ContratorEntity[]> {
     const data = this.contractService.getContratorsActive();
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get(':id')
   getContract(@Param('id', ParseIntPipe) id: number): Promise<ContratorEntity> {
     const data = this.contractService.getContractor(id);
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
   createContract(
     @Body() createContractor: CreateContratorDto,
@@ -41,6 +57,8 @@ export class ContractorController {
     return data;
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Patch(':id')
   async updateContract(
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +67,8 @@ export class ContractorController {
     const data = this.contractService.updateContractor(id, updateContratDto);
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Delete(':id')
   async deletContract(
     @Param('id', ParseIntPipe) id: number,

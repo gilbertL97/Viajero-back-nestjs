@@ -7,9 +7,10 @@ import { LocalStrategy } from './strategy/local.strategy';
 import { AuthController } from './auth.controller';
 import * as dot from 'dotenv';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { RolesGuard } from './guard/roles.guard';
 dot.config();
 @Module({
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RolesGuard],
   imports: [
     UserModule,
     PassportModule,

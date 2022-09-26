@@ -8,6 +8,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TravelerService } from 'src/traveler/traveler.service';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { UserRole } from 'src/user/user.role';
+import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
@@ -20,8 +23,14 @@ export class ContractorService {
     private readonly contractRepository: Repository<ContratorEntity>,
     @Inject(forwardRef(() => TravelerService))
     private readonly travelerService: TravelerService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
   ) {}
-  async getContrators(): Promise<ContratorEntity[]> {
+  async getContrators(user: UserEntity): Promise<ContratorEntity[]> {
+    if (user.role == UserRole.CLIENT) {
+      const userC = await this.userService.getUser(user.id);
+      return userC.contractors;
+    }
     return await this.contractRepository.find({ relations: ['users'] });
   }
 

@@ -6,6 +6,7 @@ import { CoverageModule } from 'src/coverage/coverage.module';
 import { ContractorModule } from 'src/contractor/contractor.module';
 import { CountryModule } from 'src/country/country.module';
 import { TravelerRepository } from './traveler.repository';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TravelerRepository } from './traveler.repository';
     forwardRef(() => ContractorModule),
     forwardRef(() => CoverageModule),
     forwardRef(() => CountryModule),
+    forwardRef(() => UserModule),
   ],
   controllers: [TravelerController],
   providers: [TravelerService],

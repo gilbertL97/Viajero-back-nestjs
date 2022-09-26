@@ -41,7 +41,9 @@ export class CoverageService {
     return this.coverageRepository.find({ where: { isActive: true } });
   }
   async getCoverage(id: number): Promise<CoverageEntity> {
-    const coverage = await this.coverageRepository.findOne(id);
+    const coverage = await this.coverageRepository.findOne({
+      where: { id: id },
+    });
     if (!coverage) throw new NotFoundException('does not exist coverage');
     return coverage;
   }

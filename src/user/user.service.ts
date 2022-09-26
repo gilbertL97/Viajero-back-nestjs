@@ -1,12 +1,13 @@
 import {
   BadRequestException,
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContractorService } from 'src/contractor/contractor.service';
-import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
-
+import { TravelerService } from 'src/traveler/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EditProfileUserDto } from './dto/edit-profile-user.dto';
@@ -19,6 +20,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @Inject(forwardRef(() => ContractorService))
     private readonly contractorService: ContractorService,
   ) {}
 
@@ -27,7 +29,10 @@ export class UserService {
   }
 
   async getUser(id: number): Promise<UserEntity> {
-    const user: UserEntity = await this.userRepository.findOne(id);
+    const user: UserEntity = await this.userRepository.findOne({
+      where: { id: id },
+      relations: ['contractors'],
+    });
     if (!user)
       throw new ForbiddenException(`The users whit id:"${id}" does not exist`);
     return user;

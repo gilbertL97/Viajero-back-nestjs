@@ -10,6 +10,9 @@ import { CountryService } from 'src/country/country.service';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageService } from 'src/coverage/coverage.service';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { UserRole } from 'src/user/user.role';
+import { UserService } from 'src/user/user.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';
@@ -23,6 +26,7 @@ export class TravelerService {
     private readonly contratctoService: ContractorService,
     private readonly countryService: CountryService,
     private readonly coverageService: CoverageService,
+    private readonly userService: UserService,
   ) {}
 
   async create(createTravelerDto: CreateTravelerDto): Promise<TravelerEntity> {
@@ -53,8 +57,15 @@ export class TravelerService {
     return traveler;
   }
 
-  async findAll(): Promise<TravelerEntity[]> {
+  async findAll(user: UserEntity): Promise<TravelerEntity[]> {
     // await new Promise((resolve) => setTimeout(resolve, 5000));
+    if (user.role == UserRole.CLIENT) {
+      const userC = await this.userService.getUser(user.id);
+      return this.travelerRepository.find({
+        relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+        where: { contractor: userC.contractors[0] },
+      });
+    }
     return this.travelerRepository.find({
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
     });
