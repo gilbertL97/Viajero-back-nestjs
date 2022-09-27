@@ -10,7 +10,6 @@ import { ContratorEntity } from './entity/contrator.entity';
   imports: [
     TypeOrmModule.forFeature([ContratorEntity]),
     forwardRef(() => TravelerModule),
-    forwardRef(() => UserModule),
   ],
   controllers: [ContractorController],
   providers: [ContractorService],
