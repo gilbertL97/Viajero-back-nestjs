@@ -27,10 +27,10 @@ export class ContractorController {
   constructor(private readonly contractService: ContractorService) {}
 
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
   @Get()
-  async getContracts(): Promise<ContratorEntity[]> {
-    const data = this.contractService.getContrators();
+  async getContracts(@GetUser() user: UserEntity): Promise<ContratorEntity[]> {
+    const data = this.contractService.getContrators(user);
     return data;
   }
   @UseGuards(RolesGuard)

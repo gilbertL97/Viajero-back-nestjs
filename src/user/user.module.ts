@@ -6,7 +6,10 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), ContractorModule],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity]),
+    forwardRef(() => ContractorModule),
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

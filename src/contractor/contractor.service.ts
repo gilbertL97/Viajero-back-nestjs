@@ -23,8 +23,14 @@ export class ContractorService {
     private readonly contractRepository: Repository<ContratorEntity>,
     @Inject(forwardRef(() => TravelerService))
     private readonly travelerService: TravelerService,
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
   ) {}
-  async getContrators(): Promise<ContratorEntity[]> {
+  async getContrators(user: UserEntity): Promise<ContratorEntity[]> {
+    if (user.role == UserRole.CLIENT) {
+      const userC = await this.userService.getUser(user.id);
+      return userC.contractors;
+    }
     return await this.contractRepository.find({ relations: ['users'] });
   }
 

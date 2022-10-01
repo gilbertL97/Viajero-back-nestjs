@@ -20,6 +20,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @Inject(forwardRef(() => ContractorService))
     private readonly contractorService: ContractorService,
   ) {}
 

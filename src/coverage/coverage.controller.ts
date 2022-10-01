@@ -26,7 +26,13 @@ export class CoverageController {
   async create(@Body() createCoverageDto: CreateCoverageDto) {
     return this.coverageService.createCoverage(createCoverageDto);
   }
-
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.MARKAGENT,
+    UserRole.CONSULT,
+  )
   @Get()
   async findAll() {
     return this.coverageService.getCoverages();
