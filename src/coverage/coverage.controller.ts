@@ -21,11 +21,13 @@ import { UpdateCoverageDto } from './dto/update-coverage.dto';
 @Controller('coverage')
 export class CoverageController {
   constructor(private readonly coverageService: CoverageService) {}
-
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
   async create(@Body() createCoverageDto: CreateCoverageDto) {
     return this.coverageService.createCoverage(createCoverageDto);
   }
+  @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
@@ -33,20 +35,27 @@ export class CoverageController {
     UserRole.MARKAGENT,
     UserRole.CONSULT,
   )
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get()
   async findAll() {
     return this.coverageService.getCoverages();
   }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get('/active')
   async findAllActive() {
     return this.coverageService.getCoveragesActives();
   }
 
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.coverageService.getCoverage(id);
   }
-
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Patch(':id')
   async update(
     @Param('id') id: number,
@@ -54,7 +63,8 @@ export class CoverageController {
   ) {
     return this.coverageService.updateCoverage(id, updateCoverageDto);
   }
-
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     return this.coverageService.deleteCoverage(id);

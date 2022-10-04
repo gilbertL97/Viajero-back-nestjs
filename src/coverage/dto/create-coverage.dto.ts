@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsBoolean,
   IsNumberString,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateCoverageDto {
@@ -26,4 +27,8 @@ export class CreateCoverageDto {
   @IsNumberString()
   @IsNotEmpty()
   high_risk: number;
+
+  @IsOptional()
+  @IsNumber()
+  number_of_days: number;
 }
