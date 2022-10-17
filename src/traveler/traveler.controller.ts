@@ -18,6 +18,7 @@ import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { UserRole } from 'src/user/user.role';
 import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { FilterTravelerDto } from './dto/filter-traveler.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
@@ -39,7 +40,13 @@ export class TravelerController {
     const data = await this.travelerService.findAll(user);
     return data;
   }
-
+  @Get('/filter')
+  async advanceSearch(
+    @Body() travelerFilter: FilterTravelerDto,
+  ): Promise<TravelerEntity[]> {
+    const data = await this.travelerService.advancedSearch(travelerFilter);
+    return data;
+  }
   @Get(':id')
   async getTraveler(
     //@GetUser() user: UserEntity,
