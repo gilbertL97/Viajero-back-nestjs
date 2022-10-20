@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
-import { EntityRepository, Like, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { FilterTravelerDto } from './dto/filter-traveler.dto';
 import { TravelerEntity } from './entity/traveler.entity';

@@ -4,7 +4,6 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
-  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,

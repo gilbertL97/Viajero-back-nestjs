@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TravelerService } from './traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
@@ -42,7 +43,7 @@ export class TravelerController {
   }
   @Get('/filter')
   async advanceSearch(
-    @Body() travelerFilter: FilterTravelerDto,
+    @Query() travelerFilter: FilterTravelerDto,
   ): Promise<TravelerEntity[]> {
     const data = await this.travelerService.advancedSearch(travelerFilter);
     return data;
