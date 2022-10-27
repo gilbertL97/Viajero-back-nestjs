@@ -38,7 +38,6 @@ export class CreateContratorDto {
   @MaxLength(200)
   addres: string;
 
-
   @IsNotEmpty()
   @MaxLength(20)
   poliza: string;

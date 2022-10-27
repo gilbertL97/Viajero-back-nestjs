@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TravelerService } from 'src/traveler/traveler.service';
+import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
 import { UpdateCoverageDto } from './dto/update-coverage.dto';

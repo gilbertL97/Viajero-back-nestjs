@@ -13,11 +13,11 @@ import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
-import { CreateTravelerDto } from './dto/create-traveler.dto';
-import { FilterTravelerDto } from './dto/filter-traveler.dto';
-import { UpdateTravelerDto } from './dto/update-traveler.dto';
-import { TravelerEntity } from './entity/traveler.entity';
-import { TravelerRepository } from './traveler.repository';
+import { CreateTravelerDto } from '../dto/create-traveler.dto';
+import { FilterTravelerDto } from '../dto/filter-traveler.dto';
+import { UpdateTravelerDto } from '../dto/update-traveler.dto';
+import { TravelerEntity } from '../entity/traveler.entity';
+import { TravelerRepository } from '../traveler.repository';
 
 @Injectable()
 export class TravelerService {
@@ -73,6 +73,7 @@ export class TravelerService {
   }
 
   async findOne(id: string): Promise<TravelerEntity> {
+    console.log(id);
     const traveler = await this.travelerRepository.findOne({
       where: { id: id },
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContractorService } from 'src/contractor/contractor.service';
-import { TravelerService } from 'src/traveler/traveler.service';
+import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EditProfileUserDto } from './dto/edit-profile-user.dto';

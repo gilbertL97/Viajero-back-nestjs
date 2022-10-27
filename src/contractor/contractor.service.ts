@@ -7,7 +7,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TravelerService } from 'src/traveler/traveler.service';
+import { FileHelper } from 'src/common/helper/file.helper';
+import { TravelerService } from 'src/traveler/service/traveler.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
@@ -67,6 +68,7 @@ export class ContractorService {
       .catch(() => {
         throw new BadRequestException('duplicate name or email');
       });
+    await FileHelper.createFolder(newContractor.file);
     return newContractor;
   }
   async updateContractor(
@@ -74,9 +76,11 @@ export class ContractorService {
     updateContractorDto: UpdateContratorDto,
   ): Promise<ContratorEntity> {
     const contractor = await this.getContractor(id);
+    const oldFolder = contractor.file;
     const editedContract = Object.assign(contractor, updateContractorDto);
-    console.log(editedContract);
-    return await this.contractRepository.save(editedContract);
+    const contractorSaved = await this.contractRepository.save(editedContract);
+    FileHelper.updateFolder(contractorSaved.file, oldFolder);
+    return contractorSaved;
   }
   async deleteContractor(id: number): Promise<ContratorEntity> {
     const contractor = await this.getContractorWithUsers(id);
@@ -84,7 +88,11 @@ export class ContractorService {
       contractor,
     );
     console.log(traveler);
-    if (!traveler) return this.contractRepository.remove(contractor);
+    if (!traveler) {
+      const deleted = await this.contractRepository.remove(contractor);
+      FileHelper.deletFolder(deleted.file);
+      return deleted;
+    }
     contractor.isActive = false;
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');

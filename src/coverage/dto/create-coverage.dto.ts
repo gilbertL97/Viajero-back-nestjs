@@ -20,6 +20,12 @@ export class CreateCoverageDto {
   @IsNotEmpty()
   price: number;
 
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(4)
+  @MaxLength(20)
+  folder: string;
+
   @IsBoolean()
   @IsNotEmpty()
   daily: boolean;
