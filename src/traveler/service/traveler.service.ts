@@ -73,7 +73,7 @@ export class TravelerService {
   }
 
   async findOne(id: string): Promise<TravelerEntity> {
-    console.log(id);
+    console.log('trajo el id' + id);
     const traveler = await this.travelerRepository.findOne({
       where: { id: id },
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],

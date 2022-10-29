@@ -68,7 +68,7 @@ export class ContractorService {
       .catch(() => {
         throw new BadRequestException('duplicate name or email');
       });
-    await FileHelper.createFolder(newContractor.file);
+    await FileHelper.createFolder('contractor', newContractor.file);
     return newContractor;
   }
   async updateContractor(
@@ -79,7 +79,7 @@ export class ContractorService {
     const oldFolder = contractor.file;
     const editedContract = Object.assign(contractor, updateContractorDto);
     const contractorSaved = await this.contractRepository.save(editedContract);
-    FileHelper.updateFolder(contractorSaved.file, oldFolder);
+    FileHelper.updateFolder('contractor', contractorSaved.file, oldFolder);
     return contractorSaved;
   }
   async deleteContractor(id: number): Promise<ContratorEntity> {
@@ -90,7 +90,7 @@ export class ContractorService {
     console.log(traveler);
     if (!traveler) {
       const deleted = await this.contractRepository.remove(contractor);
-      FileHelper.deletFolder(deleted.file);
+      FileHelper.deletFolder('contractor', deleted.file);
       return deleted;
     }
     contractor.isActive = false;

@@ -21,7 +21,6 @@ import { UserRole } from 'src/user/user.role';
 import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { FilterTravelerDto } from './dto/filter-traveler.dto';
-import { Observable } from 'rxjs';
 import { TravelerDocService } from './service/traveler-doc.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -60,13 +59,13 @@ export class TravelerController {
     const traveler = await this.travelerService.findOne(id);
     this.travelerDocService.downloadTest(traveler,res);
   }*/
-  @Get('/testPdf')
-  async TestPdf(@Query('id') id: string, @Res() res): Promise<void> {
+  @Get('/cert')
+  async generateCertPdf(@Query('id') id: string, @Res() res): Promise<void> {
     const traveler = await this.travelerService.findOne(id);
     const buffer = await this.travelerDocService.createTestPDf(traveler);
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Dispotition': 'attachment; filename.pdf',
+      'Content-Dispotition': 'attachment;' + traveler.name + '.pdf',
       'Content-Lenght': buffer.length,
     });
     res.end(buffer);

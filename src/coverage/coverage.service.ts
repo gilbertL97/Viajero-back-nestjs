@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FileHelper } from 'src/common/helper/file.helper';
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
@@ -31,6 +32,7 @@ export class CoverageService {
       .catch(() => {
         throw new BadRequestException('duplicate name ');
       });
+    FileHelper.createFolder('coverage', newCoverage.folder);
     return newCoverage;
   }
 
@@ -54,7 +56,9 @@ export class CoverageService {
   ): Promise<CoverageEntity> {
     const coverag = await this.getCoverage(id);
     const updatedCoverage = Object.assign(coverag, updateCoverageDto);
-    return await this.coverageRepository.save(updatedCoverage);
+    const coverageSaved = await this.coverageRepository.save(updatedCoverage);
+    FileHelper.updateFolder('coverage', coverageSaved.folder, coverag.folder);
+    return coverageSaved;
   }
 
   async deleteCoverage(id: number): Promise<CoverageEntity> {
@@ -62,7 +66,11 @@ export class CoverageService {
     const traveler = await this.travelerService.findOneTravelerWithCoverage(
       coverage,
     );
-    if (!traveler) return this.coverageRepository.remove(coverage);
+    if (!traveler) {
+      const deletedCoverage = await this.coverageRepository.remove(coverage);
+      FileHelper.deletFolder('coverage', deletedCoverage.folder);
+      return deletedCoverage;
+    }
     coverage.isActive = false;
     await this.coverageRepository.save(coverage);
     throw new ConflictException('cant delete the Coverage');
