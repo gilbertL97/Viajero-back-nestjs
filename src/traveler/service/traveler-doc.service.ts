@@ -6,8 +6,9 @@ import { CoverageService } from 'src/coverage/coverage.service';
 import { UserService } from 'src/user/user.service';
 import { TravelerRepository } from '../traveler.repository';
 import doc, * as PDFDocument from 'pdfkit';
-import { Observable } from 'rxjs';
+
 import { TravelerEntity } from '../entity/traveler.entity';
+import { join } from 'path';
 
 @Injectable()
 export class TravelerDocService {
@@ -26,13 +27,69 @@ export class TravelerDocService {
         size: 'LETTER',
         bufferPages: true,
       });
-      doc.text(traveler.name);
-      doc.moveDown();
-      doc.text(traveler.coverage.name);
-      doc.moveDown();
-      doc.text(traveler.contractor.client);
-      doc.moveDown();
-      doc.text('heeeeee sirvio');
+      doc
+        .fillColor('blue')
+        .font('Helvetica-Bold')
+        .lineGap(1)
+        .fontSize(15)
+        .text('SEGURO DE ASISTENCIA AL VIAJERO (VIAJES IN)');
+      doc.text('CERTIFICADO DE SEGURO');
+      doc.image('assets/esicubaLogo.jpg', 440, 60, { scale: 0.25 });
+      doc
+        .fillColor('gray')
+        .fontSize(12)
+        .font('Helvetica')
+        .text('Válido en el territorio nacional de la República de Cuba', {});
+      doc
+        .fillColor('blue')
+        .fontSize(12)
+        .font('Helvetica-Bold')
+        .text('ASEGURADOR :', {
+          continued: true,
+        });
+      doc
+        .fillColor('black')
+
+        .font('Helvetica')
+        .text(' Seguros Internacionales de Cuba, S.A. (ESICUBA)');
+      doc
+        .fillColor('blue')
+
+        .font('Helvetica-Bold')
+        .text('No Poliza : ', {
+          continued: true,
+        });
+      doc
+        .fillColor('black')
+        .font('Helvetica')
+        .text(traveler.contractor.poliza + '  ', {
+          continued: true,
+        });
+      doc.fillColor('blue').font('Helvetica-Bold').text('Cliente : ', {
+        continued: true,
+      });
+      doc.fillColor('black').font('Helvetica').text(traveler.contractor.client);
+      doc.fillColor('blue').font('Helvetica-Bold').text('Contratante: ', {
+        continued: true,
+      });
+      doc.fillColor('black').font('Helvetica').text(traveler.name, {
+        continued: true,
+      });
+      doc.fillColor('blue').font('Helvetica-Bold').text(' Pasaporte: ', {
+        continued: true,
+      });
+      doc.fillColor('black').font('Helvetica').text(traveler.passport);
+      doc
+        .fillColor('blue')
+        .font('Helvetica-Bold')
+        .text('Vigencia del Seguro :   ', {
+          continued: true,
+        });
+      doc.text('Desde : ', {
+        continued: true,
+      });
+      doc.fillColor('black').font('Helvetica');
+      //  .text(traveler.start_date.toDateString.toString());
       const buffer = [];
       doc.on('data', buffer.push.bind(buffer));
       doc.on('end', () => {
