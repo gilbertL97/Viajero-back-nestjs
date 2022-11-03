@@ -17,10 +17,10 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false, 
-    "assets": {
+    /*"assets": {
       "include": "../assets",
       "outDir": "dist/public",
       "watchAssets": true
-    },
+    },*/
   }
 }

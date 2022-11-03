@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsDateString,
   IsNumberString,
+  IsBooleanString,
 } from 'class-validator';
 
 export class FilterTravelerDto {
@@ -47,4 +48,8 @@ export class FilterTravelerDto {
   @IsOptional()
   @IsNumberString()
   coverage: number;
+
+  @IsOptional()
+  @IsBooleanString()
+  state: boolean;
 }

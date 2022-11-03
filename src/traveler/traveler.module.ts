@@ -8,6 +8,7 @@ import { CountryModule } from 'src/country/country.module';
 import { TravelerRepository } from './traveler.repository';
 import { UserModule } from 'src/user/user.module';
 import { TravelerDocService } from './service/traveler-doc.service';
+import { TravelerDocServiceTest } from './service/traveler-doc.serviceTets';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { TravelerDocService } from './service/traveler-doc.service';
     forwardRef(() => UserModule),
   ],
   controllers: [TravelerController],
-  providers: [TravelerService, TravelerDocService],
+  providers: [TravelerService, TravelerDocService, TravelerDocServiceTest],
   exports: [TravelerService],
 })
 export class TravelerModule {}

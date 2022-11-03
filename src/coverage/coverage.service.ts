@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FileHelper } from 'src/common/helper/file.helper';
+//import { FileHelper } from 'src/common/helper/file.helper';
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
@@ -32,7 +32,7 @@ export class CoverageService {
       .catch(() => {
         throw new BadRequestException('duplicate name ');
       });
-    FileHelper.createFolder('coverage', newCoverage.folder);
+    //FileHelper.createFolder('coverage', newCoverage.folder);
     return newCoverage;
   }
 
@@ -57,7 +57,7 @@ export class CoverageService {
     const coverag = await this.getCoverage(id);
     const updatedCoverage = Object.assign(coverag, updateCoverageDto);
     const coverageSaved = await this.coverageRepository.save(updatedCoverage);
-    FileHelper.updateFolder('coverage', coverageSaved.folder, coverag.folder);
+    //FileHelper.updateFolder('coverage', coverageSaved.folder, coverag.folder);
     return coverageSaved;
   }
 
@@ -68,7 +68,7 @@ export class CoverageService {
     );
     if (!traveler) {
       const deletedCoverage = await this.coverageRepository.remove(coverage);
-      FileHelper.deletFolder('coverage', deletedCoverage.folder);
+      //FileHelper.deletFolder('coverage', deletedCoverage.folder);
       return deletedCoverage;
     }
     coverage.isActive = false;

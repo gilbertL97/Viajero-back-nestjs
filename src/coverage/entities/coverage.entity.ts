@@ -17,6 +17,8 @@ export class CoverageEntity extends BaseEntity {
   name: string;
   @Column({ type: 'varchar', length: 20, nullable: false, unique: true })
   folder: string;
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  benefitTable: string;
   @Column({ type: 'numeric', nullable: false })
   price: number;
   @Column({ type: 'boolean', nullable: false })

@@ -5,12 +5,12 @@ import { CountryService } from 'src/country/country.service';
 import { CoverageService } from 'src/coverage/coverage.service';
 import { UserService } from 'src/user/user.service';
 import { TravelerRepository } from '../traveler.repository';
-import * as PDFDocument from 'pdfkit';
+import { cmyk, PDFDocument, rgb } from 'pdf-lib';
 
 import { TravelerEntity } from '../entity/traveler.entity';
 
 @Injectable()
-export class TravelerDocService {
+export class TravelerDocServiceTest {
   constructor(
     @InjectRepository(TravelerRepository)
     private readonly travelerRepository: TravelerRepository,
@@ -20,8 +20,8 @@ export class TravelerDocService {
     private readonly userService: UserService,
   ) {}
 
-  async createTestPDf(traveler: TravelerEntity): Promise<Buffer> {
-    const pantoneColor = '#1b1462';
+  async createTestPDf(traveler: TravelerEntity): Promise<Uint8Array> {
+    const pantoneColor = cmyk(0.72, 0.8, 0.0, 0.62);
     const blackColor = 'black';
     const font = 'Helvetica';
     const fontBold = 'Helvetica-Bold';
@@ -56,7 +56,12 @@ export class TravelerDocService {
           'pax/dia x ' +
           new Number(traveler.number_high_risk_days).toString() +
           ' dias';
-    const pdfBuffer: Buffer = await new Promise((resolve) => {
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage();
+    page.drawText('SEGURO DE ASISTENCIA AL VIAJERO (VIAJES IN)', {
+      color: pantoneColor,
+    });
+    /* const pdfBuffer: Buffer = await new Promise((resolve) => {
       const doc = new PDFDocument({
         size: 'LETTER',
         bufferPages: true,
@@ -162,8 +167,8 @@ export class TravelerDocService {
         resolve(data);
       });
       doc.end();
-    });
-    return pdfBuffer;
+    });*/
+    return await pdfDoc.save();
   }
   //async downloadTest(traveler:TravelerEntity,res:any): Observable<Object> {}
 }

@@ -119,6 +119,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       nationality,
       origin_country,
       coverage,
+      state,
     } = filter;
     const query = this.createQueryBuilder('viajeros');
     if (name) query.where('viajeros.name LIKE :name', { name });
@@ -139,6 +140,12 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       query.andWhere('viajeros.end_date_policy =:end_date_policy', {
         end_date_policy,
       });
+    if (state) {
+      /*query.andWhere('viajeros.end_date_policy  =:state 'if (DateHelper.dayState(this.end_date_policy) < 0) this.state = false;
+      else this.state = true;    tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+
+      query.andWhere('viajeros.state  =:state ', { state });
+    }
 
     return query
       .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')

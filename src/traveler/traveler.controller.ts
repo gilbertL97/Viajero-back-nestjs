@@ -22,6 +22,7 @@ import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { FilterTravelerDto } from './dto/filter-traveler.dto';
 import { TravelerDocService } from './service/traveler-doc.service';
+import { TravelerDocServiceTest } from './service/traveler-doc.serviceTets';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
@@ -29,7 +30,7 @@ import { TravelerDocService } from './service/traveler-doc.service';
 export class TravelerController {
   constructor(
     private readonly travelerService: TravelerService,
-    private readonly travelerDocService: TravelerDocService,
+    private readonly travelerDocService: TravelerDocServiceTest,
   ) {}
 
   @Post()
