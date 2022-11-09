@@ -113,8 +113,10 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     const {
       name,
       passport,
-      start_date,
-      end_date_policy,
+      start_date_init,
+      start_date_end,
+      end_date_policy_init,
+      end_date_policy_end,
       contractor,
       nationality,
       origin_country,
@@ -134,11 +136,29 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     if (coverage) query.andWhere('viajeros.coverage =:coverage', { coverage });
     if (contractor)
       query.andWhere('viajeros.contractor =:contractor', { contractor });
-    if (start_date)
-      query.andWhere('viajeros.start_date =:start_date', { start_date });
-    if (end_date_policy)
-      query.andWhere('viajeros.end_date_policy =:end_date_policy', {
-        end_date_policy,
+    /*if (start_date_range) {
+      query.andWhere('viajeros.start_date >:startdate_start ', {
+        startdate_start,
+      });
+      query.andWhere('viajeros.start_date <:startdate_end', {
+        startdate_end,
+      });
+    }*/
+    if (end_date_policy_init)
+      query.andWhere('viajeros.end_date_policy >=:end_date_policy_init', {
+        end_date_policy_init,
+      });
+    if (end_date_policy_end)
+      query.andWhere('viajeros.end_date_policy <:end_date_policy_end', {
+        end_date_policy_end,
+      });
+    if (start_date_init)
+      query.andWhere('viajeros.start_date>=:start_date_init', {
+        start_date_init,
+      });
+    if (start_date_end)
+      query.andWhere('viajeros.start_date<:start_date_end', {
+        start_date_end,
       });
     if (state) {
       /*query.andWhere('viajeros.end_date_policy  =:state 'if (DateHelper.dayState(this.end_date_policy) < 0) this.state = false;
@@ -152,6 +172,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
       .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
+      .orderBy('viajeros.name')
       .getMany();
   }
 }

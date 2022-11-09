@@ -5,9 +5,13 @@ import { CountryService } from 'src/country/country.service';
 import { CoverageService } from 'src/coverage/coverage.service';
 import { UserService } from 'src/user/user.service';
 import { TravelerRepository } from '../traveler.repository';
-import * as PDFDocument from 'pdfkit';
+import * as PDF from 'pdfkit';
+import * as fs from 'fs';
 
 import { TravelerEntity } from '../entity/traveler.entity';
+import { PDFDocument } from 'pdf-lib';
+import { join } from 'path';
+import { FileHelper } from 'src/common/helper/file.helper';
 
 @Injectable()
 export class TravelerDocService {
@@ -20,7 +24,7 @@ export class TravelerDocService {
     private readonly userService: UserService,
   ) {}
 
-  async createTestPDf(traveler: TravelerEntity): Promise<Buffer> {
+  async createTestPDf(traveler: TravelerEntity): Promise<Uint8Array> {
     const pantoneColor = '#1b1462';
     const blackColor = 'black';
     const font = 'Helvetica';
@@ -53,11 +57,11 @@ export class TravelerDocService {
         ? '-'
         : 'USD' +
           new Number(traveler.coverage.high_risk).toPrecision(3) +
-          'pax/dia x ' +
+          ' pax/dia x ' +
           new Number(traveler.number_high_risk_days).toString() +
           ' dias';
     const pdfBuffer: Buffer = await new Promise((resolve) => {
-      const doc = new PDFDocument({
+      const doc = new PDF({
         size: 'LETTER',
         bufferPages: true,
       });
@@ -78,8 +82,9 @@ export class TravelerDocService {
 
       doc
         .fillColor(pantoneColor)
-        .fontSize(12)
+        .fontSize(13)
         .font(fontBold)
+        .lineGap(2)
         .text('ASEGURADOR: ', {
           continued: true,
         });
@@ -136,10 +141,8 @@ export class TravelerDocService {
       doc.fillColor(pantoneColor).font(fontBold).text('Precio del seguro: ', {
         continued: true,
       });
-      doc.fillColor(blackColor).font(font).text(templatePrice, {
-        continued: true,
-      });
-      doc.fillColor(pantoneColor).font(fontBold).text('  Extraprima: ', {
+      doc.fillColor(blackColor).font(font).text(templatePrice);
+      doc.fillColor(pantoneColor).font(fontBold).text('Extraprima: ', {
         continued: true,
       });
       doc.fillColor(blackColor).font(font).text(highRisk);
@@ -163,7 +166,23 @@ export class TravelerDocService {
       });
       doc.end();
     });
-    return pdfBuffer;
+    //const doc = new PDFMerger();
+    const pdfDoc = await PDFDocument.load(pdfBuffer);
+    if (traveler.coverage.benefitTable) {
+      const coveragePath = join(
+        FileHelper.uploadsPath,
+        'coverage',
+        traveler.coverage.benefitTable + '.pdf',
+      );
+      const pdfB = await PDFDocument.load(fs.readFileSync(coveragePath));
+      //const table = await pdfB.copyPages(pdfB, [0]);
+      //console.log(pdfB.getPages);
+      const pages = await pdfDoc.copyPages(pdfB, [0]);
+      const [table] = pages;
+      pdfDoc.addPage(table);
+    }
+    return pdfDoc.save();
   }
+
   //async downloadTest(traveler:TravelerEntity,res:any): Observable<Object> {}
 }

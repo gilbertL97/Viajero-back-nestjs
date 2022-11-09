@@ -6,6 +6,7 @@ import {
   IsDateString,
   IsNumberString,
   IsBooleanString,
+  IsArray,
 } from 'class-validator';
 
 export class FilterTravelerDto {
@@ -23,11 +24,19 @@ export class FilterTravelerDto {
 
   @IsOptional()
   @IsDateString()
-  start_date: Date;
+  start_date_init: Date;
 
   @IsOptional()
   @IsDateString()
-  end_date_policy: Date;
+  start_date_end: Date;
+
+  @IsOptional()
+  @IsDateString()
+  end_date_policy_init: Date;
+
+  @IsOptional()
+  @IsDateString()
+  end_date_policy_end: Date;
 
   @IsOptional()
   @IsNumberString()

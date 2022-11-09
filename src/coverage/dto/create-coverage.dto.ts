@@ -23,7 +23,7 @@ export class CreateCoverageDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
-  @MaxLength(20)
+  @MaxLength(50)
   folder: string;
 
   @IsBoolean()
@@ -41,6 +41,6 @@ export class CreateCoverageDto {
   @IsString()
   @IsOptional()
   @MinLength(4)
-  @MaxLength(20)
+  @MaxLength(50)
   benefitTable: string;
 }
