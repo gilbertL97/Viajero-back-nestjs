@@ -6,7 +6,6 @@ import {
   IsDateString,
   IsNumberString,
   IsBooleanString,
-  IsArray,
 } from 'class-validator';
 
 export class FilterTravelerDto {

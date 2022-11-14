@@ -7,6 +7,7 @@ import {
   IsBoolean,
   IsNumberString,
   IsOptional,
+  IsBooleanString,
 } from 'class-validator';
 
 export class CreateCoverageDto {
@@ -20,13 +21,7 @@ export class CreateCoverageDto {
   @IsNotEmpty()
   price: number;
 
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(4)
-  @MaxLength(50)
-  folder: string;
-
-  @IsBoolean()
+  @IsBooleanString()
   @IsNotEmpty()
   daily: boolean;
 

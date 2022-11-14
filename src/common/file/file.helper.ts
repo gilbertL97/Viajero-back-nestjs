@@ -1,7 +1,7 @@
 import { join } from 'path';
 import * as fs from 'fs';
 export class FileHelper {
-  static uploadsPath = join(__dirname, '..', '..', 'uploads');
+  static uploadsPath = join(__dirname, '..', '..', '..', 'uploads');
   public static async createFolder(
     entities: string,
     name: string,

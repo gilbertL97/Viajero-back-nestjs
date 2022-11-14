@@ -4,8 +4,10 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { compare } from 'bcryptjs';
 import { ContractorService } from 'src/contractor/contractor.service';
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
@@ -32,6 +34,15 @@ export class UserService {
     const user: UserEntity = await this.userRepository.findOne({
       where: { id: id },
       relations: ['contractors'],
+    });
+    if (!user)
+      throw new ForbiddenException(`The users whit id:"${id}" does not exist`);
+    return user;
+  }
+  async getUserWithPass(id: number): Promise<UserEntity> {
+    const user: UserEntity = await this.userRepository.findOne({
+      where: { id: id },
+      select: ['id', 'name', 'password', 'email', 'role'],
     });
     if (!user)
       throw new ForbiddenException(`The users whit id:"${id}" does not exist`);
@@ -81,10 +92,17 @@ export class UserService {
     id: number,
     updateProfile: EditProfileUserDto,
   ): Promise<UserEntity> {
-    const user = await this.getUser(id);
-    const editedUser = Object.assign(user, updateProfile);
-    console.log(id); //aqui
-    return await this.userRepository.save(editedUser);
+    console.log(updateProfile);
+    const user = await this.getUserWithPass(id);
+    if (!(await compare(updateProfile.passwordBefore, user.password)))
+      throw new UnauthorizedException('The old password is wrong');
+    if (updateProfile.passwordNew1 !== updateProfile.passwordNew2)
+      throw new UnauthorizedException('The passwords do not match');
+    user.password = updateProfile.passwordNew1;
+    console.log(user); //aqui
+    const profiel = await this.userRepository.save(user);
+    delete profiel.password;
+    return profiel;
   }
 
   async deleteUser(id: number): Promise<UserEntity> {

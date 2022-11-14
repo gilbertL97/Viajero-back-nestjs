@@ -13,9 +13,9 @@ import {
 export class CoverageEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
-  @Column({ type: 'varchar', length: 50, nullable: false })
+  @Column({ type: 'varchar', length: 50, nullable: false, unique: true })
   name: string;
-  @Column({ type: 'varchar', length: 50, nullable: true })
+  @Column({ type: 'varchar', length: 200, nullable: true, unique: true })
   benefitTable: string;
   @Column({ type: 'numeric', nullable: false })
   price: number;

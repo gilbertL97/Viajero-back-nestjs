@@ -45,7 +45,7 @@ export class UserController {
     return data;
   }
 
-  @Patch('/update_profile')
+  @Patch('/change_password')
   updateProfile(
     @GetUser() user: UserEntity,
     @Body() editProfile: EditProfileUserDto,

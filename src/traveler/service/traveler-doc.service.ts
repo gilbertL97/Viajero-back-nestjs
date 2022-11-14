@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { PDFDocument } from 'pdf-lib';
 import { join } from 'path';
-import { FileHelper } from 'src/common/helper/file.helper';
+import { FileHelper } from 'src/common/file/file.helper';
 
 @Injectable()
 export class TravelerDocService {
@@ -171,9 +171,10 @@ export class TravelerDocService {
     if (traveler.coverage.benefitTable) {
       const coveragePath = join(
         FileHelper.uploadsPath,
-        'coverage',
-        traveler.coverage.benefitTable + '.pdf',
+        'coverages',
+        traveler.coverage.benefitTable,
       );
+      console.log('esta es la ruta dichosa', coveragePath);
       const pdfB = await PDFDocument.load(fs.readFileSync(coveragePath));
       //const table = await pdfB.copyPages(pdfB, [0]);
       //console.log(pdfB.getPages);

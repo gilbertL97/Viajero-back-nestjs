@@ -22,7 +22,7 @@ async function bootstrap() {
   app.setGlobalPrefix('viajero');
   const config = app.get(ConfigService);
   //setDefaultUser(config);
-  console.log('entro aqui');
+  // console.log('entro aqui');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

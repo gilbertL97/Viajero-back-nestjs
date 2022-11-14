@@ -7,10 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { coverageStorage } from 'src/common/file/storage';
 import { UserRole } from 'src/user/user.role';
 import { CoverageService } from './coverage.service';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
@@ -24,7 +28,13 @@ export class CoverageController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
-  async create(@Body() createCoverageDto: CreateCoverageDto) {
+  @UseInterceptors(FileInterceptor('benefitTable', coverageStorage))
+  async create(
+    @UploadedFile() files: Express.Multer.File,
+    @Body() createCoverageDto: CreateCoverageDto,
+  ) {
+    createCoverageDto.benefitTable = files.filename;
+    console.log('file', createCoverageDto.benefitTable);
     return this.coverageService.createCoverage(createCoverageDto);
   }
   @UseGuards(RolesGuard)
