@@ -7,7 +7,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-//import { FileHelper } from 'src/common/helper/file.helper';
+import { join } from 'path';
+import { FileHelper } from 'src/common/file/file.helper';
+
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
@@ -25,14 +27,24 @@ export class CoverageService {
 
   async createCoverage(
     createCoverageDto: CreateCoverageDto,
+    file: Express.Multer.File,
   ): Promise<CoverageEntity> {
     const coverage = this.coverageRepository.create(createCoverageDto);
+    if (file) coverage.benefitTable = file.filename;
     const newCoverage = await this.coverageRepository
       .save(coverage)
       .catch(() => {
-        throw new BadRequestException('duplicate name ');
+        if (coverage.benefitTable)
+          FileHelper.deletFile(
+            join(FileHelper.uploadsPath, coverage.benefitTable),
+          );
+        throw new BadRequestException('duplicate Name or File');
       });
-    //FileHelper.createFolder('coverage', newCoverage.folder);
+    if (newCoverage.benefitTable)
+      FileHelper.moveFile(
+        join(FileHelper.uploadsPath, 'coverages', newCoverage.benefitTable),
+        join(FileHelper.uploadsPath, newCoverage.benefitTable),
+      );
     return newCoverage;
   }
 
@@ -53,11 +65,29 @@ export class CoverageService {
   async updateCoverage(
     id: number,
     updateCoverageDto: UpdateCoverageDto,
+    file: Express.Multer.File,
   ): Promise<CoverageEntity> {
     const coverag = await this.getCoverage(id);
+    const fileBefore = coverag.benefitTable;
     const updatedCoverage = Object.assign(coverag, updateCoverageDto);
-    const coverageSaved = await this.coverageRepository.save(updatedCoverage);
-    //FileHelper.updateFolder('coverage', coverageSaved.folder, coverag.folder);
+    if (file) updatedCoverage.benefitTable = file.filename;
+    const coverageSaved = await this.coverageRepository
+      .save(updatedCoverage)
+      .catch(() => {
+        if (file)
+          FileHelper.deletFile(join(FileHelper.uploadsPath, file.filename));
+        throw new BadRequestException('duplicate Name or File');
+      });
+    if (file) {
+      if (fileBefore)
+        FileHelper.deletFile(
+          join(FileHelper.uploadsPath, 'coverages', fileBefore),
+        );
+      FileHelper.moveFile(
+        join(FileHelper.uploadsPath, 'coverages', file.filename),
+        join(FileHelper.uploadsPath, file.filename),
+      );
+    }
     return coverageSaved;
   }
 
@@ -68,7 +98,14 @@ export class CoverageService {
     );
     if (!traveler) {
       const deletedCoverage = await this.coverageRepository.remove(coverage);
-      //FileHelper.deletFolder('coverage', deletedCoverage.folder);
+      if (deletedCoverage.benefitTable)
+        FileHelper.deletFile(
+          join(
+            FileHelper.uploadsPath,
+            'coverages',
+            deletedCoverage.benefitTable,
+          ),
+        );
       return deletedCoverage;
     }
     coverage.isActive = false;

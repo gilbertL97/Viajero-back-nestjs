@@ -28,14 +28,12 @@ export class CoverageController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
-  @UseInterceptors(FileInterceptor('benefitTable', coverageStorage))
+  @UseInterceptors(FileInterceptor('tablePdf', coverageStorage))
   async create(
     @UploadedFile() files: Express.Multer.File,
     @Body() createCoverageDto: CreateCoverageDto,
   ) {
-    createCoverageDto.benefitTable = files.filename;
-    console.log('file', createCoverageDto.benefitTable);
-    return this.coverageService.createCoverage(createCoverageDto);
+    return this.coverageService.createCoverage(createCoverageDto, files);
   }
   @UseGuards(RolesGuard)
   @Roles(

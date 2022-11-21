@@ -30,12 +30,6 @@ export class CreateCoverageDto {
   high_risk: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumberString()
   number_of_days: number;
-
-  @IsString()
-  @IsOptional()
-  @MinLength(4)
-  @MaxLength(50)
-  benefitTable: string;
 }
