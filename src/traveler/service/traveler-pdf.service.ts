@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ContractorService } from 'src/contractor/contractor.service';
-import { CountryService } from 'src/country/country.service';
-import { CoverageService } from 'src/coverage/coverage.service';
-import { UserService } from 'src/user/user.service';
 import { TravelerRepository } from '../traveler.repository';
 import * as PDF from 'pdfkit';
 import * as fs from 'fs';
@@ -14,14 +10,10 @@ import { join } from 'path';
 import { FileHelper } from 'src/common/file/file.helper';
 
 @Injectable()
-export class TravelerDocService {
+export class TravelerPdfService {
   constructor(
     @InjectRepository(TravelerRepository)
     private readonly travelerRepository: TravelerRepository,
-    private readonly contratctoService: ContractorService,
-    private readonly countryService: CountryService,
-    private readonly coverageService: CoverageService,
-    private readonly userService: UserService,
   ) {}
 
   async createTestPDf(traveler: TravelerEntity): Promise<Uint8Array> {
@@ -39,7 +31,7 @@ export class TravelerDocService {
       ? new Number(traveler.number_days).toString() + ' dias'
       : days.toString() + ' dias';
     const price =
-      new Number(traveler.coverage.price).toPrecision(3) +
+      new Number(traveler.coverage.price).toPrecision(6) +
       ' x ' +
       days.toString();
     const templatePrice = traveler.coverage.daily
@@ -178,9 +170,11 @@ export class TravelerDocService {
       const pdfB = await PDFDocument.load(fs.readFileSync(coveragePath));
       //const table = await pdfB.copyPages(pdfB, [0]);
       //console.log(pdfB.getPages);
-      const pages = await pdfDoc.copyPages(pdfB, [0]);
-      const [table] = pages;
-      pdfDoc.addPage(table);
+      const pagesCopy = pdfB.getPageIndices();
+      const pages = await pdfDoc.copyPages(pdfB, pagesCopy);
+      pages.map((page) => {
+        pdfDoc.addPage(page);
+      });
     }
     return pdfDoc.save();
   }

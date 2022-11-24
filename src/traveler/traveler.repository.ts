@@ -94,7 +94,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         updateTraveler.amount_days_high_risk,
       );
     }
-    console.log(updateTraveler);
+    console.log('este es el update ' + updateTraveler);
     return await this.save(updateTraveler);
   }
   async finOneTravelerWithCoverage(

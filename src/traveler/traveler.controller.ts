@@ -9,6 +9,8 @@ import {
   UseGuards,
   Query,
   Res,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { TravelerService } from './service/traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
@@ -21,7 +23,10 @@ import { UserRole } from 'src/user/user.role';
 import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { FilterTravelerDto } from './dto/filter-traveler.dto';
-import { TravelerDocService } from './service/traveler-doc.service';
+import { TravelerPdfService } from './service/traveler-pdf.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { coverageStorage, TravelersStorage } from 'src/common/file/storage';
+import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
@@ -29,7 +34,8 @@ import { TravelerDocService } from './service/traveler-doc.service';
 export class TravelerController {
   constructor(
     private readonly travelerService: TravelerService,
-    private readonly travelerDocService: TravelerDocService,
+    private readonly travelerDocService: TravelerPdfService,
+    private readonly travelerUploadService: TravelerUploadFilesService,
   ) {}
 
   @Post()
@@ -39,6 +45,14 @@ export class TravelerController {
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.create(createTravelerDto);
     return data;
+  }
+  @Post()
+  @UseInterceptors(FileInterceptor('tablePdf', TravelersStorage))
+  async uploadTravelers(
+    //@GetUser() user: UserEntity,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<void> {
+    await this.travelerUploadService.processFile(file);
   }
 
   @Get()

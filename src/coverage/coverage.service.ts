@@ -71,6 +71,7 @@ export class CoverageService {
     const fileBefore = coverag.benefitTable;
     const updatedCoverage = Object.assign(coverag, updateCoverageDto);
     if (file) updatedCoverage.benefitTable = file.filename;
+    console.log(updatedCoverage);
     const coverageSaved = await this.coverageRepository
       .save(updatedCoverage)
       .catch(() => {
@@ -88,6 +89,7 @@ export class CoverageService {
         join(FileHelper.uploadsPath, file.filename),
       );
     }
+    console.log(coverageSaved);
     return coverageSaved;
   }
 
