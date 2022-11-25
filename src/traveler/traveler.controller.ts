@@ -51,8 +51,10 @@ export class TravelerController {
   async uploadTravelers(
     //@GetUser() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<void> {
-    await this.travelerUploadService.processFile(file);
+    @Param('id') id: number,
+  ): Promise<string> {
+    await this.travelerUploadService.processFile(file, id);
+    return 'ok';
   }
 
   @Get()
@@ -68,12 +70,6 @@ export class TravelerController {
     const data = await this.travelerService.advancedSearch(travelerFilter);
     return data;
   }
-  /* @Get('/test')
-  async TestFolder(@Query() id: string, @Res() res): Promise<void> {
-    // Observable<Object> {
-    const traveler = await this.travelerService.findOne(id);
-    this.travelerDocService.downloadTest(traveler,res);
-  }*/
   @Get('/cert')
   async generateCertPdf(@Query('id') id: string, @Res() res): Promise<void> {
     const traveler = await this.travelerService.findOne(id);
