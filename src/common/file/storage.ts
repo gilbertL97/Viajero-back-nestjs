@@ -19,7 +19,12 @@ const uploadFilterPdf = (req, file, cb) => {
   }
 };
 const uploadFilterCsvExcel = (req, file, cb) => {
-  if (file.mimetype.match(/\/(xls)$/) || file.mimetype.match(/\/(csv)$/)) {
+  if (
+    file.mimetype.match(
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ) ||
+    file.mimetype.match(/\/(csv)$/)
+  ) {
     // Allow storage of file
     cb(null, true);
   } else {
@@ -31,6 +36,7 @@ const uploadFilterCsvExcel = (req, file, cb) => {
       ),
       false,
     );
+    console.log(file);
   }
 };
 
@@ -51,7 +57,7 @@ export const coverageStorage = {
 
 export const TravelersStorage = {
   storage: diskStorage({
-    destination: './uploads/contractors',
+    destination: './uploads/contractors/unprocesed',
     filename: (req, file, cb) => {
       const filename: string = path
         .parse(file.originalname)

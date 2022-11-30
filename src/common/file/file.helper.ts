@@ -40,7 +40,6 @@ export class FileHelper {
     });
   }
   public static async deletFile(path: string): Promise<void> {
-    console.log(path);
     fs.rmSync(path);
   }
 }
