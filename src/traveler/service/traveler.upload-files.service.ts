@@ -31,14 +31,15 @@ export class TravelerUploadFilesService {
     const worksheet = excel.getWorksheet(1);
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
     let i = 0;
+    const book=[];
     worksheet.eachRow((r) => {
-
       const rows = r.values;
+      book.push(rows);
       //rows.shift;// elimino la primera celda q siempre sale en empty
       // (rows as any[]).forEach((value) => {
       //   console.log(value, i);
       // }); // tuve que castearlo a any xq hay un error issue en ts q dice q hayq castearlo sino da error
-      console.log('Titular ' + rows[1]);
+      /*console.log('Titular ' + rows[1]);
       console.log();
       console.log('Sexo ' + rows[2]);
       console.log('Fecha de Nacimiento ' + rows[3]);
@@ -55,10 +56,11 @@ export class TravelerUploadFilesService {
       console.log('CANTIDAD DIAS' + rows[14]);
       console.log('IMPORTE DIAS ALTO RIESGO ' + rows[15]);
       console.log('IMPORTE DIAS CUBIERTOS ' + rows[16]);
-      console.log('IMPORTE TOTAL ' + rows[17]);
+      console.log('IMPORTE TOTAL ' + rows[17]);*/
 
       i++;
     });
+    console.log(book);
     await FileHelper.deletFile(file.path);
   }
   validateEmpty(value: Excel.CellValue, field: string): void | string {
