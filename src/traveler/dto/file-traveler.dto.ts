@@ -63,9 +63,15 @@ export class FileTravelerDto {
   @MaxLength(3)
   nationality: string;
 
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  flight: string;
+
+
   @IsNumber()
   number_of_days: number;
- 
+
   @IsNumber()
   number_of_days_import: number;
 
@@ -74,4 +80,7 @@ export class FileTravelerDto {
 
   @IsNumber()
   total_days_import: number;
+
+  @IsString()
+  coverage: number;
 }

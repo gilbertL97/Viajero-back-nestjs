@@ -11,6 +11,8 @@ import { TravelerEntity } from '../entity/traveler.entity';
 import { numberToString } from 'pdf-lib';
 import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
+import { FileTravelerDto } from '../dto/file-traveler.dto';
+import { ValidationError, Validator } from 'class-validator';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -31,10 +33,10 @@ export class TravelerUploadFilesService {
     const worksheet = excel.getWorksheet(1);
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
     let i = 0;
-    const book=[];
-    worksheet.eachRow((r) => {
+    const travelers: FileTravelerDto[] = [];
+    worksheet.eachRow(async (r) => {
+      const traveler = new FileTravelerDto();
       const rows = r.values;
-      book.push(rows);
       //rows.shift;// elimino la primera celda q siempre sale en empty
       // (rows as any[]).forEach((value) => {
       //   console.log(value, i);
@@ -57,11 +59,45 @@ export class TravelerUploadFilesService {
       console.log('IMPORTE DIAS ALTO RIESGO ' + rows[15]);
       console.log('IMPORTE DIAS CUBIERTOS ' + rows[16]);
       console.log('IMPORTE TOTAL ' + rows[17]);*/
-
-      i++;
+      traveler.name = rows[1];
+      traveler.sex = rows[2];
+      traveler.born_date = rows[3];
+      traveler.email = rows[4];
+      traveler.passport = rows[5];
+      traveler.origin_country = rows[6];
+      traveler.nationality = rows[7];
+      traveler.flight = rows[8];
+      traveler.coverage = rows[9];
+      traveler.sale_date = rows[10];
+      traveler.start_date = rows[11];
+      traveler.end_date_policy = rows[12];
+      traveler.number_high_risk_days = rows[13];
+      traveler.number_of_days = rows[14];
+      traveler.days_high_risk_import = rows[15];
+      traveler.number_of_days_import = rows[16];
+      traveler.total_days_import = rows[17];
+      travelers.push(traveler);
     });
-    console.log(book);
+    this.validateTravelers(travelers);
+    i++;
     await FileHelper.deletFile(file.path);
+  }
+
+  async validateTravelers(travelers: FileTravelerDto[]) {
+    const errors = [];
+    const validator = new Validator();
+    let i = 0;
+    travelers.map(async (traveler) => {
+      await validator.validate(traveler).then((response) => {
+        if (response) console.log(this.handleErors(response));
+      }),
+        i++;
+    });
+    console.log(errors);
+  }
+  handleErors(errors: ValidationError[]) {
+    errors.map((error) => {
+    });
   }
   validateEmpty(value: Excel.CellValue, field: string): void | string {
     if (!value) return 'El campo ' + field + 'es Obligatorio';
