@@ -33,6 +33,11 @@ export class CreateTravelerDto {
   @MaxLength(50)
   passport: string;
 
+  @IsOptional()
+  @IsString()
+  @MinLength(3)
+  flight: string;
+
   //@Type(() => string)
   @IsOptional()
   @IsDateString()

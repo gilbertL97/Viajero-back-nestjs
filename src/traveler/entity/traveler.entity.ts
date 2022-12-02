@@ -28,8 +28,11 @@ export class TravelerEntity extends BaseEntity {
   born_date: Date;
   @Column({ type: 'varchar', length: 50, nullable: true })
   email: string;
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true, length: 50 })
   passport: string;
+
+  @Column({ type: 'varchar', nullable: true, length: 50 })
+  flight: string;
 
   @Column({ type: 'date', nullable: true })
   sale_date: Date;
@@ -63,8 +66,6 @@ export class TravelerEntity extends BaseEntity {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
-  @DeleteDateColumn({ name: 'delete_at', type: 'timestamp' })
-  deleteAt: Date;
 
   @ManyToOne(() => ContratorEntity, (contractor) => contractor.travelers, {
     eager: true,
