@@ -10,6 +10,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsValidDateFile } from './decorator/customDateExcel.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 
@@ -48,6 +49,7 @@ export class FileTravelerDto {
   //@Type(() => string)
   // @IsDateString()
   @IsValidDateFile()
+  @IsDateBefore('end_date_policy')
   start_date: Date;
 
   // @Type(() => string)

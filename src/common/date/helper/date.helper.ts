@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 export class DateHelper {
   public static timeDifference(initialDate: Date, finalDate: Date) {

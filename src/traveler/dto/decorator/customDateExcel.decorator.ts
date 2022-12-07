@@ -21,7 +21,7 @@ export function IsValidDateFile(validationOptions?: ValidationOptions) {
 @ValidatorConstraint({ name: 'IsValidDateFile' })
 export class ValidateDates implements ValidatorConstraintInterface {
   validate(value: Date) {
-    return dayjs(value, 'DD-MM-YYYY', true).isValid();
+    return dayjs(value, 'DD/MM/YYYY', true).isValid();
   }
 
   defaultMessage() {
