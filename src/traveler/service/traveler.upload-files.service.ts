@@ -84,21 +84,31 @@ export class TravelerUploadFilesService {
   }
 
   async validateTravelers(travelers: FileTravelerDto[]) {
-    const errors = [];
     const validator = new Validator();
-    let i = 0;
-    travelers.map(async (traveler) => {
-      await validator.validate(traveler).then((response) => {
-        if (response) console.log(this.handleErors(response));
+    const i = 0;
+    const errors = await Promise.all(
+      travelers.map((d) =>
+        validator.validate(d, { validationError: { target: false } }),
+      ),
+    );
+    console.log(errors.map((e) => e.map((e) => e.constraints)));
+  }
+  /*travelers.map(async (traveler) => {
+      validator.validate(traveler).then((response) => {
+        if (response) this.handleErors(response);
       }),
         i++;
     });
     console.log(errors);
-  }
-  handleErors(errors: ValidationError[]) {
-    errors.map((error) => {
+  }*/
+  /*handleErors(errors: ValidationError[]):any[] {
+    const error = [];
+    Promise.all(errors).then((values) => {
+      error.push(values);
+      console.log(values.constraints);
     });
-  }
+    return error;
+  }*/
   validateEmpty(value: Excel.CellValue, field: string): void | string {
     if (!value) return 'El campo ' + field + 'es Obligatorio';
   }

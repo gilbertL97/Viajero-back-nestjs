@@ -5,9 +5,12 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
+  Min,
   MinLength,
 } from 'class-validator';
+import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 
 export class FileTravelerDto {
   @IsString()
@@ -22,7 +25,7 @@ export class FileTravelerDto {
   sex: string;
 
   @IsOptional()
-  @IsDateString()
+ // @IsDateString()
   born_date: Date;
 
   @IsOptional()
@@ -36,31 +39,46 @@ export class FileTravelerDto {
 
   //@Type(() => string)
   @IsOptional()
-  @IsDateString()
+  //@IsDateString()
   sale_date: Date;
 
   //@Type(() => string)
-  @IsDateString()
+ // @IsDateString()
   start_date: Date;
 
   // @Type(() => string)
-  @IsDateString()
+  //@IsDateString()
   end_date_policy: Date;
 
   @IsOptional()
-  @IsNumber()
+  @IsNumber(undefined, {
+    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+  })
+  @Min(0)
   number_high_risk_days: number;
 
   @IsOptional()
   @IsString()
-  @MinLength(3)
-  @MaxLength(3)
+  @MinLength(2, {
+    message:
+      'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
+  })
+  @MaxLength(30, {
+    message:
+      'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+  })
   origin_country: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(3)
-  @MaxLength(3)
+  @MinLength(2, {
+    message:
+      'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
+  })
+  @MaxLength(30, {
+    message:
+      'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+  })
   nationality: string;
 
   @IsOptional()
@@ -68,19 +86,39 @@ export class FileTravelerDto {
   @MinLength(3)
   flight: string;
 
-
-  @IsNumber()
+  @IsNumber(undefined, {
+    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+  })
+  @Min(1)
+  @CalculateNumberOfDays('start_date', 'end_date_policy')
   number_of_days: number;
 
-  @IsNumber()
+  @IsNumber(undefined, {
+    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+  })
+  @Min(0)
   number_of_days_import: number;
 
-  @IsNumber()
+  @IsNumber(undefined, {
+    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+  })
+  @Min(0)
   days_high_risk_import: number;
 
-  @IsNumber()
+  @IsNumber(undefined, {
+    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+  })
+  @Min(0)
   total_days_import: number;
 
   @IsString()
-  coverage: number;
+  @MinLength(2, {
+    message:
+      'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
+  })
+  @MaxLength(30, {
+    message:
+      'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+  })
+  coverage: string;
 }

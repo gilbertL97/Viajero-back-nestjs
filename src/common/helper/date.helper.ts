@@ -7,12 +7,11 @@ export class DateHelper {
 
   public static daysDifference(initialDate: Date, finalDate: Date) {
     const test = Math.ceil(
-      this.timeDifference(initialDate, finalDate) / (1000 * 60 * 60 * 24), // milisegundos ,segundos, minutos , horas
-    );
-    console.log(
-      test,
-      initialDate,
-      finalDate + 'esto es una prueba haber si entra',
+      this.timeDifference(initialDate, finalDate) /
+        (1000 * // milisegundos
+          60 * //,segundos
+          60 * //, minutos
+          24), // , horas
     );
     return test;
   }
