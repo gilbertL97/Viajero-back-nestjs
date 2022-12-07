@@ -10,9 +10,11 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { IsDateAfter } from './decorator/customDateAfter.decorator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsValidDateFile } from './decorator/customDateExcel.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
+import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
 
 export class FileTravelerDto {
   @IsString()
@@ -55,14 +57,8 @@ export class FileTravelerDto {
   // @Type(() => string)
   //@IsDateString()
   @IsValidDateFile()
+  @IsDateAfter('start_date')
   end_date_policy: Date;
-
-  @IsOptional()
-  @IsNumber(undefined, {
-    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
-  })
-  @Min(0)
-  number_high_risk_days: number;
 
   @IsOptional()
   @IsString()
@@ -100,6 +96,14 @@ export class FileTravelerDto {
   @Min(1)
   @CalculateNumberOfDays('start_date', 'end_date_policy')
   number_of_days: number;
+
+  @IsOptional()
+  @IsNumber(undefined, {
+    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+  })
+  @Min(0)
+  @IsNumberLessThan('number_of_days')
+  number_high_risk_days: number;
 
   @IsNumber(undefined, {
     message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
