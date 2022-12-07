@@ -1,4 +1,4 @@
-import { DateHelper } from 'src/common/helper/date.helper';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 
 export class CalculateDaysTraveler {

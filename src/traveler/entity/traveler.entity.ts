@@ -14,7 +14,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
-import { DateHelper } from 'src/common/helper/date.helper';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 
 @Entity('viajeros')
 export class TravelerEntity extends BaseEntity {

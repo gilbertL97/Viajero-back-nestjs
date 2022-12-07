@@ -10,6 +10,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { IsValidDateFile } from './decorator/customDateExcel.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 
 export class FileTravelerDto {
@@ -25,7 +26,8 @@ export class FileTravelerDto {
   sex: string;
 
   @IsOptional()
- // @IsDateString()
+  // @IsDateString()
+  @IsValidDateFile()
   born_date: Date;
 
   @IsOptional()
@@ -39,15 +41,18 @@ export class FileTravelerDto {
 
   //@Type(() => string)
   @IsOptional()
+  @IsValidDateFile()
   //@IsDateString()
   sale_date: Date;
 
   //@Type(() => string)
- // @IsDateString()
+  // @IsDateString()
+  @IsValidDateFile()
   start_date: Date;
 
   // @Type(() => string)
   //@IsDateString()
+  @IsValidDateFile()
   end_date_policy: Date;
 
   @IsOptional()
@@ -84,6 +89,7 @@ export class FileTravelerDto {
   @IsOptional()
   @IsString()
   @MinLength(3)
+  @MaxLength(30)
   flight: string;
 
   @IsNumber(undefined, {

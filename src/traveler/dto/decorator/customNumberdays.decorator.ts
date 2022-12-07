@@ -6,6 +6,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import * as dayjs from 'dayjs';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 
 export function CalculateNumberOfDays(
   date_start: string,
@@ -29,14 +30,10 @@ export class CompareWithDates implements ValidatorConstraintInterface {
     const [date_start, date_end] = args.constraints;
     const dateEnd = (args.object as Date)[date_end];
     const dateInit = (args.object as Date)[date_start];
-    const diff = CompareWithDates.daysDifference(dateInit, dateEnd);
+    const diff = DateHelper.daysDifferenceWithDaysjs(dateInit, dateEnd) + 1; //Calculo de los dias mas uno ;
     return value == diff;
   }
-  public static daysDifference(initialDate: Date, finalDate: Date) {
-    const start = dayjs(initialDate, 'DD-MM-YYYY');
-    const end = dayjs(finalDate, 'DD-MM-YYYY');
-    return end.diff(start, 'day') + 1; //el numero de dias es la diferencia mas un dia
-  }
+
   defaultMessage() {
     return 'El calculo de los numeros de dias no es correcto';
   }

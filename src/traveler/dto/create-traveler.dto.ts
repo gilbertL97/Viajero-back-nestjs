@@ -1,6 +1,7 @@
 import {
   IsDateString,
   IsEmail,
+  IsISO31661Alpha3,
   IsNumber,
   IsOptional,
   IsString,
@@ -59,15 +60,11 @@ export class CreateTravelerDto {
   contractor: number;
 
   @IsOptional()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(3)
+  @IsISO31661Alpha3()
   origin_country: string;
 
   @IsOptional()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(3)
+  @IsISO31661Alpha3()
   nationality: string;
 
   @IsNumber()
