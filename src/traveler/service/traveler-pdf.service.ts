@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TravelerRepository } from '../traveler.repository';
+import { TravelerRepository } from '../repository/traveler.repository';
 import * as PDF from 'pdfkit';
 import * as fs from 'fs';
 

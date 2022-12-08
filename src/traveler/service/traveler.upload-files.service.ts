@@ -5,7 +5,7 @@ import { FileHelper } from 'src/common/file/file.helper';
 import { ContractorService } from 'src/contractor/contractor.service';
 import { CountryService } from 'src/country/country.service';
 import { CoverageService } from 'src/coverage/coverage.service';
-import { TravelerRepository } from '../traveler.repository';
+import { TravelerRepository } from '../repository/traveler.repository';
 import Excel = require('exceljs');
 import { TravelerEntity } from '../entity/traveler.entity';
 import { numberToString } from 'pdf-lib';
