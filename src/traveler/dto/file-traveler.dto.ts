@@ -40,10 +40,11 @@ export class FileTravelerDto {
   email: string;
 
   @Length(6, 50, {
-    message: '$value 1 y $value2 ',
+    message:
+      'El campo Pasaporte no cumple con el rango de caracteres entre 6 y 50',
   })
   @IsNotEmpty({
-    message: 'Pasaporte es un campo obligatorio',
+    message: 'el campo Pasaporte es un campo obligatorio',
   })
   passport: string;
 

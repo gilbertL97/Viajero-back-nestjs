@@ -13,6 +13,7 @@ import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileTravelerDto } from '../dto/file-traveler.dto';
 import { ValidationError, Validator } from 'class-validator';
+import { FileErrorsDto } from '../dto/fileErrors.dto';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -91,13 +92,16 @@ export class TravelerUploadFilesService {
         validator.validate(d, { validationError: { target: false } }),
       ),
     );
+    const lisFileErrors: FileErrorsDto[] = [];
     errors.map((e) => {
+      const erroFile = new FileErrorsDto();
+      erroFile.row = i;
       e.map((e) => {
         const keys = Object.keys(e.constraints);
-        keys.map((key) => console.log(e.constraints[key], i));
+        keys.map((key) => erroFile.errors.push(e.constraints[key]));
       });
+      lisFileErrors.push(erroFile);
       i++;
-      console.log(e);
     });
   }
   /*travelers.map(async (traveler) => {
