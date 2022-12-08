@@ -85,13 +85,20 @@ export class TravelerUploadFilesService {
 
   async validateTravelers(travelers: FileTravelerDto[]) {
     const validator = new Validator();
-    const i = 0;
+    let i = 0;
     const errors = await Promise.all(
       travelers.map((d) =>
         validator.validate(d, { validationError: { target: false } }),
       ),
     );
-    console.log(errors.map((e) => e.map((e) => e.constraints)));
+    errors.map((e) => {
+      e.map((e) => {
+        const keys = Object.keys(e.constraints);
+        keys.map((key) => console.log(e.constraints[key], i));
+      });
+      i++;
+      console.log(e);
+    });
   }
   /*travelers.map(async (traveler) => {
       validator.validate(traveler).then((response) => {

@@ -30,7 +30,7 @@ export class ValidateLessThanNumber implements ValidatorConstraintInterface {
       majorNumber
     ];
     console.log(value, major_number);
-    return value <= major_number;
+    return value < major_number;
   }
 
   defaultMessage() {

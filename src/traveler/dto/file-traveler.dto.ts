@@ -2,9 +2,11 @@ import {
   IsDateString,
   IsEmail,
   IsNegative,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  Length,
   Max,
   MaxLength,
   Min,
@@ -37,9 +39,12 @@ export class FileTravelerDto {
   @IsEmail()
   email: string;
 
-  @IsString()
-  @MinLength(6)
-  @MaxLength(50)
+  @Length(6, 50, {
+    message: '$value 1 y $value2 ',
+  })
+  @IsNotEmpty({
+    message: 'Pasaporte es un campo obligatorio',
+  })
   passport: string;
 
   //@Type(() => string)
@@ -102,7 +107,9 @@ export class FileTravelerDto {
     message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
   })
   @Min(0)
-  @IsNumberLessThan('number_of_days')
+  @IsNumberLessThan('number_of_days', {
+    message: '$property debe ser menor la cantidad de dias: $value',
+  })
   number_high_risk_days: number;
 
   @IsNumber(undefined, {
