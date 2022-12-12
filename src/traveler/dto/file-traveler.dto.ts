@@ -1,6 +1,7 @@
 import {
   IsDateString,
   IsEmail,
+  IsEmpty,
   IsNegative,
   IsNotEmpty,
   IsNumber,
@@ -15,6 +16,7 @@ import {
 import { IsDateAfter } from './decorator/customDateAfter.decorator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsValidDateFile } from './decorator/customDateExcel.decorator';
+import { IsValidCoverage } from './decorator/customExistCoverage.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
 
@@ -57,24 +59,28 @@ export class FileTravelerDto {
   //@Type(() => string)
   // @IsDateString()
   @IsValidDateFile()
-  @IsDateBefore('end_date_policy')
+  @IsDateBefore('end_date_policy', {
+    message: 'La fecha de fin no es posterior a la fecha $value',
+  })
   start_date: Date;
 
   // @Type(() => string)
   //@IsDateString()
   @IsValidDateFile()
-  @IsDateAfter('start_date')
+  @IsDateAfter('start_date', {
+    message: 'La fecha de  inicio no es a la fecha $value',
+  })
   end_date_policy: Date;
 
   @IsOptional()
   @IsString()
   @MinLength(2, {
     message:
-      'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
+      'El Texto es muy corto . El tamaño minimo de $constraint caracteres, pero actualmente es $value',
   })
   @MaxLength(30, {
     message:
-      'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+      'El Texto es muy largo. El tamaño minimo es de $constraint caracteres, pero actualmente el valor es $value',
   })
   origin_country: string;
 
@@ -82,11 +88,11 @@ export class FileTravelerDto {
   @IsString()
   @MinLength(2, {
     message:
-      'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
+      'El Texto es muy corto . El tamaño minimo de $constraint caracteres, pero actualmente es $value',
   })
   @MaxLength(30, {
     message:
-      'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+      'El Texto es muy largo. El tamaño minimo es de $constraint caracteres, pero actualmente el valor es $value',
   })
   nationality: string;
 
@@ -139,6 +145,10 @@ export class FileTravelerDto {
   @MaxLength(30, {
     message:
       'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+  })
+  @IsValidCoverage()
+  @IsEmpty({
+    message: 'el campo Pasaporte es un campo obligatorio',
   })
   coverage: string;
 }
