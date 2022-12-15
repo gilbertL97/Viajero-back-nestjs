@@ -1,14 +1,10 @@
 import {
-  IsDateString,
   IsEmail,
-  IsEmpty,
-  IsNegative,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Length,
-  Max,
   MaxLength,
   Min,
   MinLength,
@@ -16,7 +12,6 @@ import {
 import { IsDateAfter } from './decorator/customDateAfter.decorator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsValidDateFile } from './decorator/customDateExcel.decorator';
-import { IsValidCoverage } from './decorator/customExistCoverage.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
 
@@ -68,7 +63,7 @@ export class FileTravelerDto {
   //@IsDateString()
   @IsValidDateFile()
   @IsDateAfter('start_date', {
-    message: 'La fecha de  inicio no es a la fecha $value',
+    message: 'La fecha de  inicio no  es anterior a la fecha $value',
   })
   end_date_policy: Date;
 
@@ -107,14 +102,14 @@ export class FileTravelerDto {
   })
   @Min(1)
   @CalculateNumberOfDays('start_date', 'end_date_policy')
-  number_of_days: number;
+  number_days: number;
 
   @IsOptional()
   @IsNumber(undefined, {
     message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
   })
   @Min(0)
-  @IsNumberLessThan('number_of_days', {
+  @IsNumberLessThan('number_days', {
     message: '$property debe ser menor la cantidad de dias: $value',
   })
   number_high_risk_days: number;
@@ -123,21 +118,20 @@ export class FileTravelerDto {
     message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
   })
   @Min(0)
-  number_of_days_import: number;
+  amount_days_covered: number;
 
   @IsNumber(undefined, {
     message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
   })
   @Min(0)
-  days_high_risk_import: number;
+  amount_days_high_risk: number;
 
   @IsNumber(undefined, {
     message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
   })
   @Min(0)
-  total_days_import: number;
+  total_amount: number;
 
-  @IsString()
   @MinLength(2, {
     message:
       'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
@@ -146,9 +140,8 @@ export class FileTravelerDto {
     message:
       'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
   })
-  @IsValidCoverage()
-  @IsEmpty({
-    message: 'el campo Pasaporte es un campo obligatorio',
+  @IsNotEmpty({
+    message: 'El campo Cobertura es un campo obligatorio',
   })
   coverage: string;
 }

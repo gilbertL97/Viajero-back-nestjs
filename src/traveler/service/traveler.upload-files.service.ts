@@ -12,6 +12,7 @@ import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileTravelerDto } from '../dto/file-traveler.dto';
 import { Validator } from 'class-validator';
 import { FileErrorsDto } from '../dto/fileErrors.dto';
+import { CountryEntity } from 'src/country/entities/country.entity';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -23,7 +24,7 @@ export class TravelerUploadFilesService {
     private readonly coverageService: CoverageService,
   ) {}
   async processFile(file: Express.Multer.File, idClient: number) {
-    const TravelersErrors: TravelerEntity[] = [];
+    //const TravelersErrors: TravelerEntity[] = [];
     const client = await this.contratctoService.getContractor(idClient);
     const countries = await this.countryService.findAll();
     const coverages = await this.coverageService.getCoverages();
@@ -49,13 +50,13 @@ export class TravelerUploadFilesService {
       traveler.start_date = rows[11]; //'FECHA DE INICIO ' + rows[11]
       traveler.end_date_policy = rows[12]; //'FECHA DE FIN DE POLIZA ' + rows[12]
       traveler.number_high_risk_days = rows[13]; //'DIAS ACTIVIDAD ALTO RIESGO ' + rows[13]
-      traveler.number_of_days = rows[14]; //'CANTIDAD DIAS' + rows[14]
-      traveler.days_high_risk_import = rows[15]; //'IMPORTE DIAS ALTO RIESGO ' + rows[15]
-      traveler.number_of_days_import = rows[16]; //'IMPORTE DIAS CUBIERTOS ' + rows[16])
-      traveler.total_days_import = rows[17]; //IMPORTE TOTAL ' + rows[17]
+      traveler.number_days = rows[14]; //'CANTIDAD DIAS' + rows[14]
+      traveler.amount_days_high_risk = rows[15]; //'IMPORTE DIAS ALTO RIESGO ' + rows[15]
+      traveler.amount_days_covered = rows[16]; //'IMPORTE DIAS CUBIERTOS ' + rows[16])
+      traveler.total_amount = rows[17]; //IMPORTE TOTAL ' + rows[17]
       travelers.push(traveler);
     });
-    this.validateTravelers(travelers, coverages);
+    this.validateTravelers(travelers, coverages, countries);
     i++;
     await FileHelper.deletFile(file.path);
   }
@@ -63,6 +64,7 @@ export class TravelerUploadFilesService {
   async validateTravelers(
     travelers: FileTravelerDto[],
     coverages: CoverageEntity[],
+    countries: CountryEntity[],
   ): Promise<FileErrorsDto[]> {
     const validator = new Validator();
     let i = 0;
@@ -85,26 +87,102 @@ export class TravelerUploadFilesService {
       lisFileErrors.push(erroFile);
       i++;
     });
-    //this.validat(coverages, travelers);
     console.log(lisFileErrors);
+    this.manualValidation(coverages, travelers, countries);
+   
     return lisFileErrors;
   }
 
-  validat(coverages: CoverageEntity[], travelers: FileTravelerDto[]) {
+  manualValidation(
+    coverages: CoverageEntity[],
+    travelers: FileTravelerDto[],
+    countries: CountryEntity[],
+  ) {
     const lisFileErrors: FileErrorsDto[] = [];
-    const erroFile = new FileErrorsDto();
-    erroFile.errors = [];
-    const i = 0;
+    let i = 0;
     travelers.map((traveler) => {
-      const errorCoverage = this.validateCoverage(traveler, coverages);
-      console.log(errorCoverage);
-      if (errorCoverage instanceof String)
-        erroFile.errors.push(errorCoverage as string);
+      const errorCoverage = this.validateCoverageAndAmount(traveler, coverages);
+      const errorCountry = this.validateCountry(traveler, countries);
+      const erroFile = new FileErrorsDto();
+      erroFile.errors = [];
+      if (errorCoverage) {
+        erroFile.errors.push(...errorCoverage, ...errorCountry);
+        erroFile.row = i;
+        console.log(erroFile.errors);
+        lisFileErrors.push(erroFile);
+        i++;
+      }
     });
   }
-  validateCoverage(traveler: FileTravelerDto, coverages: CoverageEntity[]) {
+  validateCoverageAndAmount(
+    traveler: FileTravelerDto,
+    coverages: CoverageEntity[],
+  ): string[] | void {
+    const errors: string[] = [];
     const coverage = coverages.find((c) => traveler.coverage == c.name);
-    if (coverage) return coverage;
-    return 'La cobertura no existe por lo tanto no se podran realizar los calculos';
+    if (!coverage) {
+      const coverages1 = coverages.map((c) => c.name);
+      errors.push(
+        'La cobertura no existe, las coberturas posible son ' + coverages1,
+      );
+      return errors;
+    }
+    let amount_days_high_risk = 0;
+    amount_days_high_risk = CalculateDaysTraveler.totalAmountHighRisk(
+      traveler.number_high_risk_days,
+      coverage,
+    );
+    if (traveler.amount_days_high_risk != amount_days_high_risk)
+      errors.push('El calculo del monto de dias de alto riesgo no es correcto');
+    const amount_days_covered = CalculateDaysTraveler.totalAmountCoveredDays(
+      coverage,
+      traveler.number_days,
+    );
+    if (amount_days_covered != traveler.amount_days_covered)
+      errors.push('El calculo del monto de dias cubierto no es correcto');
+    const total = amount_days_covered + amount_days_high_risk;
+    if (total != traveler.total_amount)
+      errors.push('El calculo del monto total no es correcto');
+    return errors;
+  }
+  validateCountry(
+    traveler: FileTravelerDto,
+    countries: CountryEntity[],
+  ): string[] {
+    const errors = [];
+    if (traveler.origin_country) {
+      let origin_country: CountryEntity = undefined;
+      origin_country = this.findCountry(
+        traveler.origin_country.toUpperCase(),
+        countries,
+      );
+      if (!origin_country) errors.push('El Pais origen ingresado no existe');
+    }
+    if (traveler.nationality) {
+      let nationality: CountryEntity = new CountryEntity();
+      nationality = this.findCountry(
+        traveler.nationality.toUpperCase(),
+        countries,
+      );
+      if (!nationality) errors.push('La nacionalidad ingresada no existe');
+    }
+
+    return errors;
+  }
+  findCountry(coun: string, countries: CountryEntity[]) {
+    return countries.find((country) => {
+      if (coun.length == 2 && country.iso2.toUpperCase() == coun)
+        return country;
+      if (coun.length == 3 && country.iso.toUpperCase() == coun) return country;
+      if (coun.length > 3) {
+        if (
+          country.comun_name.toUpperCase().startsWith('CAN') &&
+          country.comun_name.toUpperCase().trim() === coun
+        ) {
+          console.log(country.comun_name.toUpperCase(), coun);
+          return country;
+        }
+      }
+    });
   }
 }
