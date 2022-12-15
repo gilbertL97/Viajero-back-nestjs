@@ -5,7 +5,6 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import * as dayjs from 'dayjs';
 
 export function IsNumberLessThan(
   prop: string,
@@ -29,7 +28,6 @@ export class ValidateLessThanNumber implements ValidatorConstraintInterface {
     const major_number: number = (args.object as unknown as number)[
       majorNumber
     ];
-    console.log(value, major_number);
     return value < major_number;
   }
 

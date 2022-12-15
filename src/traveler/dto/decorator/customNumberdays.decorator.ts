@@ -5,7 +5,6 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import * as dayjs from 'dayjs';
 import { DateHelper } from 'src/common/date/helper/date.helper';
 
 export function CalculateNumberOfDays(
