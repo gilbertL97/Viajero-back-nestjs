@@ -8,7 +8,7 @@ export class ValidateFile {
   public static validateCoverage(
     traveler: FileTravelerDto,
     coverages: CoverageEntity[],
-  ): ErrorsDto | void {
+  ): ErrorsDto | CoverageEntity {
     const coverage = coverages.find((c) => traveler.coverage == c.name);
     if (!coverage) {
       const error = new ErrorsDto();
@@ -20,11 +20,12 @@ export class ValidateFile {
       );
       return error;
     }
+    return coverage;
   }
   public static validateAmountHighRisk(
     coverage: CoverageEntity,
     traveler: FileTravelerDto,
-  ): ErrorsDto | void {
+  ): ErrorsDto | number {
     let amount_days_high_risk = 0;
     amount_days_high_risk = CalculateDaysTraveler.totalAmountHighRisk(
       traveler.number_high_risk_days,
@@ -39,11 +40,12 @@ export class ValidateFile {
       );
       return error;
     }
+    return amount_days_high_risk;
   }
   public static validateAmountDays(
     coverage: CoverageEntity,
     traveler: FileTravelerDto,
-  ): ErrorsDto | void {
+  ): ErrorsDto | number {
     const amount_days_covered = CalculateDaysTraveler.totalAmountCoveredDays(
       coverage,
       traveler.number_days,
@@ -55,25 +57,33 @@ export class ValidateFile {
       error.errors.push('El calculo del monto de dias cubierto no es correcto');
       return error;
     }
+    return amount_days_covered;
   }
   public static validateTotalAmount(
     traveler: FileTravelerDto,
-    amount_days_high_risk: number,
-    amount_days_covered: number,
-  ): ErrorsDto | void {
-    const total = amount_days_covered + amount_days_high_risk;
-    if (total != traveler.total_amount) {
-      const error = new ErrorsDto();
-      error.errors = [];
-      error.property = 'total_amount';
-      error.errors.push('El calculo del monto total no es correcto');
+    amount_days_high_risk: number | ErrorsDto,
+    amount_days_covered: number | ErrorsDto,
+  ): ErrorsDto | number {
+    const error = new ErrorsDto();
+    error.errors = [];
+    error.property = 'total_amount';
+    error.errors.push('El calculo del monto total no es correcto');
+    if (amount_days_covered instanceof ErrorsDto) {
       return error;
     }
+    if (amount_days_high_risk instanceof ErrorsDto) {
+      return error;
+    }
+    const total = amount_days_covered + amount_days_high_risk;
+    if (total != traveler.total_amount) {
+      return error;
+    }
+    return total;
   }
   public static validateNationality(
     traveler: FileTravelerDto,
     countries: CountryEntity[],
-  ): ErrorsDto | void {
+  ): ErrorsDto | number {
     if (traveler.nationality) {
       let nationality: CountryEntity = new CountryEntity();
       nationality = this.findCountry(
