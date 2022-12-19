@@ -1,4 +1,4 @@
 export class ErrorsDto {
   property: string;
-  errors: string[];
+  errors: string;
 }

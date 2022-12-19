@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { IsDateAfter } from './decorator/customDateAfter.decorator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
-import { IsValidDateFile } from './decorator/customDateExcel.decorator';
+import { IsDateFile } from './decorator/customDateExcel.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
 
@@ -29,7 +29,7 @@ export class FileTravelerDto {
 
   @IsOptional()
   // @IsDateString()
-  @IsValidDateFile()
+  @IsDateFile()
   born_date: Date;
 
   @IsOptional()
@@ -47,24 +47,24 @@ export class FileTravelerDto {
 
   //@Type(() => string)
   @IsOptional()
-  @IsValidDateFile()
+  @IsDateFile()
   //@IsDateString()
   sale_date: Date;
 
   //@Type(() => string)
   // @IsDateString()
-  @IsValidDateFile()
   @IsDateBefore('end_date_policy', {
     message: 'La fecha de fin no es posterior a la fecha $value',
   })
+  @IsDateFile()
   start_date: Date;
 
   // @Type(() => string)
   //@IsDateString()
-  @IsValidDateFile()
   @IsDateAfter('start_date', {
     message: 'La fecha de  inicio no  es anterior a la fecha $value',
   })
+  @IsDateFile()
   end_date_policy: Date;
 
   @IsOptional()
@@ -127,18 +127,13 @@ export class FileTravelerDto {
   amount_days_high_risk: number;
 
   @IsNumber(undefined, {
-    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+    message: 'El valor introcido debe de tipo numerico ,actualmente es $value',
   })
   @Min(0)
   total_amount: number;
 
-  @MinLength(2, {
-    message:
-      'El Texto es muy corto . El tamaño minimo de $constraint1 caracteres, pero actualmente es $value',
-  })
-  @MaxLength(30, {
-    message:
-      'El Texto es muy largo. El tamaño minimo es de $constraint1 caracteres, pero actualmente el valor es $value',
+  @Length(4, 20, {
+    message: 'No se encuentra entre la longitud de letras permitidas',
   })
   @IsNotEmpty({
     message: 'El campo Cobertura es un campo obligatorio',

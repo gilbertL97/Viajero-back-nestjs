@@ -6,7 +6,7 @@ import {
 } from 'class-validator';
 import * as dayjs from 'dayjs';
 
-export function IsValidDateFile(validationOptions?: ValidationOptions) {
+export function IsDateFile(validationOptions?: ValidationOptions) {
   return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
@@ -18,9 +18,10 @@ export function IsValidDateFile(validationOptions?: ValidationOptions) {
   };
 }
 
-@ValidatorConstraint({ name: 'IsValidDateFile' })
+@ValidatorConstraint({ name: 'IsDateFile' })
 export class ValidateDates implements ValidatorConstraintInterface {
   validate(value: Date) {
+    console.log(dayjs(value, 'DD/MM/YYYY'));
     return dayjs(value, 'DD/MM/YYYY', true).isValid();
   }
 

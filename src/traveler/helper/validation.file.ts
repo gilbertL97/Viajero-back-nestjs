@@ -12,12 +12,10 @@ export class ValidateFile {
     const coverage = coverages.find((c) => traveler.coverage == c.name);
     if (!coverage) {
       const error = new ErrorsDto();
-      error.errors = [];
-      error.property = 'coverage'; // esta es la propiedad coverage del dto para la cual devuelvo si da error
+      error.property = UploadFileDtoProps.COVERAGE; // esta es la propiedad coverage del dto para la cual devuelvo si da error
       const coverages1 = coverages.map((c) => c.name);
-      error.errors.push(
-        'La cobertura no existe, las coberturas posible son ' + coverages1,
-      );
+      error.errors =
+        'La cobertura no existe, las coberturas posible son ' + coverages1;
       return error;
     }
     return coverage;
@@ -33,11 +31,9 @@ export class ValidateFile {
     );
     if (traveler.amount_days_high_risk != amount_days_high_risk) {
       const error = new ErrorsDto();
-      error.errors = [];
-      error.property = 'amount_days_high_risk';
-      error.errors.push(
-        'El calculo del monto de dias de alto riesgo no es correcto',
-      );
+      error.property = UploadFileDtoProps.AMOUNT_HIGH;
+      error.errors =
+        'El calculo del monto de dias de alto riesgo no es correcto';
       return error;
     }
     return amount_days_high_risk;
@@ -50,11 +46,15 @@ export class ValidateFile {
       coverage,
       traveler.number_days,
     );
+    /*console.log(
+      traveler.number_days,
+      traveler.amount_days_covered,
+      amount_days_covered,
+    );*/
     if (amount_days_covered != traveler.amount_days_covered) {
       const error = new ErrorsDto();
-      error.errors = [];
-      error.property = 'amount_days_covered';
-      error.errors.push('El calculo del monto de dias cubierto no es correcto');
+      error.property = UploadFileDtoProps.AMUOUNT_DAYS;
+      error.errors = 'El calculo del monto de dias cubierto no es correcto';
       return error;
     }
     return amount_days_covered;
@@ -65,9 +65,8 @@ export class ValidateFile {
     amount_days_covered: number | ErrorsDto,
   ): ErrorsDto | number {
     const error = new ErrorsDto();
-    error.errors = [];
-    error.property = 'total_amount';
-    error.errors.push('El calculo del monto total no es correcto');
+    error.property = UploadFileDtoProps.TOTAL;
+    error.errors = 'El calculo del monto total no es correcto';
     if (amount_days_covered instanceof ErrorsDto) {
       return error;
     }
@@ -92,9 +91,8 @@ export class ValidateFile {
       );
       if (!nationality) {
         const error = new ErrorsDto();
-        error.errors = [];
-        error.property = 'nationality';
-        error.errors.push('La nacionalidad ingresada no existe');
+        error.property = UploadFileDtoProps.NATIONALITY;
+        error.errors = 'La nacionalidad ingresada no existe';
         return error;
       }
     }
@@ -111,9 +109,8 @@ export class ValidateFile {
       );
       if (!origin_country) {
         const error = new ErrorsDto();
-        error.errors = [];
-        error.property = 'origin_country';
-        error.errors.push('El Pais origen ingresado no existe');
+        error.property = UploadFileDtoProps.ORIGIN;
+        error.errors = 'El Pais origen ingresado no existe';
         return error;
       }
     }
@@ -123,13 +120,28 @@ export class ValidateFile {
       if (coun.length == 2 && country.iso2.toUpperCase() == coun)
         return country;
       if (coun.length == 3 && country.iso.toUpperCase() == coun) return country;
-      if (coun.length > 3) {
-        if (
-          country.comun_name.toUpperCase().startsWith('CAN') &&
-          country.comun_name.toUpperCase().trim() === coun
-        )
-          return country;
-      }
+      if (coun.length > 3 && country.comun_name.toUpperCase().trim() === coun)
+        return country;
     });
   }
+}
+
+export enum UploadFileDtoProps {
+  NAME = 'name',
+  SEX = 'sex',
+  BORN_DATR = 'born_date',
+  EMAIL = 'email',
+  PASSPORT = 'passport',
+  SALE_DATE = 'sale_date',
+  START_DATE = 'start_date',
+  END_DATE = 'end_date_policy',
+  ORIGIN = 'origin_country',
+  NATIONALITY = 'nationality',
+  FLIGHT = 'flight',
+  NUMBER_DAYS = 'number_days',
+  NUMBER_HIGH = 'number_high_risk_days',
+  AMUOUNT_DAYS = 'amount_days_covered',
+  AMOUNT_HIGH = 'amount_days_high_risk',
+  TOTAL = 'total_amount',
+  COVERAGE = 'coverage',
 }
