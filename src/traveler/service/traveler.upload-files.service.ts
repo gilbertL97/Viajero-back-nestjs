@@ -39,15 +39,25 @@ export class TravelerUploadFilesService {
     countries: CountryEntity[],
   ): Promise<FileErrorsDto[]> {
     const validator = new Validator();
-    const i = 2;
+    let i = 2;
     const listFileErrors: FileErrorsDto[] = [];
-    let error = undefined;
+    const errors = [];
     travelers.map(async (traveler) => {
+      let error = undefined;
       error = await validator.validate(traveler, {
         validationError: { target: false },
       });
-      console.log(this.handleErrors(error), traveler.start_date);
+      const errorHandled = this.handleErrors(error, i);
+      /* errors = this.manualValidation(
+        coverages,
+        traveler,
+        countries,
+        errorHandled,
+      );*/
+      //console.log(error);
+      i++;
     });
+
     //this.validateCoverage(coverages, travelers);
     /*const errors = await Promise.all(
       travelers.map((d) =>
@@ -70,77 +80,71 @@ export class TravelerUploadFilesService {
 
   manualValidation(
     coverages: CoverageEntity[],
-    travelers: FileTravelerDto[],
+    traveler: FileTravelerDto,
     countries: CountryEntity[],
-    automaticErrors: FileErrorsDto[],
+    automaticErrors: FileErrorsDto,
   ) {
     const lisFileErrors: FileErrorsDto[] = [];
     let i = 0;
 
-    travelers.map((traveler) => {
-      let coverage: any = this.findErrorsInList(
-        automaticErrors,
-        UploadFileDtoProps.COVERAGE,
-        i,
-      );
-      //const coverage = ValidateFile.validateCoverage(traveler, coverages);
-      //let amount_days_covered = undefined;
-      //let amount_days_high_risk = undefined;
-      //const total = undefined;
-      const nationality = ValidateFile.validateNationality(traveler, countries);
-      const origin = ValidateFile.validateOriginCountry(traveler, countries);
-      //console.log(nationality, origin, coverage);
-      console.log(coverage);
-      if (!coverage) {
-        coverage = ValidateFile.validateCoverage(traveler, coverages);
-        if (coverage instanceof CoverageEntity) {
-          let amount_days_covered: any = this.findErrorsInList(
-            automaticErrors,
-            UploadFileDtoProps.AMUOUNT_DAYS,
-            i,
+    let coverage: any = this.findErrorsInList(
+      automaticErrors,
+      UploadFileDtoProps.COVERAGE,
+    );
+    //const coverage = ValidateFile.validateCoverage(traveler, coverages);
+    //let amount_days_covered = undefined;
+    //let amount_days_high_risk = undefined;
+    //const total = undefined;
+    const nationality = ValidateFile.validateNationality(traveler, countries);
+    const origin = ValidateFile.validateOriginCountry(traveler, countries);
+    //console.log(nationality, origin, coverage);
+    console.log(coverage);
+    if (!coverage) {
+      coverage = ValidateFile.validateCoverage(traveler, coverages);
+      if (coverage instanceof CoverageEntity) {
+        let amount_days_covered: any = this.findErrorsInList(
+          automaticErrors,
+          UploadFileDtoProps.AMUOUNT_DAYS,
+        );
+        if (!amount_days_covered)
+          amount_days_covered = ValidateFile.validateAmountDays(
+            coverage,
+            traveler,
           );
-          if (!amount_days_covered)
-            amount_days_covered = ValidateFile.validateAmountDays(
-              coverage,
-              traveler,
-            );
 
-          let amount_days_high_risk: any = this.findErrorsInList(
-            automaticErrors,
-            UploadFileDtoProps.AMOUNT_HIGH,
-            i,
+        let amount_days_high_risk: any = this.findErrorsInList(
+          automaticErrors,
+          UploadFileDtoProps.AMOUNT_HIGH,
+        );
+        if (!amount_days_high_risk)
+          amount_days_high_risk = ValidateFile.validateAmountHighRisk(
+            coverage,
+            traveler,
           );
-          if (!amount_days_high_risk)
-            amount_days_high_risk = ValidateFile.validateAmountHighRisk(
-              coverage,
-              traveler,
-            );
-          let total: any = this.findErrorsInList(
-            automaticErrors,
-            UploadFileDtoProps.TOTAL,
-            i,
+        let total: any = this.findErrorsInList(
+          automaticErrors,
+          UploadFileDtoProps.TOTAL,
+        );
+        if (!total)
+          total = ValidateFile.validateTotalAmount(
+            traveler,
+            amount_days_high_risk,
+            amount_days_covered,
           );
-          if (!total)
-            total = ValidateFile.validateTotalAmount(
-              traveler,
-              amount_days_high_risk,
-              amount_days_covered,
-            );
-        }
       }
+    }
 
-      const erroFile = new FileErrorsDto();
-      erroFile.errors = [];
+    const erroFile = new FileErrorsDto();
+    erroFile.errors = [];
 
-      // erroFile.errors.push(...errorCoverage, ...errorCountry);
-      erroFile.row = i;
-      //onsole.log(erroFile.errors);
-      lisFileErrors.push(erroFile);
-      i++;
-    });
+    // erroFile.errors.push(...errorCoverage, ...errorCountry);
+    erroFile.row = i;
+    //onsole.log(erroFile.errors);
+    lisFileErrors.push(erroFile);
+    i++;
   }
 
-  handleErrors(lisValidation: ValidationError[]): FileErrorsDto {
+  handleErrors(lisValidation: ValidationError[], row: number): FileErrorsDto {
     const errorsByRow: FileErrorsDto = new FileErrorsDto();
     errorsByRow.errors = [];
     // const listByRow: ErrorsDto[] = [];
@@ -154,13 +158,7 @@ export class TravelerUploadFilesService {
     //console.log(errorsByRow.errors);
     return errorsByRow;
   }
-  findErrorsInList(
-    automaticErrors: FileErrorsDto[],
-    prop: string,
-    index: number,
-  ) {
-    return automaticErrors.find((e) => {
-      if (e.row == index + 1) return e.errors.find((e) => e.property == prop);
-    });
+  findErrorsInList(automaticErrors: FileErrorsDto, prop: string) {
+    return automaticErrors.errors.find((e) => e.property == prop);
   }
 }

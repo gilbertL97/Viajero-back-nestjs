@@ -121,15 +121,18 @@ export class FileTravelerDto {
   amount_days_covered: number;
 
   @IsNumber(undefined, {
-    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+    message:
+      'El valor introducido debe ser tipo numerico ,actualmente es $value',
   })
   @Min(0)
   amount_days_high_risk: number;
 
   @IsNumber(undefined, {
-    message: 'El valor introcido debe de tipo numerico ,actualmente es $value',
+    message: 'El valor introducido debe ser tipo numerico ',
   })
-  @Min(0)
+  @Min(0, {
+    message: 'El valor introducido debe ser mayir que 0',
+  })
   total_amount: number;
 
   @Length(4, 20, {
