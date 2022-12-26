@@ -1,3 +1,5 @@
+import * as dayjs from 'dayjs';
+
 export class DateHelper {
   public static timeDifference(initialDate: Date, finalDate: Date) {
     return Math.abs(
@@ -7,17 +9,21 @@ export class DateHelper {
 
   public static daysDifference(initialDate: Date, finalDate: Date) {
     const test = Math.ceil(
-      this.timeDifference(initialDate, finalDate) / (1000 * 60 * 60 * 24), // milisegundos ,segundos, minutos , horas
-    );
-    console.log(
-      test,
-      initialDate,
-      finalDate + 'esto es una prueba haber si entra',
+      this.timeDifference(initialDate, finalDate) /
+        (1000 * // milisegundos
+          60 * //,segundos
+          60 * //, minutos
+          24), // , horas
     );
     return test;
   }
   //para saber el estado de de los dias con respecto a hoy
   public static dayState(finalDate: Date) {
     return new Date(finalDate).getTime() - new Date().getTime();
+  }
+  public static daysDifferenceWithDaysjs(initialDate: Date, finalDate: Date) {
+    const start = dayjs(initialDate, 'DD-MM-YYYY');
+    const end = dayjs(finalDate, 'DD-MM-YYYY');
+    return end.diff(start, 'day'); //el numero de dias es la diferencia mas un dia
   }
 }

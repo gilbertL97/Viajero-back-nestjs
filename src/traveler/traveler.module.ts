@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoverageModule } from 'src/coverage/coverage.module';
 import { ContractorModule } from 'src/contractor/contractor.module';
 import { CountryModule } from 'src/country/country.module';
-import { TravelerRepository } from './traveler.repository';
+import { TravelerRepository } from './repository/traveler.repository';
 import { UserModule } from 'src/user/user.module';
-import { TravelerDocService } from './service/traveler-doc.service';
+import { TravelerPdfService } from './service/traveler-pdf.service';
+import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { TravelerDocService } from './service/traveler-doc.service';
     forwardRef(() => UserModule),
   ],
   controllers: [TravelerController],
-  providers: [TravelerService, TravelerDocService],
+  providers: [TravelerService, TravelerPdfService, TravelerUploadFilesService],
   exports: [TravelerService],
 })
 export class TravelerModule {}

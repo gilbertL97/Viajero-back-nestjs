@@ -17,7 +17,7 @@ import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { UpdateTravelerDto } from '../dto/update-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
-import { TravelerRepository } from '../traveler.repository';
+import { TravelerRepository } from '../repository/traveler.repository';
 
 @Injectable()
 export class TravelerService {
@@ -90,7 +90,7 @@ export class TravelerService {
     const traveler = await this.findOne(id);
     const updateTraveler = Object.assign(traveler, updateTravelerDto);
     const coverage = await this.coverageService.getCoverage(
-      updateTraveler.coverage,
+      updateTraveler.coverage.id,
     );
     return this.travelerRepository.updateTraveler(updateTraveler, coverage);
   }

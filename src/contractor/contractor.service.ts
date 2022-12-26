@@ -35,6 +35,9 @@ export class ContractorService {
     return await this.contractRepository.find({ relations: ['users'] });
   }
 
+  async getAllContrators(): Promise<ContratorEntity[]> {
+    return await this.contractRepository.find();
+  }
   async getContractor(id: number): Promise<ContratorEntity> {
     const contractor = await this.contractRepository.findOne({
       where: { id: id },

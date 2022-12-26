@@ -3,10 +3,10 @@ import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { EntityRepository, Repository } from 'typeorm';
-import { CreateTravelerDto } from './dto/create-traveler.dto';
-import { FilterTravelerDto } from './dto/filter-traveler.dto';
-import { TravelerEntity } from './entity/traveler.entity';
-import { CalculateDaysTraveler } from './helper/calculate-days.traveler';
+import { CreateTravelerDto } from '../dto/create-traveler.dto';
+import { FilterTravelerDto } from '../dto/filter-traveler.dto';
+import { TravelerEntity } from '../entity/traveler.entity';
+import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 
 @EntityRepository(TravelerEntity)
 export class TravelerRepository extends Repository<TravelerEntity> {
@@ -94,7 +94,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         updateTraveler.amount_days_high_risk,
       );
     }
-    console.log(updateTraveler);
+    console.log('este es el update ' + updateTraveler);
     return await this.save(updateTraveler);
   }
   async finOneTravelerWithCoverage(

@@ -9,6 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -25,6 +26,7 @@ import { UpdateCoverageDto } from './dto/update-coverage.dto';
 @Controller('coverage')
 export class CoverageController {
   constructor(private readonly coverageService: CoverageService) {}
+
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
@@ -32,8 +34,19 @@ export class CoverageController {
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createCoverageDto: CreateCoverageDto,
+    @Req() eq,
   ) {
+    console.log(eq.rawHeaders, file);
     return this.coverageService.createCoverage(createCoverageDto, file);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Post('/test')
+  @UseInterceptors(FileInterceptor('tablePdf', coverageStorage))
+  async test(@Req() eq, @UploadedFile() file: Express.Multer.File) {
+    console.log(eq.rawHeaders, file);
+
+    return true;
   }
   @UseGuards(RolesGuard)
   @Roles(
@@ -71,7 +84,7 @@ export class CoverageController {
     @Body() updateCoverageDto: UpdateCoverageDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.coverageService.updateCoverage(id, updateCoverageDto,file);
+    return this.coverageService.updateCoverage(id, updateCoverageDto, file);
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
