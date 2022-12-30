@@ -27,6 +27,7 @@ import { TravelerPdfService } from './service/traveler-pdf.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { coverageStorage, TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
+import { FileErrorsDto } from './dto/fileErrors.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
@@ -52,9 +53,8 @@ export class TravelerController {
     //@GetUser() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: number,
-  ): Promise<string> {
-    await this.travelerUploadService.processFile(file, id);
-    return 'ok';
+  ): Promise<string | FileErrorsDto[]> {
+    return this.travelerUploadService.processFile(file, id);
   }
 
   @Get()

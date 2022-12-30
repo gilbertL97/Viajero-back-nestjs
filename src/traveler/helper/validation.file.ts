@@ -46,11 +46,6 @@ export class ValidateFile {
       coverage,
       traveler.number_days,
     );
-    /*console.log(
-      traveler.number_days,
-      traveler.amount_days_covered,
-      amount_days_covered,
-    );*/
     if (amount_days_covered != traveler.amount_days_covered) {
       const error = new ErrorsDto();
       error.property = UploadFileDtoProps.AMUOUNT_DAYS;
@@ -82,10 +77,9 @@ export class ValidateFile {
   public static validateNationality(
     traveler: FileTravelerDto,
     countries: CountryEntity[],
-  ): ErrorsDto | number {
+  ): ErrorsDto | void {
     if (traveler.nationality) {
-      let nationality: CountryEntity = new CountryEntity();
-      nationality = this.findCountry(
+      const nationality = this.findCountry(
         traveler.nationality.toUpperCase(),
         countries,
       );
@@ -102,8 +96,7 @@ export class ValidateFile {
     countries: CountryEntity[],
   ): ErrorsDto | void {
     if (traveler.origin_country) {
-      let origin_country: CountryEntity = undefined;
-      origin_country = this.findCountry(
+      const origin_country = this.findCountry(
         traveler.origin_country.toUpperCase(),
         countries,
       );

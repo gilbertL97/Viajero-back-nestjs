@@ -30,7 +30,7 @@ export class FileTravelerDto {
   @IsOptional()
   // @IsDateString()
   @IsDateFile()
-  born_date: Date;
+  born_date: Date | string;
 
   @IsOptional()
   @IsEmail()
@@ -49,7 +49,7 @@ export class FileTravelerDto {
   @IsOptional()
   @IsDateFile()
   //@IsDateString()
-  sale_date: Date;
+  sale_date: Date | string;
 
   //@Type(() => string)
   // @IsDateString()
@@ -57,7 +57,7 @@ export class FileTravelerDto {
     message: 'La fecha de fin no es posterior a la fecha $value',
   })
   @IsDateFile()
-  start_date: Date;
+  start_date: Date | string;
 
   // @Type(() => string)
   //@IsDateString()
@@ -65,7 +65,7 @@ export class FileTravelerDto {
     message: 'La fecha de  inicio no  es anterior a la fecha $value',
   })
   @IsDateFile()
-  end_date_policy: Date;
+  end_date_policy: Date | string;
 
   @IsOptional()
   @IsString()
