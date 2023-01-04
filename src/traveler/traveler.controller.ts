@@ -47,7 +47,7 @@ export class TravelerController {
     const data = await this.travelerService.create(createTravelerDto);
     return data;
   }
-  @Post(':id')
+  @Post('/file/:id')
   @UseInterceptors(FileInterceptor('travelers', TravelersStorage))
   async uploadTravelers(
     //@GetUser() user: UserEntity,

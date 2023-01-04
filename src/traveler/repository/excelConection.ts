@@ -1,5 +1,6 @@
 import { FileTravelerDto } from '../dto/file-traveler.dto';
 import Excel = require('exceljs');
+import dayjs = require('dayjs');
 export class ExcelJSCOn {
   static async getTravelerByExcel(
     file: Express.Multer.File,
@@ -50,26 +51,32 @@ export class ExcelJSCOn {
     const rows = r.values;
     traveler.name = this.isEmptyString(r.getCell(1).text); //Titular ' + this.isEmptyString(r.getCell(1]);
     traveler.sex = this.isEmptyString(r.getCell(2).text); //'Sexo ' + this.isEmptyString(r.getCell(2).text
-    traveler.born_date = this.isEmptyString(r.getCell(3).text); //'Fecha de Nacimiento ' + this.isEmptyString(r.getCell(3).text
+    traveler.born_date = this.isDate(r.getCell(3)); //'Fecha de Nacimiento ' + this.isEmptyString(r.getCell(3).text
     traveler.email = this.isEmptyString(r.getCell(4).text); //'Correo Electrónico ' + this.isEmptyString(r.getCell(4).text
     traveler.passport = this.isEmptyString(r.getCell(5).text); //'PASAPORTE ' + this.isEmptyString(r.getCell(5).text
     traveler.origin_country = this.isEmptyString(r.getCell(6).text); //'PAIS ORIGEN ' + this.isEmptyString(r.getCell(6).text
     traveler.nationality = this.isEmptyString(r.getCell(7).text); //'NACIONALIDAD ' + this.isEmptyString(r.getCell(7).text
     traveler.flight = this.isEmptyString(r.getCell(8).text); //'VUELO ' + this.isEmptyString(r.getCell(8).text
     traveler.coverage = this.isEmptyString(r.getCell(9).text); //'TIPO COBERTURA ' + this.isEmptyString(r.getCell(9).text
-    traveler.sale_date = this.isEmptyString(r.getCell(10).text); //'FECHA DE VENTA ' + this.isEmptyString(r.getCell(10)) ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined
-    traveler.start_date = this.isEmptyString(r.getCell(11).text); //'FECHA DE INICIO ' + this.isEmptyString(r.getCell(11).text
-    traveler.end_date_policy = this.isEmptyString(r.getCell(12).text); //'FECHA DE FIN DE POLIZA ' + this.isEmptyString(r.getCell(12).text
+    traveler.sale_date = this.isDate(r.getCell(10)); //'FECHA DE VENTA ' + this.isEmptyString(r.getCell(10)) ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined
+    traveler.start_date = this.isDate(r.getCell(11)); ////traveler.start_date = this.isEmptyString(r.getCell(11).text); //'FECHA DE INICIO ' + this.isEmptyString(r.getCell(11).text
+    traveler.end_date_policy = this.isDate(r.getCell(12)); //'FECHA DE FIN DE POLIZA ' + this.isEmptyString(r.getCell(12).text
     traveler.number_high_risk_days = this.isFormula(rows[13]); //'DIAS ACTIVIDAD ALTO RIESGO ' + row[13).text
     traveler.number_days = this.isFormula(rows[14]); //'CANTIDAD DIAS' + row[14]
     traveler.amount_days_high_risk = this.isFormula(rows[15]); //'IMPORTE DIAS ALTO RIESGO ' + row[15]
     traveler.amount_days_covered = this.isFormula(rows[16]); //'IMPORTE DIAS CUBIERTOS ' + row[16])
     traveler.total_amount = this.isFormula(rows[17]); //IMPORTE TOTAL ' + this.isEmptyString(r.getCell(17]
-    //console.log(traveler.start_date, traveler.end_date_policy);
+
     return traveler;
   }
   static isEmptyString(ch: string): string | undefined {
     const value = ch.length == 0 ? undefined : ch;
     return value;
+  }
+  static isDate(date: Excel.Cell): string | undefined {
+    const newDate = this.isEmptyString(date.text);
+    if (!newDate) return undefined;
+    if (newDate[2] == '/') return newDate;
+    else return dayjs(newDate).format('DD/MM/YYYY');
   }
 }
