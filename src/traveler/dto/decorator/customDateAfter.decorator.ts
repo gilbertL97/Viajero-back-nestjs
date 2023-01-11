@@ -27,7 +27,7 @@ export class ValidateDateIsDateAfter implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
     const [date_start] = args.constraints;
     const date_after = (args.object as Date)[date_start];
-    return dayjs(value).isAfter(dayjs(date_after));
+    return dayjs(value, 'DD/MM/YYYY').isAfter(dayjs(date_after, 'DD/MM/YYYY'));
   }
 
   defaultMessage(args: ValidationArguments) {

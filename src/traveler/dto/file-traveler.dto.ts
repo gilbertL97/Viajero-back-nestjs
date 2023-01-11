@@ -53,17 +53,13 @@ export class FileTravelerDto {
 
   //@Type(() => string)
   // @IsDateString()
-  @IsDateBefore('end_date_policy', {
-    message: 'La fecha de fin no es posterior a la fecha $value',
-  })
+  @IsDateBefore('end_date_policy')
   @IsDateFile()
   start_date: Date | string;
 
   // @Type(() => string)
   //@IsDateString()
-  @IsDateAfter('start_date', {
-    message: 'La fecha de  inicio no  es anterior a la fecha $value',
-  })
+  @IsDateAfter('start_date')
   @IsDateFile()
   end_date_policy: Date | string;
 

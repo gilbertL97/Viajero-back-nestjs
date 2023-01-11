@@ -7,6 +7,7 @@ export class ExcelJSCOn {
   ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
+    console.log(file);
     const excel = await workbook.xlsx.readFile(file.path);
     const worksheet = excel.getWorksheet(1);
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
@@ -16,13 +17,7 @@ export class ExcelJSCOn {
     });
     return travelers;
   }
-  static isFormula(row: any): number {
-    // verifico q no tengan formula ni null ni nada
-    if (typeof row === 'number') return row;
-    if (typeof row === 'undefined') return 0;
-    if (row.result) return row.result;
-    return 0;
-  }
+
   static parseTraveler(r: Excel.Row): FileTravelerDto {
     const traveler = new FileTravelerDto();
     const rows = r.values;
@@ -42,13 +37,11 @@ export class ExcelJSCOn {
     traveler.number_days = this.isFormula(rows[14]); //'CANTIDAD DIAS' + rows[14]
     traveler.amount_days_high_risk = this.isFormula(rows[15]); //'IMPORTE DIAS ALTO RIESGO ' + rows[15]
     traveler.amount_days_covered = this.isFormula(rows[16]); //'IMPORTE DIAS CUBIERTOS ' + rows[16])
-    traveler.total_amount = this.isFormula(rows[17]);
-    console.log(traveler.passport, typeof traveler.passport); //IMPORTE TOTAL ' + rows[17]
+    traveler.total_amount = this.isFormula(rows[17]); //IMPORTE TOTAL ' + rows[17]
     return traveler;
   }
   static testParseTraveler(r: Excel.Row): FileTravelerDto {
     const traveler = new FileTravelerDto();
-    const rows = r.values;
     traveler.name = this.isEmptyString(r.getCell(1).text); //Titular ' + this.isEmptyString(r.getCell(1]);
     traveler.sex = this.isEmptyString(r.getCell(2).text); //'Sexo ' + this.isEmptyString(r.getCell(2).text
     traveler.born_date = this.isDate(r.getCell(3)); //'Fecha de Nacimiento ' + this.isEmptyString(r.getCell(3).text
@@ -61,11 +54,11 @@ export class ExcelJSCOn {
     traveler.sale_date = this.isDate(r.getCell(10)); //'FECHA DE VENTA ' + this.isEmptyString(r.getCell(10)) ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined
     traveler.start_date = this.isDate(r.getCell(11)); ////traveler.start_date = this.isEmptyString(r.getCell(11).text); //'FECHA DE INICIO ' + this.isEmptyString(r.getCell(11).text
     traveler.end_date_policy = this.isDate(r.getCell(12)); //'FECHA DE FIN DE POLIZA ' + this.isEmptyString(r.getCell(12).text
-    traveler.number_high_risk_days = this.isFormula(rows[13]); //'DIAS ACTIVIDAD ALTO RIESGO ' + row[13).text
-    traveler.number_days = this.isFormula(rows[14]); //'CANTIDAD DIAS' + row[14]
-    traveler.amount_days_high_risk = this.isFormula(rows[15]); //'IMPORTE DIAS ALTO RIESGO ' + row[15]
-    traveler.amount_days_covered = this.isFormula(rows[16]); //'IMPORTE DIAS CUBIERTOS ' + row[16])
-    traveler.total_amount = this.isFormula(rows[17]); //IMPORTE TOTAL ' + this.isEmptyString(r.getCell(17]
+    traveler.number_high_risk_days = this.isFormula(r.values[13]); //'DIAS ACTIVIDAD ALTO RIESGO ' + row[13).text
+    traveler.number_days = this.isFormula(r.values[14]); //'CANTIDAD DIAS' + row[14]
+    traveler.amount_days_high_risk = this.isFormula(r.values[15]); //'IMPORTE DIAS ALTO RIESGO ' + row[15]
+    traveler.amount_days_covered = this.isFormula(r.values[16]); //'IMPORTE DIAS CUBIERTOS ' + row[16])
+    traveler.total_amount = this.isFormula(r.values[17]); //IMPORTE TOTAL ' + this.isEmptyString(r.getCell(17]
 
     return traveler;
   }
@@ -77,6 +70,13 @@ export class ExcelJSCOn {
     const newDate = this.isEmptyString(date.text);
     if (!newDate) return undefined;
     if (newDate[2] == '/') return newDate;
-    else return dayjs(newDate).format('DD/MM/YYYY');
+    return dayjs(newDate).format('DD/MM/YYYY');
+  }
+  static isFormula(row: any): number {
+    // verifico q no tengan formula ni null ni nada
+    if (typeof row === 'number') return row;
+    if (typeof row === 'undefined') return 0;
+    if (row.result) return row.result;
+    return 0;
   }
 }

@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, QueryFailedError, Repository } from 'typeorm';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
@@ -59,7 +59,8 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       traveler.amount_days_covered,
       traveler.amount_days_high_risk,
     );
-    const newTraveler = await this.save(traveler).catch(() => {
+    const newTraveler = await this.save(traveler).catch((error) => {
+      if (error.code == 23505) throw new Error('Viajero duplicado');
       throw new BadRequestException('error in database');
     });
     return newTraveler;

@@ -15,6 +15,9 @@ import { ValidateFile } from '../helper/validation.file';
 import { ExcelJSCOn } from '../repository/excelConection';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
+import dayjs = require('dayjs');
+import { DuplicateDto } from '../dto/duplicateFileError.dto';
+import { TravelerEntity } from '../entity/traveler.entity';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -34,7 +37,7 @@ export class TravelerUploadFilesService {
     await FileHelper.deletFile(file.path);
     const erors = await this.validateTravelers(travelers, coverages, countries);
     if (erors) return erors;
-    return this.insertTraveler(travelers, coverages, countries, client);
+    return await this.insertTraveler(travelers, coverages, countries, client);
   }
 
   async insertTraveler(
@@ -44,6 +47,7 @@ export class TravelerUploadFilesService {
     client: ContratorEntity,
   ) {
     const createTraveler = new CreateTravelerDto();
+    const duplicate: FileTravelerDto[] = [];
     travelers.map(async (traveler) => {
       const coverage = coverages.find((c) => travelers[1].coverage == c.name);
       const origin = ValidateFile.findCountry(
@@ -55,46 +59,73 @@ export class TravelerUploadFilesService {
         countries,
       );
       const obj = Object.assign(createTraveler, traveler);
-      await this.travelerRepository.createTraveler(
-        obj,
-        coverage,
-        client,
-        nationality,
-        origin,
+      console.log(obj.born_date);
+      if (obj.born_date) {
+        console.log(obj.born_date);
+        obj.born_date = new Date(
+          dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        );
+      }
+
+      if (obj.sale_date)
+        obj.sale_date = new Date(
+          dayjs(traveler.sale_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        );
+      obj.start_date = new Date(
+        dayjs(traveler.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
       );
+      obj.end_date_policy = new Date(
+        dayjs(traveler.end_date_policy, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+      );
+      try {
+        await this.travelerRepository.createTraveler(
+          obj,
+          coverage,
+          client,
+          nationality,
+          origin,
+        );
+      } catch (error) {
+        if (error instanceof Error) {
+          duplicate.push(obj);//arreglar este metodo para mañana
+        }
+      }
     });
-    return 'ok';
+    if (duplicate.length > 0) return duplicate;
   }
   async validateTravelers(
     travelers: FileTravelerDto[],
     coverages: CoverageEntity[],
     countries: CountryEntity[],
-  ): Promise<FileErrorsDto[]> {
+  ): Promise<FileErrorsDto[] | void> {
     const validator = new Validator();
     let i = 2;
     const listFileErrors: FileErrorsDto[] = [];
     travelers.map(async (traveler) => {
-      let error = undefined;
+      let error: ValidationError[] = undefined;
       error = await validator.validate(traveler, {
         validationError: { target: false },
       });
-      const errorHandled = this.handleErrors(error, i);
+      let errorHandled = new FileErrorsDto();
+
       const manualErrors = this.manualValidation(
         coverages,
         traveler,
         countries,
       );
-      listFileErrors.push(this.parseErors(errorHandled, manualErrors));
+      if (error.length > 0) errorHandled = this.handleErrors(error, i);
+      const errors = this.parseErors(errorHandled, manualErrors);
+      if (errors) listFileErrors.push(errors);
+
       i++;
     });
-    return listFileErrors;
   }
 
   manualValidation(
     coverages: CoverageEntity[],
     traveler: FileTravelerDto,
     countries: CountryEntity[],
-  ) {
+  ): FileErrorsDto | undefined {
     const fileErrors: FileErrorsDto = new FileErrorsDto();
     fileErrors.errors = [];
     const coverage = ValidateFile.validateCoverage(traveler, coverages);
@@ -131,30 +162,38 @@ export class TravelerUploadFilesService {
     errorsByRow.errors = [];
     // const listByRow: ErrorsDto[] = [];
     lisValidation.map((e) => {
-      const errors = new ErrorsDto();
-      errors.property = e.property;
-      const key = Object.keys(e.constraints);
-      errors.errors = e.constraints[key[0]];
-      errorsByRow.errors.push(errors);
+      if (e.property) {
+        const errors = new ErrorsDto();
+        errors.property = e.property;
+        const key = Object.keys(e.constraints);
+        errors.errors = e.constraints[key[0]];
+        errorsByRow.errors.push(errors);
+      }
     });
-    errorsByRow.row = row;
+    if (errorsByRow.errors.length > 0) errorsByRow.row = row;
     return errorsByRow;
   }
-  findErrorsInList(automaticErrors: FileErrorsDto, prop: string): ErrorsDto {
-    return automaticErrors.errors.find((e) => e.property == prop);
+  findErrorsInList(
+    automaticErrors: FileErrorsDto | void,
+    prop: string,
+  ): ErrorsDto {
+    if (automaticErrors)
+      return automaticErrors.errors.find((e) => e.property == prop);
   }
   parseErors(
-    handleErrors: FileErrorsDto,
-    manualErrors: FileErrorsDto,
+    handleErrors: FileErrorsDto | undefined,
+    manualErrors: FileErrorsDto | undefined,
   ): FileErrorsDto {
     const errors = handleErrors;
-    manualErrors.errors.map((aut) => {
-      const error: ErrorsDto = this.findErrorsInList(
-        handleErrors,
-        aut.property,
-      );
-      if (!error) errors.errors.push(aut);
-    });
+    if (manualErrors)
+      if (manualErrors.errors.length > 0)
+        manualErrors.errors.map((aut) => {
+          const error: ErrorsDto = this.findErrorsInList(
+            handleErrors,
+            aut.property,
+          );
+          if (!error) errors.errors.push(aut);
+        });
     return errors;
   }
 }

@@ -11,7 +11,9 @@ import {
   Res,
   UseInterceptors,
   UploadedFile,
+  HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { TravelerService } from './service/traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
@@ -53,8 +55,11 @@ export class TravelerController {
     //@GetUser() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: number,
-  ): Promise<string | FileErrorsDto[]> {
-    return this.travelerUploadService.processFile(file, id);
+    @Res() response: Response,
+  ) {
+    const resp = await this.travelerUploadService.processFile(file, id);
+    //if (resp.length < 0) return response.status(HttpStatus.OK);
+    return response.status(HttpStatus.CONFLICT).send(resp);
   }
 
   @Get()

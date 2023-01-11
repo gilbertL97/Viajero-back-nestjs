@@ -27,12 +27,14 @@ export class ValidateDateBefore implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
     const [date_start] = args.constraints;
     const date_before = (args.object as Date)[date_start];
-    return dayjs(value).isBefore(dayjs(date_before));
+    return dayjs(value, 'DD/MM/YYYY').isBefore(
+      dayjs(date_before, 'DD/MM/YYYY'),
+    );
   }
 
   defaultMessage(args: ValidationArguments) {
     const [date_start] = args.constraints;
     const date_before = (args.object as Date)[date_start];
-    return '$property no es anterior a la fecha :' + date_before;
+    return '$property no es anterior a la fecha :' + date_before.toString();
   }
 }
