@@ -30,6 +30,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { coverageStorage, TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { FileErrorsDto } from './dto/fileErrors.dto';
+import { FileTravelerDto } from './dto/file-traveler.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
@@ -56,9 +57,11 @@ export class TravelerController {
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: number,
     @Res() response: Response,
-  ) {
+  ): Promise<Response<FileTravelerDto[] | FileErrorsDto[]>> {
     const resp = await this.travelerUploadService.processFile(file, id);
-    //if (resp.length < 0) return response.status(HttpStatus.OK);
+    if (!resp) return response.status(HttpStatus.OK);
+    if (resp[1] instanceof FileErrorsDto)
+      return response.status(HttpStatus.BAD_REQUEST).send(resp);
     return response.status(HttpStatus.CONFLICT).send(resp);
   }
 

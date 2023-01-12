@@ -96,5 +96,6 @@ export class TravelerEntity extends BaseEntity {
   makeId() {
     // la llave primaria es el pasaporte + fecha de comienzo +mas la fecha de fin si se repite hay um error
     this.id = this.passport + this.start_date + this.name;
+    console.log(this.start_date);
   }
 }

@@ -28,7 +28,10 @@ export class TravelerUploadFilesService {
     private readonly countryService: CountryService,
     private readonly coverageService: CoverageService,
   ) {}
-  async processFile(file: Express.Multer.File, idClient: number) {
+  async processFile(
+    file: Express.Multer.File,
+    idClient: number,
+  ): Promise<FileTravelerDto[] | FileErrorsDto[] | void> {
     //const TravelersErrors: TravelerEntity[] = [];
     const client = await this.contratctoService.getContractor(idClient);
     const countries = await this.countryService.findAll();
@@ -45,10 +48,10 @@ export class TravelerUploadFilesService {
     coverages: CoverageEntity[],
     countries: CountryEntity[],
     client: ContratorEntity,
-  ) {
+  ): Promise<FileTravelerDto[] | void> {
     const createTraveler = new CreateTravelerDto();
     const duplicate: FileTravelerDto[] = [];
-    travelers.map(async (traveler) => {
+    for (const traveler of travelers) {
       const coverage = coverages.find((c) => travelers[1].coverage == c.name);
       const origin = ValidateFile.findCountry(
         traveler.origin_country,
@@ -59,7 +62,6 @@ export class TravelerUploadFilesService {
         countries,
       );
       const obj = Object.assign(createTraveler, traveler);
-      console.log(obj.born_date);
       if (obj.born_date) {
         console.log(obj.born_date);
         obj.born_date = new Date(
@@ -77,20 +79,14 @@ export class TravelerUploadFilesService {
       obj.end_date_policy = new Date(
         dayjs(traveler.end_date_policy, 'DD/MM/YYYY').format('YYYY-MM-DD'),
       );
-      try {
-        await this.travelerRepository.createTraveler(
-          obj,
-          coverage,
-          client,
-          nationality,
-          origin,
-        );
-      } catch (error) {
-        if (error instanceof Error) {
-          duplicate.push(obj);//arreglar este metodo para mañana
-        }
-      }
-    });
+      await this.travelerRepository
+        .createTraveler(obj, coverage, client, nationality, origin)
+        .catch((error) => {
+          if (error instanceof Error) {
+            duplicate.push(traveler); //arreglar este metodo para mañana
+          } else throw error;
+        });
+    }
     if (duplicate.length > 0) return duplicate;
   }
   async validateTravelers(
