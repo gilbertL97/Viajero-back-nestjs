@@ -97,7 +97,7 @@ export class TravelerUploadFilesService {
     const validator = new Validator();
     let i = 2;
     const listFileErrors: FileErrorsDto[] = [];
-    travelers.map(async (traveler) => {
+    for (const traveler of travelers) {
       let error: ValidationError[] = undefined;
       error = await validator.validate(traveler, {
         validationError: { target: false },
@@ -112,9 +112,9 @@ export class TravelerUploadFilesService {
       if (error.length > 0) errorHandled = this.handleErrors(error, i);
       const errors = this.parseErors(errorHandled, manualErrors);
       if (errors) listFileErrors.push(errors);
-
       i++;
-    });
+    }
+    return listFileErrors;
   }
 
   manualValidation(
