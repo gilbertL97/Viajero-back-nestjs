@@ -22,7 +22,7 @@ export function IsDateFile(validationOptions?: ValidationOptions) {
 export class ValidateDates implements ValidatorConstraintInterface {
   validate(value: Date) {
     //console.log(value, dayjs(value, 'dd/mm/yyyy').isValid());
-    return dayjs(value, 'dd/mm/yyyy', true).isValid();
+    return dayjs(value, 'DD/MM/YYYY', 'es', true).isValid();
   }
 
   defaultMessage() {
