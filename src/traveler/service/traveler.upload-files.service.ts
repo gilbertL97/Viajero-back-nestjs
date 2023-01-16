@@ -111,10 +111,10 @@ export class TravelerUploadFilesService {
       );
       if (error.length > 0) errorHandled = this.handleErrors(error, i);
       const errors = this.parseErors(errorHandled, manualErrors);
-      if (errors) listFileErrors.push(errors);
+      if (errors.row) listFileErrors.push(errors);
       i++;
     }
-    return listFileErrors;
+    if (listFileErrors.length > 0) return listFileErrors;
   }
 
   manualValidation(
