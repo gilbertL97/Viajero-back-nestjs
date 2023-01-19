@@ -8,16 +8,13 @@ import { TravelerRepository } from '../repository/traveler.repository';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileTravelerDto } from '../dto/file-traveler.dto';
 import { ValidationError, Validator } from 'class-validator';
-import { FileErrorsDto } from '../dto/fileErrors.dto';
 import { CountryEntity } from 'src/country/entities/country.entity';
-import { ErrorsDto } from '../dto/error.dto';
 import { ValidateFile } from '../helper/validation.file';
 import { ExcelJSCOn } from '../repository/excelConection';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import dayjs = require('dayjs');
-import { DuplicateDto } from '../dto/duplicateFileError.dto';
-import { TravelerEntity } from '../entity/traveler.entity';
+import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -31,7 +28,7 @@ export class TravelerUploadFilesService {
   async processFile(
     file: Express.Multer.File,
     idClient: number,
-  ): Promise<FileTravelerDto[] | FileErrorsDto[] | void> {
+  ): Promise<FileTravelerDto[] | FileErrorsTravelerDto[] | void> {
     //const TravelersErrors: TravelerEntity[] = [];
     const client = await this.contratctoService.getContractor(idClient);
     const countries = await this.countryService.findAll();
@@ -63,7 +60,6 @@ export class TravelerUploadFilesService {
       );
       const obj = Object.assign(createTraveler, traveler);
       if (obj.born_date) {
-        console.log(obj.born_date);
         obj.born_date = new Date(
           dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         );
@@ -93,25 +89,25 @@ export class TravelerUploadFilesService {
     travelers: FileTravelerDto[],
     coverages: CoverageEntity[],
     countries: CountryEntity[],
-  ): Promise<FileErrorsDto[] | void> {
+  ): Promise<FileErrorsTravelerDto[] | void> {
     const validator = new Validator();
     let i = 2;
-    const listFileErrors: FileErrorsDto[] = [];
+    const listFileErrors: FileErrorsTravelerDto[] = [];
     for (const traveler of travelers) {
       let error: ValidationError[] = undefined;
       error = await validator.validate(traveler, {
         validationError: { target: false },
       });
-      let errorHandled = new FileErrorsDto();
-
-      const manualErrors = this.manualValidation(
+      const manualErrors: FileErrorsTravelerDto = this.manualValidation(
         coverages,
         traveler,
         countries,
       );
-      if (error.length > 0) errorHandled = this.handleErrors(error, i);
-      const errors = this.parseErors(errorHandled, manualErrors);
-      if (errors.row) listFileErrors.push(errors);
+      const errors = this.parseErors(this.handleErrors(error), manualErrors);
+      if (errors) {
+        errors.row = i;
+        listFileErrors.push(errors);
+      }
       i++;
     }
     if (listFileErrors.length > 0) return listFileErrors;
@@ -121,75 +117,66 @@ export class TravelerUploadFilesService {
     coverages: CoverageEntity[],
     traveler: FileTravelerDto,
     countries: CountryEntity[],
-  ): FileErrorsDto | undefined {
-    const fileErrors: FileErrorsDto = new FileErrorsDto();
-    fileErrors.errors = [];
+  ): FileErrorsTravelerDto | undefined {
+    const fileErrors = new FileErrorsTravelerDto();
+    //fileErrors.errors = [];
     const coverage = ValidateFile.validateCoverage(traveler, coverages);
     if (coverage instanceof CoverageEntity) {
       const amount_days_covered = ValidateFile.validateAmountDays(
         coverage,
         traveler,
       );
-      if (amount_days_covered instanceof ErrorsDto)
-        fileErrors.errors.push(amount_days_covered);
+      if (typeof amount_days_covered == 'string')
+        fileErrors.amount_days_covered = amount_days_covered;
 
       const amount_days_high_risk = ValidateFile.validateAmountHighRisk(
         coverage,
         traveler,
       );
-      if (amount_days_high_risk instanceof ErrorsDto)
-        fileErrors.errors.push(amount_days_high_risk);
+      if (typeof amount_days_high_risk == 'string')
+        fileErrors.amount_days_high_risk = amount_days_high_risk;
       const total = ValidateFile.validateTotalAmount(
         traveler,
         amount_days_high_risk,
         amount_days_covered,
       );
-      if (total instanceof ErrorsDto) fileErrors.errors.push(total);
-    } else fileErrors.errors.push(coverage);
+      if (typeof total == 'string') fileErrors.total_amount = total;
+    } else fileErrors.coverage = coverage;
     const nationality = ValidateFile.validateNationality(traveler, countries);
-    if (nationality) fileErrors.errors.push(nationality);
+    if (nationality) fileErrors.nationality = nationality;
     const origin = ValidateFile.validateOriginCountry(traveler, countries);
-    if (origin) fileErrors.errors.push(origin);
+    if (origin) fileErrors.origin_country = origin;
     return fileErrors;
   }
 
-  handleErrors(lisValidation: ValidationError[], row: number): FileErrorsDto {
-    const errorsByRow: FileErrorsDto = new FileErrorsDto();
-    errorsByRow.errors = [];
-    // const listByRow: ErrorsDto[] = [];
+  handleErrors(lisValidation: ValidationError[]): FileErrorsTravelerDto {
+    const fileErrors = new FileErrorsTravelerDto();
     lisValidation.map((e) => {
       if (e.property) {
-        const errors = new ErrorsDto();
-        errors.property = e.property;
         const key = Object.keys(e.constraints);
-        errors.errors = e.constraints[key[0]];
-        errorsByRow.errors.push(errors);
+        fileErrors[e.property] = e.constraints[key[0]];
       }
     });
-    if (errorsByRow.errors.length > 0) errorsByRow.row = row;
-    return errorsByRow;
-  }
-  findErrorsInList(
-    automaticErrors: FileErrorsDto | void,
-    prop: string,
-  ): ErrorsDto {
-    if (automaticErrors)
-      return automaticErrors.errors.find((e) => e.property == prop);
+
+    if (Object.entries.length > 0) return fileErrors;
+
+    return undefined;
   }
   parseErors(
-    handleErrors: FileErrorsDto | undefined,
-    manualErrors: FileErrorsDto | undefined,
-  ): FileErrorsDto {
-    const errors = handleErrors;
-    if (manualErrors)
-      if (manualErrors.errors.length > 0)
-        manualErrors.errors.map((aut) => {
-          const error: ErrorsDto = this.findErrorsInList(
-            handleErrors,
-            aut.property,
-          );
-          if (!error) errors.errors.push(aut);
-        });
-    return errors;
+    handleErrors: FileErrorsTravelerDto | undefined,
+    manualErrors: FileErrorsTravelerDto | undefined,
+  ): FileErrorsTravelerDto {
+    let errors = new FileErrorsTravelerDto();
+    const isNotEmptyHE = handleErrors && this.isNotEmptyObject(handleErrors);
+    const isNotEmptyME = manualErrors && this.isNotEmptyObject(manualErrors);
+    if (isNotEmptyHE && isNotEmptyME) {
+      errors = Object.assign(errors, manualErrors, handleErrors);
+      return errors;
+    }
+    if (!isNotEmptyME && isNotEmptyHE) return handleErrors;
+    if (!isNotEmptyHE && isNotEmptyME) return manualErrors;
+  }
+  isNotEmptyObject(obj: any): boolean {
+    return Object.entries(obj).length > 0 ? true : false;
   }
 }

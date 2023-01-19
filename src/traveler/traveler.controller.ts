@@ -31,6 +31,7 @@ import { coverageStorage, TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { FileErrorsDto } from './dto/fileErrors.dto';
 import { FileTravelerDto } from './dto/file-traveler.dto';
+import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
@@ -57,10 +58,13 @@ export class TravelerController {
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: number,
     @Res() response: Response,
-  ): Promise<Response<FileTravelerDto[] | FileErrorsDto[]>> {
+  ): Promise<Response<FileTravelerDto[] | FileErrorsTravelerDto[] | void>> {
     const resp = await this.travelerUploadService.processFile(file, id);
-    if (!resp) return response.status(HttpStatus.OK);
-    if (resp[1] instanceof FileErrorsDto)
+    if (!resp) {
+      return response.status(HttpStatus.ACCEPTED).send();
+    }
+
+    if (resp[1] instanceof FileErrorsTravelerDto)
       return response.status(HttpStatus.BAD_REQUEST).send(resp);
     return response.status(HttpStatus.CONFLICT).send(resp);
   }
@@ -74,7 +78,6 @@ export class TravelerController {
   async advanceSearch(
     @Query() travelerFilter: FilterTravelerDto,
   ): Promise<TravelerEntity[]> {
-    console.log(travelerFilter);
     const data = await this.travelerService.advancedSearch(travelerFilter);
     return data;
   }

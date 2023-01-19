@@ -36,7 +36,6 @@ const uploadFilterCsvExcel = (req, file, cb) => {
       ),
       false,
     );
-    console.log(file);
   }
 };
 

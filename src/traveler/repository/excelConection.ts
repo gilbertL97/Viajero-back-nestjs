@@ -7,7 +7,6 @@ export class ExcelJSCOn {
   ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
-    console.log(file);
     const excel = await workbook.xlsx.readFile(file.path);
     const worksheet = excel.getWorksheet(1);
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
