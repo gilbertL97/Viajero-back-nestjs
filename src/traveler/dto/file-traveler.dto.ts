@@ -21,7 +21,7 @@ export class FileTravelerDto {
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   name: string;
 
@@ -45,7 +45,7 @@ export class FileTravelerDto {
       'El campo Pasaporte no cumple con el rango de caracteres entre 6 y 50',
   })
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   passport: string;
 
@@ -61,7 +61,7 @@ export class FileTravelerDto {
     message: 'La fecha inicio no es anterior a la fecha de fin ',
   })
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   @IsDateFile()
   start_date: Date | string;
@@ -72,7 +72,7 @@ export class FileTravelerDto {
     message: 'La fecha de fin no es posterior a la fecha inicio',
   })
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   @IsDateFile()
   end_date_policy: Date | string;
@@ -80,24 +80,20 @@ export class FileTravelerDto {
   @IsOptional()
   @IsString()
   @MinLength(2, {
-    message:
-      'El Texto es muy corto . El tamaño minimo de $constraint caracteres, pero actualmente es $value',
+    message: 'El Texto es muy corto .',
   })
   @MaxLength(30, {
-    message:
-      'El Texto es muy largo. El tamaño minimo es de $constraint caracteres, pero actualmente el valor es $value',
+    message: 'El Texto es muy largo.',
   })
   origin_country: string;
 
   @IsOptional()
   @IsString()
   @MinLength(2, {
-    message:
-      'El Texto es muy corto . El tamaño minimo de $constraint caracteres, pero actualmente es $value',
+    message: 'El Texto es muy corto .',
   })
   @MaxLength(30, {
-    message:
-      'El Texto es muy largo. El tamaño minimo es de $constraint caracteres, pero actualmente el valor es $value',
+    message: 'El Texto es muy largo. ',
   })
   nationality: string;
 
@@ -108,18 +104,18 @@ export class FileTravelerDto {
   flight: string;
 
   @IsNumber(undefined, {
-    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+    message: 'El valor introducido debe de tipo numerico.',
   })
   @Min(1)
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   @CalculateNumberOfDays('start_date', 'end_date_policy')
   number_days: number;
 
   @IsOptional()
   @IsNumber(undefined, {
-    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+    message: 'El valor introducido  debe de tipo numerico.',
   })
   @Min(0)
   @IsNumberLessThan('number_days', {
@@ -128,17 +124,16 @@ export class FileTravelerDto {
   number_high_risk_days: number;
 
   @IsNumber(undefined, {
-    message: 'El valor intrucido debe de tipo numerico ,actualmente es $value',
+    message: 'El valor introducido  debe de tipo numerico.e',
   })
   @Min(0)
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   amount_days_covered: number;
 
   @IsNumber(undefined, {
-    message:
-      'El valor introducido debe ser tipo numerico ,actualmente es $value',
+    message: 'El valor introducido debe ser tipo numerico .',
   })
   @Min(0)
   amount_days_high_risk: number;
@@ -150,7 +145,7 @@ export class FileTravelerDto {
     message: 'El valor introducido debe ser mayor que 0',
   })
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   total_amount: number;
 
@@ -158,7 +153,7 @@ export class FileTravelerDto {
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   @IsNotEmpty({
-    message: 'El Campo Obligatorio',
+    message: 'Campo Obligatorio',
   })
   coverage: string;
 }

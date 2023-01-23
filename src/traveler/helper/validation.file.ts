@@ -10,8 +10,7 @@ export class ValidateFile {
   ): string | CoverageEntity {
     const coverage = coverages.find((c) => traveler.coverage == c.name);
     if (!coverage) {
-      const coverages1 = coverages.map((c) => c.name);
-      return 'La cobertura no existe, las coberturas posible son ' + coverages1;
+      return 'El plan no existe';
     }
     return coverage;
   }
@@ -25,7 +24,7 @@ export class ValidateFile {
       coverage,
     );
     if (traveler.amount_days_high_risk != amount_days_high_risk) {
-      return 'El calculo del monto de dias de alto riesgo no es correcto';
+      return 'El calculo no es correcto';
     }
     return amount_days_high_risk;
   }
@@ -39,7 +38,7 @@ export class ValidateFile {
     );
     if (amount_days_covered != traveler.amount_days_covered) {
       console.log(amount_days_covered, traveler.amount_days_covered);
-      return 'El calculo del monto de dias cubierto no es correcto';
+      return 'El calculo  no es correcto';
     }
     return amount_days_covered;
   }
@@ -48,7 +47,7 @@ export class ValidateFile {
     amount_days_high_risk: number | string,
     amount_days_covered: number | string,
   ): string | number {
-    const error = 'El calculo del monto total no es correcto';
+    const error = 'El calculo no es correcto';
     if (typeof amount_days_covered == 'string') {
       return error;
     }
