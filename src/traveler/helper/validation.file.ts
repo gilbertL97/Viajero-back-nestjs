@@ -50,7 +50,6 @@ export class ValidateFile {
     const error = 'El calculo no es correcto';
 
     if (typeof amount_days_covered == 'string') {
-      console.log(amount_days_covered, typeof amount_days_covered);
       return error;
     }
     if (typeof amount_days_high_risk == 'string') {

@@ -94,16 +94,17 @@ export class TravelerUploadFilesService {
     let i = 2;
     const listFileErrors: FileErrorsTravelerDto[] = [];
     for (const traveler of travelers) {
-      let error: ValidationError[] = undefined;
-      error = await validator.validate(traveler, {
+      const validatorError = await validator.validate(traveler, {
         validationError: { target: false },
       });
-      const manualErrors: FileErrorsTravelerDto = this.manualValidation(
+      const validationErrors = this.handleErrors(validatorError);
+      const errors: FileErrorsTravelerDto = this.manualValidation(
         coverages,
         traveler,
         countries,
+        validationErrors,
       );
-      const errors = this.parseErors(this.handleErrors(error), manualErrors);
+
       if (errors) {
         errors.row = i;
         listFileErrors.push(errors);
@@ -117,6 +118,7 @@ export class TravelerUploadFilesService {
     coverages: CoverageEntity[],
     traveler: FileTravelerDto,
     countries: CountryEntity[],
+    validationErrors: FileErrorsTravelerDto,
   ): FileErrorsTravelerDto | undefined {
     const fileErrors = new FileErrorsTravelerDto();
     //fileErrors.errors = [];
@@ -145,7 +147,7 @@ export class TravelerUploadFilesService {
     if (nationality) fileErrors.nationality = nationality;
     const origin = ValidateFile.validateOriginCountry(traveler, countries);
     if (origin) fileErrors.origin_country = origin;
-    return fileErrors;
+    return this.parseErors(validationErrors, fileErrors);
   }
 
   handleErrors(lisValidation: ValidationError[]): FileErrorsTravelerDto {
@@ -162,20 +164,24 @@ export class TravelerUploadFilesService {
     return undefined;
   }
   parseErors(
-    handleErrors: FileErrorsTravelerDto | undefined,
+    validationErrors: FileErrorsTravelerDto | undefined,
     manualErrors: FileErrorsTravelerDto | undefined,
   ): FileErrorsTravelerDto {
     let errors = new FileErrorsTravelerDto();
-    const isNotEmptyHE = handleErrors && this.isNotEmptyObject(handleErrors);
+    const isNotEmptyHE =
+      validationErrors && this.isNotEmptyObject(validationErrors);
     const isNotEmptyME = manualErrors && this.isNotEmptyObject(manualErrors);
     if (isNotEmptyHE && isNotEmptyME) {
-      errors = Object.assign(errors, manualErrors, handleErrors);
+      errors = Object.assign(errors, manualErrors, validationErrors);
       return errors;
     }
-    if (!isNotEmptyME && isNotEmptyHE) return handleErrors;
+    if (!isNotEmptyME && isNotEmptyHE) return validationErrors;
     if (!isNotEmptyHE && isNotEmptyME) return manualErrors;
   }
   isNotEmptyObject(obj: any): boolean {
     return Object.entries(obj).length > 0 ? true : false;
+  }
+  rectifiErrors(manualErrors: FileErrorsTravelerDto) {
+    throw new Error('Function not implemented.');
   }
 }
