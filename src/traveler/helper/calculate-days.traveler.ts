@@ -22,7 +22,7 @@ export class CalculateDaysTraveler {
     coverage: CoverageEntity,
     days: number,
   ): number {
-    if (!coverage.daily) return coverage.price;
+    if (!coverage.daily) return +coverage.price;
     return coverage.price * days;
   }
   public static totalAmount(

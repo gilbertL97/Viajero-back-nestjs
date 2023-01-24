@@ -119,12 +119,12 @@ export class FileTravelerDto {
   })
   @Min(0)
   @IsNumberLessThan('number_days', {
-    message: '$property debe ser menor la cantidad de dias: $value',
+    message: 'cantidad de dias incorrecta',
   })
   number_high_risk_days: number;
 
   @IsNumber(undefined, {
-    message: 'El valor introducido  debe de tipo numerico.e',
+    message: 'El valor introducido  debe de tipo numerico',
   })
   @Min(0)
   @IsNotEmpty({

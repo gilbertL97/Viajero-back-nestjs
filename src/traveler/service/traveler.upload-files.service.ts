@@ -33,7 +33,7 @@ export class TravelerUploadFilesService {
     const client = await this.contratctoService.getContractor(idClient);
     const countries = await this.countryService.findAll();
     const coverages = await this.coverageService.getCoverages();
-    const travelers = await ExcelJSCOn.getTravelerByExcel(file);
+    const travelers = await ExcelJSCOn.getTravelerByFile(file);
     await FileHelper.deletFile(file.path);
     const erors = await this.validateTravelers(travelers, coverages, countries);
     if (erors) return erors;
@@ -128,7 +128,6 @@ export class TravelerUploadFilesService {
       );
       if (typeof amount_days_covered == 'string')
         fileErrors.amount_days_covered = amount_days_covered;
-
       const amount_days_high_risk = ValidateFile.validateAmountHighRisk(
         coverage,
         traveler,

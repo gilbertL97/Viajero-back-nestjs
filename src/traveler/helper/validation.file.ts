@@ -32,12 +32,12 @@ export class ValidateFile {
     coverage: CoverageEntity,
     traveler: FileTravelerDto,
   ): string | number {
-    const amount_days_covered = CalculateDaysTraveler.totalAmountCoveredDays(
-      coverage,
-      traveler.number_days,
-    );
+    const amount_days_covered: number =
+      CalculateDaysTraveler.totalAmountCoveredDays(
+        coverage,
+        traveler.number_days,
+      );
     if (amount_days_covered != traveler.amount_days_covered) {
-      console.log(amount_days_covered, traveler.amount_days_covered);
       return 'El calculo  no es correcto';
     }
     return amount_days_covered;
@@ -48,10 +48,13 @@ export class ValidateFile {
     amount_days_covered: number | string,
   ): string | number {
     const error = 'El calculo no es correcto';
+
     if (typeof amount_days_covered == 'string') {
+      console.log(amount_days_covered, typeof amount_days_covered);
       return error;
     }
     if (typeof amount_days_high_risk == 'string') {
+      console.log(typeof amount_days_covered);
       return error;
     }
     const total = amount_days_covered + amount_days_high_risk;

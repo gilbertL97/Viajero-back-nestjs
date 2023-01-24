@@ -2,6 +2,10 @@ import { FileTravelerDto } from '../dto/file-traveler.dto';
 import Excel = require('exceljs');
 import dayjs = require('dayjs');
 export class ExcelJSCOn {
+  static async getTravelerByFile(file: Express.Multer.File) {
+    if (file.mimetype.match(/\/(csv)$/)) return this.getTravelerByCSV(file);
+    return this.getTravelerByExcel(file);
+  }
   static async getTravelerByExcel(
     file: Express.Multer.File,
   ): Promise<FileTravelerDto[]> {
@@ -16,29 +20,18 @@ export class ExcelJSCOn {
     });
     return travelers;
   }
-
-  static parseTraveler(r: Excel.Row): FileTravelerDto {
-    const traveler = new FileTravelerDto();
-    const rows = r.values;
-    traveler.name = rows[1]; //Titular ' + rows[1]);
-    traveler.sex = rows[2]; //'Sexo ' + rows[2]
-    traveler.born_date = rows[3]; //'Fecha de Nacimiento ' + rows[3]
-    traveler.email = rows[4]; //'Correo Electrónico ' + rows[4]
-    traveler.passport = rows[5]; //'PASAPORTE ' + rows[5]
-    traveler.origin_country = rows[6]; //'PAIS ORIGEN ' + rows[6]
-    traveler.nationality = rows[7]; //'NACIONALIDAD ' + rows[7]
-    traveler.flight = rows[8]; //'VUELO ' + rows[8]
-    traveler.coverage = rows[9]; //'TIPO COBERTURA ' + rows[9]
-    traveler.sale_date = rows[10]; //'FECHA DE VENTA ' + rows[10]
-    traveler.start_date = rows[11]; //'FECHA DE INICIO ' + rows[11]
-    traveler.end_date_policy = rows[12]; //'FECHA DE FIN DE POLIZA ' + rows[12]
-    traveler.number_high_risk_days = this.isFormula(rows[13]); //'DIAS ACTIVIDAD ALTO RIESGO ' + rows[13]
-    traveler.number_days = this.isFormula(rows[14]); //'CANTIDAD DIAS' + rows[14]
-    traveler.amount_days_high_risk = this.isFormula(rows[15]); //'IMPORTE DIAS ALTO RIESGO ' + rows[15]
-    traveler.amount_days_covered = this.isFormula(rows[16]); //'IMPORTE DIAS CUBIERTOS ' + rows[16])
-    traveler.total_amount = this.isFormula(rows[17]); //IMPORTE TOTAL ' + rows[17]
-    return traveler;
+  static async getTravelerByCSV(file: Express.Multer.File) {
+    const travelers: FileTravelerDto[] = [];
+    const workbook = new Excel.Workbook();
+    const csv = await workbook.csv.readFile(file.path);
+    csv.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
+    csv.eachRow(async (r) => {
+      const traveler = this.testParseTraveler(r);
+      travelers.push(traveler);
+    });
+    return travelers;
   }
+
   static testParseTraveler(r: Excel.Row): FileTravelerDto {
     const traveler = new FileTravelerDto();
     traveler.name = this.isEmptyString(r.getCell(1).text); //Titular ' + this.isEmptyString(r.getCell(1]);
@@ -76,6 +69,8 @@ export class ExcelJSCOn {
     if (typeof row === 'number') return row;
     if (typeof row === 'undefined') return 0;
     if (row.result) return row.result;
+    if (typeof row === 'string' && row.startsWith('$')) return +row.slice(1);
+    if (typeof row === 'string') return +row;
     return 0;
   }
 }

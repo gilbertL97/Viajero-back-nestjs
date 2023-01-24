@@ -60,6 +60,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       traveler.amount_days_high_risk,
     );
     const newTraveler = await this.save(traveler).catch((error) => {
+      console.log(error);
       if (error.code == 23505) throw new Error('Viajero duplicado');
       throw new BadRequestException('error in database');
     });
