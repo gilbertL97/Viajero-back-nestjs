@@ -4,11 +4,18 @@ import { FileTravelerDto } from '../dto/file-traveler.dto';
 import { CalculateDaysTraveler } from './calculate-days.traveler';
 
 export class ValidateFile {
-  public static validateCoverage(
+  public static findCoverage(
     traveler: FileTravelerDto,
     coverages: CoverageEntity[],
   ): string | CoverageEntity {
-    const coverage = coverages.find((c) => traveler.coverage == c.name);
+    const coverage = coverages.find(
+      (c) =>
+        traveler.coverage
+          .toUpperCase()
+          .localeCompare(c.name.toUpperCase().trim().toUpperCase(), undefined, {
+            sensitivity: 'base',
+          }) == 0,
+    );
     if (!coverage) {
       return 'El plan no existe';
     }
@@ -98,7 +105,17 @@ export class ValidateFile {
       if (coun.length == 2 && country.iso2.toUpperCase() == coun)
         return country;
       if (coun.length == 3 && country.iso.toUpperCase() == coun) return country;
-      if (coun.length > 3 && country.comun_name.toUpperCase().trim() === coun)
+      if (
+        country.comun_name
+          .toUpperCase()
+          .localeCompare(
+            country.comun_name.toUpperCase().trim().toUpperCase(),
+            undefined,
+            {
+              sensitivity: 'base',
+            },
+          ) == 0
+      )
         return country;
     });
   }

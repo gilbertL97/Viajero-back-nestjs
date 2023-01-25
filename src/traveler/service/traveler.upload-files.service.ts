@@ -49,7 +49,7 @@ export class TravelerUploadFilesService {
     const createTraveler = new CreateTravelerDto();
     const duplicate: FileTravelerDto[] = [];
     for (const traveler of travelers) {
-      const coverage = coverages.find((c) => travelers[1].coverage == c.name);
+      const coverage = ValidateFile.findCoverage(traveler, coverages);
       const origin = ValidateFile.findCountry(
         traveler.origin_country,
         countries,
@@ -76,7 +76,13 @@ export class TravelerUploadFilesService {
         dayjs(traveler.end_date_policy, 'DD/MM/YYYY').format('YYYY-MM-DD'),
       );
       await this.travelerRepository
-        .createTraveler(obj, coverage, client, nationality, origin)
+        .createTraveler(
+          obj,
+          coverage as CoverageEntity,
+          client,
+          nationality,
+          origin,
+        )
         .catch((error) => {
           if (error instanceof Error) {
             duplicate.push(traveler); //arreglar este metodo para mañana
@@ -122,7 +128,7 @@ export class TravelerUploadFilesService {
   ): FileErrorsTravelerDto | undefined {
     const fileErrors = new FileErrorsTravelerDto();
     //fileErrors.errors = [];
-    const coverage = ValidateFile.validateCoverage(traveler, coverages);
+    const coverage = ValidateFile.findCoverage(traveler, coverages);
     if (coverage instanceof CoverageEntity) {
       const amount_days_covered = ValidateFile.validateAmountDays(
         coverage,
@@ -142,6 +148,7 @@ export class TravelerUploadFilesService {
         amount_days_covered,
       );
       if (typeof total == 'string') fileErrors.total_amount = total;
+      if (!coverage.daily) delete fileErrors.number_days;
     } else fileErrors.coverage = coverage;
     const nationality = ValidateFile.validateNationality(traveler, countries);
     if (nationality) fileErrors.nationality = nationality;

@@ -2,9 +2,12 @@ import { FileTravelerDto } from '../dto/file-traveler.dto';
 import Excel = require('exceljs');
 import dayjs = require('dayjs');
 export class ExcelJSCOn {
-  static async getTravelerByFile(file: Express.Multer.File) {
-    if (file.mimetype.match(/\/(csv)$/)) return this.getTravelerByCSV(file);
-    return this.getTravelerByExcel(file);
+  static async getTravelerByFile(
+    file: Express.Multer.File,
+  ): Promise<FileTravelerDto[]> {
+    if (file.mimetype.match(/\/(csv)$/))
+      return await this.getTravelerByCSV(file);
+    return await this.getTravelerByExcel(file);
   }
   static async getTravelerByExcel(
     file: Express.Multer.File,
@@ -20,7 +23,9 @@ export class ExcelJSCOn {
     });
     return travelers;
   }
-  static async getTravelerByCSV(file: Express.Multer.File) {
+  static async getTravelerByCSV(
+    file: Express.Multer.File,
+  ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
     const csv = await workbook.csv.readFile(file.path);
