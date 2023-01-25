@@ -27,9 +27,8 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { FilterTravelerDto } from './dto/filter-traveler.dto';
 import { TravelerPdfService } from './service/traveler-pdf.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { coverageStorage, TravelersStorage } from 'src/common/file/storage';
+import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
-import { FileErrorsDto } from './dto/fileErrors.dto';
 import { FileTravelerDto } from './dto/file-traveler.dto';
 import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
 
