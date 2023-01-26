@@ -148,7 +148,7 @@ export class TravelerUploadFilesService {
         amount_days_covered,
       );
       if (typeof total == 'string') fileErrors.total_amount = total;
-      if (!coverage.daily) delete fileErrors.number_days;
+      if (!coverage.daily) delete validationErrors.number_days;
     } else fileErrors.coverage = coverage;
     const nationality = ValidateFile.validateNationality(traveler, countries);
     if (nationality) fileErrors.nationality = nationality;

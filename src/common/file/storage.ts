@@ -2,6 +2,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import path = require('path');
+import { ValidateFile } from 'src/traveler/helper/validation.file';
 
 const uploadFilterPdf = (req, file, cb) => {
   if (file.mimetype.match(/\/(pdf)$/)) {
@@ -19,12 +20,9 @@ const uploadFilterPdf = (req, file, cb) => {
   }
 };
 const uploadFilterCsvExcel = (req, file, cb) => {
-  if (
-    file.mimetype.match(
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    ) ||
-    file.mimetype.match(/\/(csv)$/)
-  ) {
+  console.log(file.mimetype);
+  if (ValidateFile.isCSV(file) || ValidateFile.isExcel(file)) {
+    console.log(file.mimetype);
     // Allow storage of file
     cb(null, true);
   } else {

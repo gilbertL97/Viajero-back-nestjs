@@ -1,12 +1,12 @@
 import { FileTravelerDto } from '../dto/file-traveler.dto';
 import Excel = require('exceljs');
 import dayjs = require('dayjs');
+import { ValidateFile } from '../helper/validation.file';
 export class ExcelJSCOn {
   static async getTravelerByFile(
     file: Express.Multer.File,
   ): Promise<FileTravelerDto[]> {
-    if (file.mimetype.match(/\/(csv)$/))
-      return await this.getTravelerByCSV(file);
+    if (ValidateFile.isCSV(file)) return await this.getTravelerByCSV(file);
     return await this.getTravelerByExcel(file);
   }
   static async getTravelerByExcel(

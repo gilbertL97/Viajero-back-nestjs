@@ -60,11 +60,9 @@ export class ValidateFile {
       return error;
     }
     if (typeof amount_days_high_risk == 'string') {
-      console.log(typeof amount_days_covered);
       return error;
     }
     const total = amount_days_covered + amount_days_high_risk;
-    console.log(total, traveler.total_amount);
     if (total != traveler.total_amount) {
       return error;
     }
@@ -118,5 +116,16 @@ export class ValidateFile {
       )
         return country;
     });
+  }
+  static isCSV(file: Express.Multer.File) {
+    return (
+      file.mimetype.match(/\/(csv)$/) ||
+      file.mimetype.match('application/vnd.ms-excel')
+    );
+  }
+  static isExcel(file: Express.Multer.File) {
+    return file.mimetype.match(
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
   }
 }
