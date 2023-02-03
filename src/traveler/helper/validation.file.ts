@@ -8,14 +8,7 @@ export class ValidateFile {
     traveler: FileTravelerDto,
     coverages: CoverageEntity[],
   ): string | CoverageEntity {
-    const coverage = coverages.find(
-      (c) =>
-        traveler.coverage
-          .toUpperCase()
-          .localeCompare(c.name.toUpperCase().trim().toUpperCase(), undefined, {
-            sensitivity: 'base',
-          }) == 0,
-    );
+    const coverage = coverages.find((c) => this.findCoverages(c, traveler));
     if (!coverage) {
       return 'El plan no existe';
     }
@@ -126,6 +119,24 @@ export class ValidateFile {
   static isExcel(file: Express.Multer.File) {
     return file.mimetype.match(
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+  }
+  static findCoverages(c: CoverageEntity, traveler: FileTravelerDto) {
+    if (!c.parserString)
+      return (
+        traveler.coverage
+          .toUpperCase()
+          .localeCompare(c.name.toUpperCase().trim().toUpperCase(), undefined, {
+            sensitivity: 'base',
+          }) == 0
+      );
+    console.log(traveler.coverage.replace(/\s/g, ''));
+    return (
+      traveler.coverage
+        .toUpperCase()
+        .localeCompare(c.name.toUpperCase().trim().toUpperCase(), undefined, {
+          sensitivity: 'base',
+        }) == 0
     );
   }
 }

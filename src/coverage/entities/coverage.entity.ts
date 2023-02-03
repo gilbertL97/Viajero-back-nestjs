@@ -27,6 +27,9 @@ export class CoverageEntity extends BaseEntity {
   number_of_days: number;
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+  @Column({ type: 'varchar', nullable: true })
+  parserString: string;
+
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {
     cascade: true,
   })

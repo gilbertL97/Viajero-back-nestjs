@@ -4,7 +4,6 @@ import { CoverageController } from './coverage.controller';
 import { CoverageEntity } from './entities/coverage.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TravelerModule } from 'src/traveler/traveler.module';
-import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [

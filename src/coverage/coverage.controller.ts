@@ -41,12 +41,13 @@ export class CoverageController {
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
-  @Post('/test')
-  @UseInterceptors(FileInterceptor('tablePdf', coverageStorage))
-  async test(@Req() eq, @UploadedFile() file: Express.Multer.File) {
-    console.log(eq.rawHeaders, file);
+  @Post('/config')
+  async test(@Body() { test, aprobar }) {
+    const test2: string = '+' + test;
+    const debeContener = test2.split(/\+([^\+-]+)/);
 
-    return true;
+    console.log(test, aprobar, debeContener);
+    return { test, test2, aprobar, debeContener };
   }
   @UseGuards(RolesGuard)
   @Roles(
