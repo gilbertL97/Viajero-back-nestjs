@@ -122,7 +122,7 @@ export class ValidateFile {
     );
   }
   static findCoverages(c: CoverageEntity, traveler: FileTravelerDto) {
-    if (!c.parserString)
+    if (!c.configString)
       return (
         traveler.coverage
           .toUpperCase()
@@ -138,5 +138,33 @@ export class ValidateFile {
           sensitivity: 'base',
         }) == 0
     );
+  }
+  static parseStringName(cadena: string, resultado: string) {
+    if (cadena) {
+      const contain: string[] = [];
+      const notcontain: string[] = [];
+      cadena = '+' + cadena;
+      let word = cadena.length;
+      for (let i = cadena.length - 1; i >= 0; i--) {
+        const element = cadena[i];
+        if (element == '+') {
+          contain.push(cadena.slice(i + 1, word));
+          word = i;
+        }
+        if (element == '-') {
+          notcontain.push(cadena.slice(i + 1, word));
+          word = i;
+        }
+      }
+      const esta = contain.every((e) =>
+        resultado.toUpperCase().includes(e.toUpperCase()),
+      );
+      const noesta = notcontain.every(
+        (e) => !resultado.toUpperCase().includes(e.toUpperCase()),
+      );
+      const valido = esta && noesta;
+      return valido;
+    }
+    return false;
   }
 }

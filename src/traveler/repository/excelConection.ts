@@ -2,15 +2,19 @@ import { FileTravelerDto } from '../dto/file-traveler.dto';
 import Excel = require('exceljs');
 import dayjs = require('dayjs');
 import { ValidateFile } from '../helper/validation.file';
+import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 export class ExcelJSCOn {
   static async getTravelerByFile(
     file: Express.Multer.File,
+    coverages: CoverageEntity[],
   ): Promise<FileTravelerDto[]> {
-    if (ValidateFile.isCSV(file)) return await this.getTravelerByCSV(file);
-    return await this.getTravelerByExcel(file);
+    if (ValidateFile.isCSV(file))
+      return await this.getTravelerByCSV(file, coverages);
+    return await this.getTravelerByExcel(file, coverages);
   }
   static async getTravelerByExcel(
     file: Express.Multer.File,
+    coverages: CoverageEntity[],
   ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
@@ -18,26 +22,30 @@ export class ExcelJSCOn {
     const worksheet = excel.getWorksheet(1);
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
     worksheet.eachRow(async (r) => {
-      const traveler = this.testParseTraveler(r);
+      const traveler = this.testParseTraveler(r, coverages);
       travelers.push(traveler);
     });
     return travelers;
   }
   static async getTravelerByCSV(
     file: Express.Multer.File,
+    coverages: CoverageEntity[],
   ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
     const csv = await workbook.csv.readFile(file.path);
     csv.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
     csv.eachRow(async (r) => {
-      const traveler = this.testParseTraveler(r);
+      const traveler = this.testParseTraveler(r, coverages);
       travelers.push(traveler);
     });
     return travelers;
   }
 
-  static testParseTraveler(r: Excel.Row): FileTravelerDto {
+  static testParseTraveler(
+    r: Excel.Row,
+    coverages: CoverageEntity[],
+  ): FileTravelerDto {
     const traveler = new FileTravelerDto();
     traveler.name = this.isEmptyString(r.getCell(1).text); //Titular ' + this.isEmptyString(r.getCell(1]);
     traveler.sex = this.isEmptyString(r.getCell(2).text); //'Sexo ' + this.isEmptyString(r.getCell(2).text
@@ -47,7 +55,10 @@ export class ExcelJSCOn {
     traveler.origin_country = this.isEmptyString(r.getCell(6).text); //'PAIS ORIGEN ' + this.isEmptyString(r.getCell(6).text
     traveler.nationality = this.isEmptyString(r.getCell(7).text); //'NACIONALIDAD ' + this.isEmptyString(r.getCell(7).text
     traveler.flight = this.isEmptyString(r.getCell(8).text); //'VUELO ' + this.isEmptyString(r.getCell(8).text
-    traveler.coverage = this.isEmptyString(r.getCell(9).text); //'TIPO COBERTURA ' + this.isEmptyString(r.getCell(9).text
+    traveler.coverage = this.coverageName(
+      coverages,
+      this.isEmptyString(r.getCell(9).text),
+    ); //'TIPO COBERTURA ' + this.isEmptyString(r.getCell(9).text
     traveler.sale_date = this.isDate(r.getCell(10)); //'FECHA DE VENTA ' + this.isEmptyString(r.getCell(10)) ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined ?? undefined
     traveler.start_date = this.isDate(r.getCell(11)); ////traveler.start_date = this.isEmptyString(r.getCell(11).text); //'FECHA DE INICIO ' + this.isEmptyString(r.getCell(11).text
     traveler.end_date_policy = this.isDate(r.getCell(12)); //'FECHA DE FIN DE POLIZA ' + this.isEmptyString(r.getCell(12).text
@@ -60,8 +71,7 @@ export class ExcelJSCOn {
     return traveler;
   }
   static isEmptyString(ch: string): string | undefined {
-    const value = ch.length == 0 ? undefined : ch;
-    return value;
+    return ch.length == 0 ? undefined : ch;
   }
   static isDate(date: Excel.Cell): string | undefined {
     const newDate = this.isEmptyString(date.text);
@@ -77,5 +87,19 @@ export class ExcelJSCOn {
     if (typeof row === 'string' && row.startsWith('$')) return +row.slice(1);
     if (typeof row === 'string') return +row;
     return 0;
+  }
+  static coverageName(
+    coverages: CoverageEntity[],
+    travelerCoverage: string,
+  ): string | undefined {
+    if (travelerCoverage) {
+      const cover = coverages.find((coverage) =>
+        ValidateFile.parseStringName(coverage.configString, travelerCoverage),
+      );
+      console.log(travelerCoverage, cover);
+      return cover ? cover.name : '-----';
+    }
+
+    return undefined;
   }
 }

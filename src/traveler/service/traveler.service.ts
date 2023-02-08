@@ -89,9 +89,19 @@ export class TravelerService {
   ): Promise<TravelerEntity> {
     const traveler = await this.findOne(id);
     const updateTraveler = Object.assign(traveler, updateTravelerDto);
-    const coverage = await this.coverageService.getCoverage(
-      updateTraveler.coverage.id,
+    console.log(
+      '🚀 ~ file: traveler.service.ts:97 ~ TravelerService ~ updateTraveler.coverage.id',
+      updateTraveler,
     );
+    let coverage = new CoverageEntity();
+    if (updateTraveler.coverage.id)
+      coverage = await this.coverageService.getCoverage(
+        updateTraveler.coverage.id,
+      );
+    else
+      coverage = await this.coverageService.getCoverage(
+        updateTraveler.coverage,
+      );
     return this.travelerRepository.updateTraveler(updateTraveler, coverage);
   }
 

@@ -39,16 +39,12 @@ export class CoverageController {
     console.log(eq.rawHeaders, file);
     return this.coverageService.createCoverage(createCoverageDto, file);
   }
-  @UseGuards(RolesGuard)
+  /* @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post('/config')
-  async test(@Body() { test, aprobar }) {
-    const test2: string = '+' + test;
-    const debeContener = test2.split(/\+([^\+-]+)/);
-
-    console.log(test, aprobar, debeContener);
-    return { test, test2, aprobar, debeContener };
-  }
+  async test(@Body() bod: { test: string; aprobar: string }) {
+    return this.coverageService.test(bod.test, bod.aprobar);
+  }*/
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,

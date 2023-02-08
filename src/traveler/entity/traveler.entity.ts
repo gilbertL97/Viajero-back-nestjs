@@ -98,6 +98,5 @@ export class TravelerEntity extends BaseEntity {
       this.passport +
       new Date(this.start_date).toISOString().slice(0, 10) +
       this.name;
-    console.log(this.id);
   }
 }
