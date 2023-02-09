@@ -28,7 +28,7 @@ export class CoverageEntity extends BaseEntity {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
   @Column({ type: 'varchar', nullable: true })
-  configString: string;
+  config_string: string;
 
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {
     cascade: true,

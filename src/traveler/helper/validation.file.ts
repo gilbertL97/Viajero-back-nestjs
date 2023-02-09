@@ -122,7 +122,7 @@ export class ValidateFile {
     );
   }
   static findCoverages(c: CoverageEntity, traveler: FileTravelerDto) {
-    if (!c.configString)
+    if (!c.config_string)
       return (
         traveler.coverage
           .toUpperCase()

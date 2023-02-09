@@ -32,4 +32,10 @@ export class CreateCoverageDto {
   @IsOptional()
   @IsNumberString()
   number_of_days: number;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(4)
+  @MaxLength(50)
+  config_string: string;
 }

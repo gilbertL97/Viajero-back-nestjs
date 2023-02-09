@@ -93,11 +93,11 @@ export class ExcelJSCOn {
     travelerCoverage: string,
   ): string | undefined {
     if (travelerCoverage) {
-      const cover = coverages.find((coverage) =>
-        ValidateFile.parseStringName(coverage.configString, travelerCoverage),
+      const coverag = coverages.find((coverage) =>
+        ValidateFile.parseStringName(coverage.config_string, travelerCoverage),
       );
-      console.log(travelerCoverage, cover);
-      return cover ? cover.name : '-----';
+      console.log(travelerCoverage, coverag);
+      return coverag ? coverag.name : travelerCoverage;
     }
 
     return undefined;
