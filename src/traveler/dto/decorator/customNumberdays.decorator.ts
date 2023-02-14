@@ -34,6 +34,6 @@ export class CompareWithDates implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'El calculo de los numeros de dias no es correcto';
+    return 'Calculo Incorrecto';
   }
 }

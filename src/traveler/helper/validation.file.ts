@@ -93,19 +93,17 @@ export class ValidateFile {
   }
   public static findCountry(coun: string, countries: CountryEntity[]) {
     return countries.find((country) => {
-      if (coun.length == 2 && country.iso2.toUpperCase() == coun)
+      if (coun.length == 2 && country.iso2.toUpperCase() == coun.toUpperCase())
         return country;
-      if (coun.length == 3 && country.iso.toUpperCase() == coun) return country;
+      if (coun.length == 3 && country.iso.toUpperCase() == coun.toUpperCase())
+        return country;
       if (
         country.comun_name
+          .trim()
           .toUpperCase()
-          .localeCompare(
-            country.comun_name.toUpperCase().trim().toUpperCase(),
-            undefined,
-            {
-              sensitivity: 'base',
-            },
-          ) == 0
+          .localeCompare(coun.toUpperCase(), undefined, {
+            sensitivity: 'base',
+          }) == 0
       )
         return country;
     });
@@ -166,5 +164,56 @@ export class ValidateFile {
       return valido;
     }
     return false;
+  }
+  test(configuracion: string, cadena: string) {
+    //creo dos arrays vacios
+    const contiene: string[] = [];
+    const no_contiene: string[] = [];
+    let palabra = configuracion.length; //le asigno a palabra la ultima posicion de la configuracion
+    //comienzo el ciclo de atras hacia adelante
+    for (let indice = configuracion.length - 1; indice >= 0; indice--) {
+      const caracter = configuracion[indice];
+      //verifico que el caracter sea el signo +
+      if (caracter == '+') {
+        //si es + guardo en el arreglo contiene la subcadena desde el caracter posterior hasta el flag palabra
+        contiene.push(configuracion.slice(indice + 1, palabra));
+        //actualizo el flag palabra a la posicion del signo +
+        palabra = indice;
+      }
+      //verifico que el caracter sea el signo -
+      if (caracter == '-') {
+        //si es + guardo en el arreglo no_contiene la subcadena desde el caracter posterior hasta el flag palabra
+        no_contiene.push(configuracion.slice(indice + 1, palabra));
+        //actualizo el flag palabra a la posicion del signo -
+        palabra = indice;
+      }
+    }
+    let esta = true;
+    for (let index = 0; index < contiene.length; index++) {
+      const elemento = contiene[index];
+      // aqui no te lo puse en mayusculas las comparaciones
+      // pregunto por lo contrario es decir si no esta en  contiene paro el for y cambio el valor de las variables
+      if (!cadena.includes(elemento)) {
+        esta = false;
+        break;
+      }
+    }
+
+    //adentro le paso q resultado debe no incluir cada elemento de no_contiene
+    //const noesta = no_contiene.every((e) => !cadena.includes(e));
+    const noesta = true;
+    for (let index = 0; index < contiene.length; index++) {
+      const elemento = contiene[index];
+      // aqui no te lo puse en mayusculas las comparaciones
+      // pregunto por lo contrario es decir si esta en no contiene paro el for y cambio el valor de las variables
+      if (cadena.includes(elemento)) {
+        esta = false;
+        break;
+      }
+    }
+    //verifico q las dos operaciones logicas sean verdaderas (true)
+    const valido = esta && noesta;
+    //aqui devuelvo si es valida la cadena q entra por parametros (excel)
+    return valido;
   }
 }

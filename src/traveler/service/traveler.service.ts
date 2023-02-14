@@ -48,13 +48,19 @@ export class TravelerService {
       +createTravelerDto.coverage,
     );
 
-    const traveler = await this.travelerRepository.createTraveler(
-      createTravelerDto,
-      coverage,
-      contractor,
-      nationality,
-      origin_country,
-    );
+    const traveler = await this.travelerRepository
+      .createTraveler(
+        createTravelerDto,
+        coverage,
+        contractor,
+        nationality,
+        origin_country,
+      )
+      .catch((error) => {
+        if (error.code == 23505)
+          throw new BadRequestException('Viajero duplicado');
+        throw new BadRequestException('error in database');
+      });
     return traveler;
   }
 
@@ -89,10 +95,6 @@ export class TravelerService {
   ): Promise<TravelerEntity> {
     const traveler = await this.findOne(id);
     const updateTraveler = Object.assign(traveler, updateTravelerDto);
-    console.log(
-      '🚀 ~ file: traveler.service.ts:97 ~ TravelerService ~ updateTraveler.coverage.id',
-      updateTraveler,
-    );
     let coverage = new CoverageEntity();
     if (updateTraveler.coverage.id)
       coverage = await this.coverageService.getCoverage(

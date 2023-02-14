@@ -41,8 +41,7 @@ export class FileTravelerDto {
   @IsEmail()
   email: string;
   @Length(6, 50, {
-    message:
-      'El campo Pasaporte no cumple con el rango de caracteres entre 6 y 50',
+    message: 'Pasaporte invalido',
   })
   @IsNotEmpty({
     message: 'Campo Obligatorio',
@@ -58,7 +57,7 @@ export class FileTravelerDto {
   //@Type(() => string)
   // @IsDateString()
   @IsDateBefore('end_date_policy', {
-    message: 'La fecha inicio no es anterior a la fecha de fin ',
+    message: 'Fecha inicio posterior a fecha de fin ',
   })
   @IsNotEmpty({
     message: 'Campo Obligatorio',
@@ -69,7 +68,7 @@ export class FileTravelerDto {
   // @Type(() => string)
   //@IsDateString()
   @IsDateAfter('start_date', {
-    message: 'La fecha de fin no es posterior a la fecha inicio',
+    message: 'Fecha inicio anterior a fecha de fin ',
   })
   @IsNotEmpty({
     message: 'Campo Obligatorio',
@@ -119,7 +118,7 @@ export class FileTravelerDto {
   })
   @Min(0)
   @IsNumberLessThan('number_days', {
-    message: 'cantidad de dias incorrecta',
+    message: 'Cantidad de dias incorrectos',
   })
   number_high_risk_days: number;
 

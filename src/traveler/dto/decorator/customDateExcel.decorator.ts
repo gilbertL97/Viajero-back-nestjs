@@ -26,6 +26,6 @@ export class ValidateDates implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return 'El formato de Fecha no es valido ';
+    return 'Formato de fecha invalido ';
   }
 }
