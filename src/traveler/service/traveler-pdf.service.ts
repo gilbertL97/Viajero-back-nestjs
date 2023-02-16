@@ -28,8 +28,8 @@ export class TravelerPdfService {
     };
     const days = new Number(traveler.coverage.number_of_days);
     const time = traveler.coverage.daily
-      ? new Number(traveler.number_days).toString() + ' dias'
-      : days.toString() + ' dias';
+      ? new Number(traveler.number_days).toString() + ' días'
+      : days.toString() + ' días';
     const price =
       new Number(traveler.coverage.price).toPrecision(6) +
       ' x ' +
@@ -37,9 +37,9 @@ export class TravelerPdfService {
     const templatePrice = traveler.coverage.daily
       ? ' USD ' +
         new Number(traveler.coverage.price).toPrecision(3) +
-        ' pax/dia x ' +
+        ' pax/día x ' +
         time
-      : 'USD ' + price + ' dias';
+      : 'USD ' + price + ' días';
 
     const total = traveler.coverage.daily
       ? new Number(traveler.total_amount).toPrecision(3)
@@ -49,9 +49,9 @@ export class TravelerPdfService {
         ? '-'
         : 'USD' +
           new Number(traveler.coverage.high_risk).toPrecision(3) +
-          ' pax/dia x ' +
+          ' pax/día x ' +
           new Number(traveler.number_high_risk_days).toString() +
-          ' dias';
+          ' días';
     const pdfBuffer: Buffer = await new Promise((resolve) => {
       const doc = new PDF({
         size: 'LETTER',
@@ -89,7 +89,7 @@ export class TravelerPdfService {
         .fillColor(pantoneColor)
 
         .font(fontBold)
-        .text('No Poliza: ', {
+        .text('No Póliza: ', {
           continued: true,
         });
       doc.fillColor(blackColor).font(font).text(traveler.contractor.poliza);
@@ -106,7 +106,7 @@ export class TravelerPdfService {
       });
       doc.fillColor(blackColor).font(font).text(traveler.passport);
       doc.fillColor(pantoneColor).font(fontBold).text('Vigencia del Seguro ');
-      doc.text('Desde : ', {
+      doc.text('     Desde : ', {
         continued: true,
       });
       doc
@@ -166,7 +166,6 @@ export class TravelerPdfService {
         'coverages',
         traveler.coverage.benefitTable,
       );
-      console.log('esta es la ruta dichosa', coveragePath);
       const pdfB = await PDFDocument.load(fs.readFileSync(coveragePath));
       //const table = await pdfB.copyPages(pdfB, [0]);
       //console.log(pdfB.getPages);
