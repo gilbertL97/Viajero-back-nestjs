@@ -9,6 +9,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
@@ -59,9 +60,6 @@ export class TravelerEntity extends BaseEntity {
 
   @Column({ type: 'boolean', nullable: false, default: 'true' })
   state: boolean;
-
-  @Column({ type: 'varchar', length: 300, nullable: true, unique: true })
-  Filename: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
