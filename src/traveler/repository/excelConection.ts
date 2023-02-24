@@ -48,7 +48,7 @@ export class ExcelJSCOn {
   ): FileTravelerDto {
     const traveler = new FileTravelerDto();
     traveler.name = this.isEmptyString(r.getCell(1).text); //Titular ' + this.isEmptyString(r.getCell(1]);
-    traveler.sex = this.isEmptyString(r.getCell(2).text); //'Sexo ' + this.isEmptyString(r.getCell(2).text
+    traveler.sex = this.renameSex(this.isEmptyString(r.getCell(2).text)); //'Sexo ' + this.isEmptyString(r.getCell(2).text
     traveler.born_date = this.isDate(r.getCell(3)); //'Fecha de Nacimiento ' + this.isEmptyString(r.getCell(3).text
     traveler.email = this.isEmptyString(r.getCell(4).text); //'Correo Electrónico ' + this.isEmptyString(r.getCell(4).text
     traveler.passport = this.isEmptyString(r.getCell(5).text); //'PASAPORTE ' + this.isEmptyString(r.getCell(5).text
@@ -75,6 +75,7 @@ export class ExcelJSCOn {
   }
   static isDate(date: Excel.Cell): string | undefined {
     const newDate = this.isEmptyString(date.text);
+    console.log(newDate);
     if (!newDate) return undefined;
     if (newDate[2] == '/') return newDate;
     return dayjs(newDate).format('DD/MM/YYYY');
@@ -98,6 +99,13 @@ export class ExcelJSCOn {
       );
       console.log(travelerCoverage, coverag);
       return coverag ? coverag.name : travelerCoverage;
+    }
+
+    return undefined;
+  }
+  static renameSex(sex: string): string | undefined {
+    if (sex) {
+      return sex[0].toUpperCase();
     }
 
     return undefined;

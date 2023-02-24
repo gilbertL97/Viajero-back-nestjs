@@ -27,7 +27,7 @@ export class FileTravelerDto {
 
   @IsOptional()
   @IsString()
-  @Length(1, 2, {
+  @Length(1, 10, {
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   sex: string;
