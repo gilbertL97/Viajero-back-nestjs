@@ -11,6 +11,7 @@ import { ContractorModule } from './contractor/contractor.module';
 import { TravelerModule } from './traveler/traveler.module';
 import { CoverageModule } from './coverage/coverage.module';
 import { CountryModule } from './country/country.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CountryModule } from './country/country.module';
     TravelerModule,
     CoverageModule,
     CountryModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
