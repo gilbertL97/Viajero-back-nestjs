@@ -1,20 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FileEntity } from './entities/file.entity';
 
 @Injectable()
 export class FileService {
-  create(name: string) {
-    return 'This action adds a new file';
+  constructor(
+    @InjectRepository(FileEntity)
+    private readonly fileRepository: Repository<FileEntity>,
+  ) {}
+  async create(fileEntity: FileEntity): Promise<FileEntity> {
+    return this.fileRepository.create(fileEntity);
   }
 
-  findAll() {
-    return `This action returns all file`;
+  async findAll(): Promise<FileEntity[]> {
+    return this.fileRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
+  async findOne(id: number): Promise<FileEntity> {
+    const file = await this.fileRepository.findOne(id);
+    if (!file) throw new NotFoundException('file does not exist');
+    return file;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} file`;
+  async remove(id: number): Promise<FileEntity> {
+    const file = await this.findOne(id);
+    return this.fileRepository.remove(file);
   }
 }

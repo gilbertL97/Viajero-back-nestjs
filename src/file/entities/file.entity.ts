@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 @Entity('archivos')
-export class File extends BaseEntity {
+export class FileEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
   @Column('varchar', { nullable: false })
