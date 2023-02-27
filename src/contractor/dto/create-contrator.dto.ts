@@ -28,9 +28,9 @@ export class CreateContratorDto {
   email: string;
 
   @IsOptional()
-  @IsNumberString()
+  @IsString()
   @MinLength(8)
-  @MaxLength(15)
+  @MaxLength(25)
   telf: string;
 
   @IsOptional()

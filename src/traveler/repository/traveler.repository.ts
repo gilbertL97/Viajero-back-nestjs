@@ -60,7 +60,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       traveler.amount_days_high_risk,
     );
     const newTraveler = await this.save(traveler).catch((error) => {
-      console.log(error);
+      //console.log(error);
       if (error.code == 23505) throw new Error('Viajero duplicado');
       throw new BadRequestException('error in database');
     });
@@ -96,7 +96,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         updateTraveler.amount_days_high_risk,
       );
     }
-    console.log('este es el update ' + updateTraveler);
+    //console.log('este es el update ' + updateTraveler);
     return await this.save(updateTraveler);
   }
   async finOneTravelerWithCoverage(

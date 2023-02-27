@@ -17,7 +17,7 @@ export class ContratorEntity extends BaseEntity {
   client: string;
   @Column({ type: 'varchar', length: 100, nullable: false })
   email: string;
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 35, nullable: true })
   telf: string;
   @Column({ type: 'varchar', length: 250, nullable: true })
   addres: string;

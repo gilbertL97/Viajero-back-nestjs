@@ -75,7 +75,7 @@ export class ExcelJSCOn {
   }
   static isDate(date: Excel.Cell): string | undefined {
     const newDate = this.isEmptyString(date.text);
-    console.log(newDate);
+    //console.log(newDate);
     if (!newDate) return undefined;
     if (newDate[2] == '/') return newDate;
     return dayjs(newDate).format('DD/MM/YYYY');
@@ -97,7 +97,7 @@ export class ExcelJSCOn {
       const coverag = coverages.find((coverage) =>
         ValidateFile.parseStringName(coverage.config_string, travelerCoverage),
       );
-      console.log(travelerCoverage, coverag);
+      //console.log(travelerCoverage, coverag);
       return coverag ? coverag.name : travelerCoverage;
     }
 

@@ -12,10 +12,10 @@ export class RoleValidationPipes implements PipeTransform {
   ];
   //este es un pipe para validar los roles q me entren en la peticion
   transform(value: UpdateUserDto) {
-    console.log(value.role);
+    //console.log(value.role);
     if (value.role) {
       const isRole: string = value.role.toLowerCase();
-      console.log(this.allowedRoles);
+      //console.log(this.allowedRoles);
       const role: number = this.isRoleValid(isRole);
       if (role === -1)
         throw new BadRequestException(`${isRole} is a invalid role`);

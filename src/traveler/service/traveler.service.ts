@@ -107,6 +107,7 @@ export class TravelerService {
   }
 
   async remove(id: string): Promise<TravelerEntity> {
+    //console.log(id);
     const traveler = await this.findOne(id);
     return this.travelerRepository.remove(traveler);
   }

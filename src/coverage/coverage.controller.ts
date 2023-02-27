@@ -36,7 +36,7 @@ export class CoverageController {
     @Body() createCoverageDto: CreateCoverageDto,
     @Req() eq,
   ) {
-    console.log(eq.rawHeaders, file);
+    //console.log(eq.rawHeaders, file);
     return this.coverageService.createCoverage(createCoverageDto, file);
   }
   /* @UseGuards(RolesGuard)
