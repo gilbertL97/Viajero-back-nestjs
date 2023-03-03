@@ -86,6 +86,13 @@ export class TravelerController {
     const data = await this.travelerService.advancedSearch(travelerFilter);
     return data;
   }
+  @Get('/current')
+  async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
+    const data = await this.travelerService.getCurrrentTravelers(
+      travelerFilter,
+    );
+    //return data;
+  }
   @Get('/cert')
   async generateCertPdf(@Query('id') id: string, @Res() res): Promise<void> {
     const traveler = await this.travelerService.findOne(id);

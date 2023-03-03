@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import * as dayjs from 'dayjs';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
@@ -163,8 +164,8 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         start_date_end,
       });
     if (state) {
-      /*query.andWhere('viajeros.end_date_policy  =:state 'if (DateHelper.dayState(this.end_date_policy) < 0) this.state = false;
-      else this.state = true;    tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+      const now = dayjs(new Date()).format('YYYY-MM-DD');
+      query.andWhere('viajeros.end_date_policy >:now', { now })//   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
 
       query.andWhere('viajeros.state  =:state ', { state });
     }
@@ -176,5 +177,19 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
       .orderBy('viajeros.name')
       .getMany();
+  }
+  async getCurrentTravelers(filter: FilterTravelerDto) {
+    //const now = dayjs(new Date()).add(1, 'day').format('YYYY-MM-DD');
+    const now = dayjs(new Date()).format('YYYY-MM-DD');
+    console.log(now);
+    const { state } = filter;
+    const query = await this.createQueryBuilder('viajeros')
+      .where('viajeros.end_date_policy >:now', { now })
+      .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
+      .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
+      .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
+      .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
+      .getManyAndCount();
+    console.log(query);
   }
 }

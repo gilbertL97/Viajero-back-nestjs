@@ -130,4 +130,7 @@ export class TravelerService {
   async advancedSearch(filter: FilterTravelerDto): Promise<TravelerEntity[]> {
     return this.travelerRepository.finAdllWithFilters(filter);
   }
+  async getCurrrentTravelers(filter: FilterTravelerDto) {
+    return this.travelerRepository.getCurrentTravelers(filter);
+  }
 }
