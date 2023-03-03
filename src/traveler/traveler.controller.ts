@@ -67,7 +67,13 @@ export class TravelerController {
       return response.status(HttpStatus.BAD_REQUEST).send(resp);
     return response.status(HttpStatus.CONFLICT).send(resp);
   }
-
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+  )
   @Get()
   async getTravelers(@GetUser() user: UserEntity): Promise<TravelerEntity[]> {
     const data = await this.travelerService.findAll(user);

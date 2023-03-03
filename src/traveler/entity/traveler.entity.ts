@@ -15,6 +15,7 @@ import {
 } from 'typeorm';
 import { ContratorEntity } from '../../contractor/entity/contrator.entity';
 import { DateHelper } from 'src/common/date/helper/date.helper';
+import { FileEntity } from 'src/file/entities/file.entity';
 
 @Entity('viajeros')
 export class TravelerEntity extends BaseEntity {
@@ -73,6 +74,10 @@ export class TravelerEntity extends BaseEntity {
   @ManyToOne(() => CountryEntity, (country) => country.travelers, {})
   @JoinColumn({ name: 'origin_country_id' })
   origin_country: CountryEntity;
+
+  @ManyToOne(() => FileEntity, (file) => file.travelers, {})
+  @JoinColumn({ name: 'file_id' })
+  file: FileEntity;
 
   @ManyToOne(() => CountryEntity, (country) => country.travelers, {})
   @JoinColumn({ name: 'nationality_id' })

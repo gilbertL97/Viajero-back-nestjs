@@ -90,7 +90,7 @@ export class ContractorService {
     const traveler = await this.travelerService.findOneTravelerWithContractor(
       contractor,
     );
-   // console.log(traveler);
+    // console.log(traveler);
     if (!traveler) {
       const deleted = await this.contractRepository.remove(contractor);
       //FileHelper.deletFolder('contractor', deleted.file);
