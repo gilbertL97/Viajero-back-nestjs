@@ -12,6 +12,7 @@ import { TravelerService } from 'src/traveler/service/traveler.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
+import { ContractorResponseDto } from './dto/contractor-response.dto';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
@@ -100,7 +101,7 @@ export class ContractorService {
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');
   }
-  async getInvoicing(date: Date) {
-    this.contractRepository.getInvoicingOfMonth(date);
+  async getInvoicing(date: Date): Promise<ContractorResponseDto[]> {
+    return await this.contractRepository.getInvoicingOfMonth(date);
   }
 }

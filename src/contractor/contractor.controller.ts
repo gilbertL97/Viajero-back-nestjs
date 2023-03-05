@@ -18,6 +18,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 
 import { ContractorService } from './contractor.service';
+import { ContractorResponseDto } from './dto/contractor-response.dto';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { FilterContractorDto } from './dto/filter-contractor.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
@@ -45,8 +46,10 @@ export class ContractorController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get('/invoicing')
-  async getFacturation(@Query() filter: FilterContractorDto) {
-    const data = this.contractService.getInvoicing(filter.dateInvoicing);
+  async getFacturation(
+    @Query() filter: FilterContractorDto,
+  ): Promise<ContractorResponseDto[]> {
+    return await this.contractService.getInvoicing(filter.dateInvoicing);
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
