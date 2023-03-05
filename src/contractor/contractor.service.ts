@@ -12,16 +12,16 @@ import { TravelerService } from 'src/traveler/service/traveler.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
+import { ContractorRepository } from './repository/contractor.repository';
 
 @Injectable()
 export class ContractorService {
   constructor(
-    @InjectRepository(ContratorEntity)
-    private readonly contractRepository: Repository<ContratorEntity>,
+    @InjectRepository(ContractorRepository)
+    private readonly contractRepository: ContractorRepository,
     @Inject(forwardRef(() => TravelerService))
     private readonly travelerService: TravelerService,
     @Inject(forwardRef(() => UserService))
@@ -99,5 +99,8 @@ export class ContractorService {
     contractor.isActive = false;
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');
+  }
+  async getInvoicing(date: Date) {
+    this.contractRepository.getInvoicingOfMonth(date);
   }
 }

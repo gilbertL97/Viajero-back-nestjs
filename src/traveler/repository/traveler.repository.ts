@@ -164,10 +164,11 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         start_date_end,
       });
     if (state) {
+      console.log(state);
       const now = dayjs(new Date()).format('YYYY-MM-DD');
-      query.andWhere('viajeros.end_date_policy >:now', { now })//   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+      query.andWhere('viajeros.end_date_policy >=:now', { now }); //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
 
-      query.andWhere('viajeros.state  =:state ', { state });
+      //query.andWhere('viajeros.state  =:state ', { state });
     }
 
     return query
@@ -190,6 +191,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
       .getManyAndCount();
-    console.log(query);
+    console.log(state);
+    return query;
   }
 }

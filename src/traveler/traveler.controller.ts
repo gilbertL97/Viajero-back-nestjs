@@ -83,6 +83,7 @@ export class TravelerController {
   async advanceSearch(
     @Query() travelerFilter: FilterTravelerDto,
   ): Promise<TravelerEntity[]> {
+    console.log(travelerFilter);
     const data = await this.travelerService.advancedSearch(travelerFilter);
     return data;
   }

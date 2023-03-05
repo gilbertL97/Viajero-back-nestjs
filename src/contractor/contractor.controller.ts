@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -18,6 +19,7 @@ import { UserRole } from 'src/user/user.role';
 
 import { ContractorService } from './contractor.service';
 import { CreateContratorDto } from './dto/create-contrator.dto';
+import { FilterContractorDto } from './dto/filter-contractor.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
 
@@ -39,6 +41,12 @@ export class ContractorController {
   async getContractsActive(): Promise<ContratorEntity[]> {
     const data = this.contractService.getContratorsActive();
     return data;
+  }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Get('/invoicing')
+  async getFacturation(@Query() filter: FilterContractorDto) {
+    const data = this.contractService.getInvoicing(filter.dateInvoicing);
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)

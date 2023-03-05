@@ -33,4 +33,7 @@ export class ContratorEntity extends BaseEntity {
 
   @ManyToMany(() => UserEntity, (user) => user.contractors, {})
   users: UserEntity[];
+
+  total_travelers?: number;
+  total_import?: number;
 }
