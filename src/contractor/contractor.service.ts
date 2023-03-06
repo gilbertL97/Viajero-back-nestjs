@@ -101,7 +101,7 @@ export class ContractorService {
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');
   }
-  async getInvoicing(date: Date): Promise<ContractorResponseDto[]> {
+  async getInvoicing(date: Date): Promise<any> {
     return await this.contractRepository.getInvoicingOfMonth(date);
   }
 }

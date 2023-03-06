@@ -46,9 +46,8 @@ export class ContractorController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get('/invoicing')
-  async getFacturation(
-    @Query() filter: FilterContractorDto,
-  ): Promise<ContractorResponseDto[]> {
+  async getFacturation(@Query() filter: FilterContractorDto): Promise<any> {
+    console.log(filter.dateInvoicing);
     return await this.contractService.getInvoicing(filter.dateInvoicing);
   }
   @UseGuards(RolesGuard)
