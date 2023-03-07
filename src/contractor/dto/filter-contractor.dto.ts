@@ -6,15 +6,19 @@ import {
   IsEmail,
   IsOptional,
   IsDateString,
+  IsNumberString,
 } from 'class-validator';
 
 export class FilterContractorDto {
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MinLength(5)
   @MaxLength(100)
   client: string;
+
+  @IsOptional()
+  @IsNumberString()
+  id: number;
 
   @IsOptional()
   @IsString()

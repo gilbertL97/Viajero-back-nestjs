@@ -7,12 +7,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 //import { FileHelper } from 'src/common/helper/file.helper';
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
-import { ContractorResponseDto } from './dto/contractor-response.dto';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
@@ -101,7 +101,9 @@ export class ContractorService {
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');
   }
-  async getInvoicing(date: Date): Promise<any> {
-    return await this.contractRepository.getInvoicingOfMonth(date);
+  async getInvoicing(date: Date, user: UserEntity): Promise<any> {
+    let id = undefined;
+    if (user.role == UserRole.CLIENT) id = user.contractors[0].id;
+    return await this.contractRepository.getInvoicingOfMonth(date, id);
   }
 }

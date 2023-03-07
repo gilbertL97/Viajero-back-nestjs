@@ -4,7 +4,6 @@ import {
   MinLength,
   MaxLength,
   IsEmail,
-  IsNumberString,
   IsOptional,
 } from 'class-validator';
 
@@ -32,6 +31,12 @@ export class CreateContratorDto {
   @MinLength(8)
   @MaxLength(25)
   telf: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(4)
+  @MaxLength(25)
+  analysis_number: string;
 
   @IsOptional()
   @MinLength(15)
