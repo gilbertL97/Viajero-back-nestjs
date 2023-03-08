@@ -1,5 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
+import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import { Repository } from 'typeorm';
 import { FileEntity } from './entities/file.entity';
 
@@ -9,8 +15,16 @@ export class FileService {
     @InjectRepository(FileEntity)
     private readonly fileRepository: Repository<FileEntity>,
   ) {}
-  async create(fileEntity: FileEntity): Promise<FileEntity> {
-    return this.fileRepository.create(fileEntity);
+  async create(
+    name: string,
+    travelers: TravelerEntity[],
+    client: ContratorEntity,
+  ): Promise<FileEntity> {
+    const file = new FileEntity();
+    file.name = name;
+    file.contractor = client;
+    file.travelers = travelers;
+    return this.fileRepository.save(file);
   }
 
   async findAll(): Promise<FileEntity[]> {
@@ -25,6 +39,10 @@ export class FileService {
 
   async remove(id: number): Promise<FileEntity> {
     const file = await this.findOne(id);
+    if (file.travelers.length > 0)
+      throw new BadRequestException(
+        'NO se puede borrar el archivo contiene viajeros',
+      );
     return this.fileRepository.remove(file);
   }
 }

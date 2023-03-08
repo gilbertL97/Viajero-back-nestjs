@@ -1,3 +1,4 @@
+import { FileEntity } from 'src/file/entities/file.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
 import {
   BaseEntity,
@@ -33,6 +34,8 @@ export class ContratorEntity extends BaseEntity {
   @OneToMany(() => TravelerEntity, (traveler) => traveler.contractor, {})
   travelers: TravelerEntity[];
 
+  @OneToMany(() => FileEntity, (file) => file.contractor, { nullable: true })
+  files: FileEntity[];
   @ManyToMany(() => UserEntity, (user) => user.contractors, {})
   users: UserEntity[];
 

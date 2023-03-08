@@ -15,6 +15,8 @@ import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import dayjs = require('dayjs');
 import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
+import { FileService } from 'src/file/file.service';
+import { TravelerEntity } from '../entity/traveler.entity';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -24,6 +26,7 @@ export class TravelerUploadFilesService {
     private readonly contratctoService: ContractorService,
     private readonly countryService: CountryService,
     private readonly coverageService: CoverageService,
+    private readonly fileService: FileService,
   ) {}
   async processFile(
     file: Express.Multer.File,
@@ -37,7 +40,13 @@ export class TravelerUploadFilesService {
     await FileHelper.deletFile(file.path);
     const erors = await this.validateTravelers(travelers, coverages, countries);
     if (erors) return erors;
-    return await this.insertTraveler(travelers, coverages, countries, client);
+    return await this.insertTraveler(
+      travelers,
+      coverages,
+      countries,
+      client,
+      file.originalname,
+    );
   }
 
   async insertTraveler(
@@ -45,9 +54,11 @@ export class TravelerUploadFilesService {
     coverages: CoverageEntity[],
     countries: CountryEntity[],
     client: ContratorEntity,
+    file: string,
   ): Promise<FileTravelerDto[] | void> {
     const createTraveler = new CreateTravelerDto();
     const duplicate: FileTravelerDto[] = [];
+    const travelersFile: TravelerEntity[] = [];
     for (const traveler of travelers) {
       const coverage = ValidateFile.findCoverage(traveler, coverages);
       const origin = ValidateFile.findCountry(
@@ -75,7 +86,7 @@ export class TravelerUploadFilesService {
       obj.end_date_policy = new Date(
         dayjs(traveler.end_date_policy, 'DD/MM/YYYY').format('YYYY-MM-DD'),
       );
-      await this.travelerRepository
+      const travelerfil = await this.travelerRepository
         .createTraveler(
           obj,
           coverage as CoverageEntity,
@@ -88,7 +99,13 @@ export class TravelerUploadFilesService {
             duplicate.push(traveler); //arreglar este metodo para mañana
           } else throw error;
         });
+      if (travelerfil) travelersFile.push(travelerfil);
     }
+    if (travelersFile.length > 0) {
+      const file2 = await this.fileService.create(file, travelersFile, client);
+      console.log(file2);
+    }
+
     if (duplicate.length > 0) return duplicate;
   }
   async validateTravelers(

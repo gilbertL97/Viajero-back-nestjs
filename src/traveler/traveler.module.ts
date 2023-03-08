@@ -9,6 +9,7 @@ import { TravelerRepository } from './repository/traveler.repository';
 import { UserModule } from 'src/user/user.module';
 import { TravelerPdfService } from './service/traveler-pdf.service';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TravelerUploadFilesService } from './service/traveler.upload-files.serv
     forwardRef(() => CoverageModule),
     forwardRef(() => CountryModule),
     forwardRef(() => UserModule),
+    FileModule,
   ],
   controllers: [TravelerController],
   providers: [TravelerService, TravelerPdfService, TravelerUploadFilesService],

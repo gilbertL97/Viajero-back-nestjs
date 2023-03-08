@@ -1,9 +1,11 @@
+import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -11,10 +13,12 @@ import {
 export class FileEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column('varchar', { nullable: false })
+  @Column('varchar', { nullable: true })
   name: string;
-  @CreateDateColumn()
-  fecha: Date;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
   @OneToMany(() => TravelerEntity, (traveler) => traveler.file, {})
   travelers: TravelerEntity[];
+  @ManyToOne(() => ContratorEntity, (contractor) => contractor.files, {})
+  contractor: ContratorEntity;
 }
