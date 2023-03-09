@@ -3,6 +3,7 @@ import * as dayjs from 'dayjs';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
+import { FileEntity } from 'src/file/entities/file.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
@@ -21,6 +22,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     contractor: ContratorEntity,
     nationality: CountryEntity,
     origin_country: CountryEntity,
+    file?: FileEntity,
   ): Promise<TravelerEntity> {
     const {
       name,
@@ -60,6 +62,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       traveler.amount_days_covered,
       traveler.amount_days_high_risk,
     );
+    if (file) traveler.file = file;
     const newTraveler = await this.save(traveler).catch((error) => {
       //console.log(error);
       if (error.code == 23505) throw new Error('Viajero duplicado');
