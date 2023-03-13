@@ -15,20 +15,17 @@ export class FileService {
     @InjectRepository(FileEntity)
     private readonly fileRepository: Repository<FileEntity>,
   ) {}
-  async create(
-    name: string,
-    travelers: TravelerEntity[],
-    client: ContratorEntity,
-  ): Promise<FileEntity> {
+  async create(name: string, client: ContratorEntity): Promise<FileEntity> {
     const file = new FileEntity();
     file.name = name;
     file.contractor = client;
-    file.travelers = travelers;
     return this.fileRepository.save(file);
   }
 
   async findAll(): Promise<FileEntity[]> {
-    return this.fileRepository.find();
+    return this.fileRepository.find({
+      relations: ['travelers'],
+    });
   }
 
   async findOne(id: number): Promise<FileEntity> {

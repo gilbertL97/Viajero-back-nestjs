@@ -59,6 +59,7 @@ export class TravelerUploadFilesService {
     const createTraveler = new CreateTravelerDto();
     const duplicate: FileTravelerDto[] = [];
     const travelersFile: TravelerEntity[] = [];
+    const file2 = await this.fileService.create(file, client);
     for (const traveler of travelers) {
       const coverage = ValidateFile.findCoverage(traveler, coverages);
       const origin = ValidateFile.findCountry(
@@ -93,6 +94,7 @@ export class TravelerUploadFilesService {
           client,
           nationality,
           origin,
+          file2,
         )
         .catch((error) => {
           if (error instanceof Error) {
@@ -101,8 +103,8 @@ export class TravelerUploadFilesService {
         });
       if (travelerfil) travelersFile.push(travelerfil);
     }
-    if (travelersFile.length > 0) {
-      const file2 = await this.fileService.create(file, travelersFile, client);
+    if (travelersFile.length == 0) {
+      this.fileService.remove(file2.id);
       console.log(file2);
     }
 

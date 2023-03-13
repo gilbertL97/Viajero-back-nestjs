@@ -65,9 +65,7 @@ export class TravelerEntity extends BaseEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @ManyToOne(() => ContratorEntity, (contractor) => contractor.travelers, {
-    eager: true,
-  })
+  @ManyToOne(() => ContratorEntity, (contractor) => contractor.travelers, {})
   @JoinColumn({ name: 'contractor' })
   contractor: ContratorEntity;
 
