@@ -29,7 +29,7 @@ export class TravelerEntity extends BaseEntity {
   born_date: Date;
   @Column({ type: 'varchar', length: 50, nullable: true })
   email: string;
-  @Column({ type: 'varchar', nullable: true, length: 50 })
+  @Column({ type: 'varchar', nullable: true, length: 60 })
   passport: string;
 
   @Column({ type: 'varchar', nullable: true, length: 50 })

@@ -40,7 +40,7 @@ export class FileTravelerDto {
   @IsOptional()
   @IsEmail()
   email: string;
-  @Length(6, 50, {
+  @Length(6, 60, {
     message: 'Pasaporte invalido',
   })
   @IsNotEmpty({
