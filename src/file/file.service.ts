@@ -32,13 +32,17 @@ export class FileService {
   }
 
   async findOne(id: number): Promise<FileEntity> {
-    const file = await this.fileRepository.findOne(id);
+    const file = await this.fileRepository.findOne({
+      where: { id: id },
+      relations: ['travelers'],
+    });
     if (!file) throw new NotFoundException('file does not exist');
     return file;
   }
 
   async remove(id: number): Promise<FileEntity> {
     const file = await this.findOne(id);
+    console.log(file.travelers);
     if (file.travelers.length > 0)
       throw new BadRequestException(
         'NO se puede borrar el archivo contiene viajeros',

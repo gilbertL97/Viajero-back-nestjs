@@ -35,7 +35,7 @@ export class TravelerUploadFilesService {
     //const TravelersErrors: TravelerEntity[] = [];
     const client = await this.contratctoService.getContractor(idClient);
     const countries = await this.countryService.findAll();
-    const coverages = await this.coverageService.getCoverages();
+    const coverages = await this.coverageService.getCoveragesActives();
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
     await FileHelper.deletFile(file.path);
     const erors = await this.validateTravelers(travelers, coverages, countries);
