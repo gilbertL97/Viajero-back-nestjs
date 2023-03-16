@@ -33,7 +33,7 @@ export class FileController {
     return this.fileService.findAll();
   }
 
-  @Get()
+  @Get('/filter')
   filterFile(@Query() filter: FilterFileDto) {
     return this.fileService.filterFile(filter);
   }

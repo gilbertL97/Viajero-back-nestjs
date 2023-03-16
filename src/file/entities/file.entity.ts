@@ -15,7 +15,7 @@ export class FileEntity extends BaseEntity {
   id: number;
   @Column('varchar', { nullable: true })
   name: string;
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'date' })
   created_at: Date;
   @OneToMany(() => TravelerEntity, (traveler) => traveler.file, {})
   travelers: TravelerEntity[];

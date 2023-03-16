@@ -25,7 +25,7 @@ export class FileService {
 
   async findAll(): Promise<FileEntity[]> {
     return this.fileRepository.find({
-      relations: ['travelers'],
+      relations: ['contractor'],
     });
   }
 
@@ -49,13 +49,14 @@ export class FileService {
   }
   async filterFile(file: FilterFileDto): Promise<FileEntity[]> {
     const query = this.fileRepository.createQueryBuilder('files');
+    console.log(file);
     const { contractor, end_date_create, start_date_create } = file;
     if (contractor)
       query.where('files.contractor =:contractor', { contractor });
     if (end_date_create)
       query.andWhere('files.created_at<:end_date_create', { end_date_create });
     if (start_date_create)
-      query.andWhere('files.created_at>:end_date_create', {
+      query.andWhere('files.created_at>:start_date_create', {
         start_date_create,
       });
     return query.getMany();

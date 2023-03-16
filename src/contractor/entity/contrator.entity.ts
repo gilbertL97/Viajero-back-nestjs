@@ -16,7 +16,7 @@ export class ContratorEntity extends BaseEntity {
   id: number;
   @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   client: string;
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: false })
   analysis_number;
   @Column({ type: 'varchar', length: 100, nullable: false })
   email: string;
@@ -26,7 +26,7 @@ export class ContratorEntity extends BaseEntity {
   addres: string;
   @Column({ type: 'varchar', length: 150, nullable: false, unique: true })
   file: string;
-  @Column({ type: 'varchar', length: 30, nullable: false })
+  @Column({ type: 'varchar', length: 60, nullable: false })
   poliza: string;
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
