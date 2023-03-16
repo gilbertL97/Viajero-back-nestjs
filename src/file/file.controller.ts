@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { UserRole } from 'src/user/user.role';
+import { FilterFileDto } from './dto/filter-file.dto';
 import { FileService } from './file.service';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -31,6 +33,10 @@ export class FileController {
     return this.fileService.findAll();
   }
 
+  @Get()
+  filterFile(@Query() filter: FilterFileDto) {
+    return this.fileService.filterFile(filter);
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.fileService.findOne(+id);

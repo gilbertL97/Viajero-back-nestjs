@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import { Repository } from 'typeorm';
+import { FilterFileDto } from './dto/filter-file.dto';
 import { FileEntity } from './entities/file.entity';
 
 @Injectable()
@@ -45,5 +46,18 @@ export class FileService {
         'NO se puede borrar el archivo contiene viajeros',
       );
     return this.fileRepository.remove(file);
+  }
+  async filterFile(file: FilterFileDto): Promise<FileEntity[]> {
+    const query = this.fileRepository.createQueryBuilder('files');
+    const { contractor, end_date_create, start_date_create } = file;
+    if (contractor)
+      query.where('files.contractor =:contractor', { contractor });
+    if (end_date_create)
+      query.andWhere('files.created_at<:end_date_create', { end_date_create });
+    if (start_date_create)
+      query.andWhere('files.created_at>:end_date_create', {
+        start_date_create,
+      });
+    return query.getMany();
   }
 }
