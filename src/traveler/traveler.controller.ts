@@ -81,10 +81,14 @@ export class TravelerController {
   }
   @Get('/filter')
   async advanceSearch(
+    @GetUser() user: UserEntity,
     @Query() travelerFilter: FilterTravelerDto,
   ): Promise<TravelerEntity[]> {
     console.log(travelerFilter);
-    const data = await this.travelerService.advancedSearch(travelerFilter);
+    const data = await this.travelerService.advancedSearch(
+      travelerFilter,
+      user,
+    );
     return data;
   }
   @Get('/current')

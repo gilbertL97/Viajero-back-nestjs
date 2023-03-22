@@ -128,8 +128,15 @@ export class TravelerService {
     if (!traveler) throw new BadRequestException('The traveler does not exist');
     return traveler;
   }
-  async advancedSearch(filter: FilterTravelerDto): Promise<TravelerEntity[]> {
-    return this.travelerRepository.finAdllWithFilters(filter);
+  async advancedSearch(
+    filter: FilterTravelerDto,
+    user: UserEntity,
+  ): Promise<TravelerEntity[]> {
+    let userC: UserEntity = undefined;
+    if (user.role == UserRole.CLIENT)
+      userC = await this.userService.getUser(user.id);
+
+    return this.travelerRepository.finAdllWithFilters(filter, userC);
   }
   async getCurrrentTravelers(filter: FilterTravelerDto) {
     return this.travelerRepository.getCurrentTravelers(filter);

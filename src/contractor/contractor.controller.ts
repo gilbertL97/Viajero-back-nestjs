@@ -43,7 +43,7 @@ export class ContractorController {
     return data;
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT, UserRole.COMAGENT)
   @Get('/invoicing')
   async getFacturation(
     @Query() filter: FilterContractorDto,

@@ -4,6 +4,7 @@ import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileEntity } from 'src/file/entities/file.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
@@ -115,7 +116,9 @@ export class TravelerRepository extends Repository<TravelerEntity> {
   }
   async finAdllWithFilters(
     filter: FilterTravelerDto,
+    user?: UserEntity,
   ): Promise<TravelerEntity[]> {
+    let contractor = filter.contractor;
     const {
       name,
       passport,
@@ -123,12 +126,13 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       start_date_end,
       end_date_policy_init,
       end_date_policy_end,
-      contractor,
       nationality,
       origin_country,
       coverage,
       state,
     } = filter;
+
+    if (user) contractor = user.contractors[0].id;
     const query = this.createQueryBuilder('viajeros');
     if (name) query.where('viajeros.name LIKE :name', { name });
     if (passport)
@@ -142,14 +146,6 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     if (coverage) query.andWhere('viajeros.coverage =:coverage', { coverage });
     if (contractor)
       query.andWhere('viajeros.contractor =:contractor', { contractor });
-    /*if (start_date_range) {
-      query.andWhere('viajeros.start_date >:startdate_start ', {
-        startdate_start,
-      });
-      query.andWhere('viajeros.start_date <:startdate_end', {
-        startdate_end,
-      });
-    }*/
     if (end_date_policy_init)
       query.andWhere('viajeros.end_date_policy >=:end_date_policy_init', {
         end_date_policy_init,

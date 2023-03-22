@@ -12,6 +12,8 @@ import {
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { GetUser } from 'src/common/decorator/user.decorator';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { FilterFileDto } from './dto/filter-file.dto';
 import { FileService } from './file.service';
@@ -29,13 +31,14 @@ export class FileController {
     UserRole.CONSULT,
   )
   @Get()
-  findAll() {
-    return this.fileService.findAll();
+  findAll(@GetUser() user: UserEntity) {
+    return this.fileService.findAll(user);
   }
 
   @Get('/filter')
-  filterFile(@Query() filter: FilterFileDto) {
-    return this.fileService.filterFile(filter);
+  filterFile(@Query() filter: FilterFileDto, @GetUser() user: UserEntity) {
+    console.log(filter);
+    return this.fileService.filterFile(filter, user);
   }
   @Get(':id')
   findOne(@Param('id') id: string) {

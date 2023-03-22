@@ -103,7 +103,8 @@ export class ContractorService {
   }
   async getInvoicing(date: Date, user: UserEntity): Promise<any> {
     let id = undefined;
-    if (user.role == UserRole.CLIENT) id = user.contractors[0].id;
+    if (user.role == UserRole.CLIENT)
+      id = (await this.userService.getUser(user.id)).contractors[0].id;
     return await this.contractRepository.getInvoicingOfMonth(date, id);
   }
 }

@@ -21,7 +21,7 @@ export class ConfigTypeorm {
       port: parseInt(configService.get(Configuration.POSTGRES_PORT)),
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true,
-      logging: true,
+      logging: false,
       /* migrations: ['dist/migrations/*{.ts,.js}'],
       migrationsTableName: 'migrations_typeorm',
       migrationsRun: true,*/
