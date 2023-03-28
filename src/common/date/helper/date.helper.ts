@@ -21,6 +21,10 @@ export class DateHelper {
   public static dayState(finalDate: Date) {
     return new Date(finalDate).getTime() - new Date().getTime();
   }
+  public static dayStateBoolean(finalDate: Date) {
+    console.log(dayjs(finalDate).diff(dayjs(new Date()), 'days'));
+    return dayjs(finalDate).diff(dayjs(new Date()), 'days') >= 0;
+  }
   public static daysDifferenceWithDaysjs(initialDate: Date, finalDate: Date) {
     const start = dayjs(initialDate, 'DD-MM-YYYY');
     const end = dayjs(finalDate, 'DD-MM-YYYY');

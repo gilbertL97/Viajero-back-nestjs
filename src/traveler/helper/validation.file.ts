@@ -93,9 +93,15 @@ export class ValidateFile {
   }
   public static findCountry(coun: string, countries: CountryEntity[]) {
     return countries.find((country) => {
-      if (coun.length == 2 && country.iso2.toUpperCase() == coun.toUpperCase())
+      if (
+        coun.length == 2 &&
+        country.iso2.trim().toUpperCase() == coun.toUpperCase()
+      )
         return country;
-      if (coun.length == 3 && country.iso.toUpperCase() == coun.toUpperCase())
+      if (
+        coun.length == 3 &&
+        country.iso.trim().toUpperCase() == coun.toUpperCase()
+      )
         return country;
       if (
         country.comun_name
@@ -128,7 +134,7 @@ export class ValidateFile {
             sensitivity: 'base',
           }) == 0
       );
-    console.log(traveler.coverage.replace(/\s/g, ''));
+    traveler.coverage.replace(/\s/g, '');
     return (
       traveler.coverage
         .toUpperCase()

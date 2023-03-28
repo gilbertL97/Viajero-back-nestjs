@@ -81,7 +81,7 @@ export class FileTravelerDto {
   @MinLength(2, {
     message: 'El Texto es muy corto .',
   })
-  @MaxLength(30, {
+  @MaxLength(40, {
     message: 'El Texto es muy largo.',
   })
   origin_country: string;
@@ -148,7 +148,7 @@ export class FileTravelerDto {
   })
   total_amount: number;
 
-  @Length(4, 20, {
+  @Length(4, 40, {
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   @IsNotEmpty({

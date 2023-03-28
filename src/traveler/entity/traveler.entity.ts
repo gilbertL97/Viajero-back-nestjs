@@ -89,8 +89,8 @@ export class TravelerEntity extends BaseEntity {
   @BeforeUpdate()
   @AfterLoad() //este metodo actualiza el state
   async verifyStatus() {
-    if (DateHelper.dayState(this.end_date_policy) < 0) this.state = false;
-    else this.state = true;
+    if (DateHelper.dayStateBoolean(this.end_date_policy)) this.state = true;
+    else this.state = false;
   }
   @BeforeInsert()
   makeId() {

@@ -163,7 +163,6 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         start_date_end,
       });
     if (state) {
-      console.log(state);
       const now = dayjs(new Date()).format('YYYY-MM-DD');
       query.andWhere('viajeros.end_date_policy >=:now', { now }); //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
 
@@ -181,7 +180,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
   async getCurrentTravelers(filter: FilterTravelerDto) {
     //const now = dayjs(new Date()).add(1, 'day').format('YYYY-MM-DD');
     const now = dayjs(new Date()).format('YYYY-MM-DD');
-    console.log(now);
+
     const { state } = filter;
     const query = await this.createQueryBuilder('viajeros')
       .where('viajeros.end_date_policy >:now', { now })
