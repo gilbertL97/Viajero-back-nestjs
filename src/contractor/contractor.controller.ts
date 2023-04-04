@@ -43,14 +43,38 @@ export class ContractorController {
     return data;
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT, UserRole.COMAGENT)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get('/invoicing')
   async getFacturation(
     @Query() filter: FilterContractorDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
     const { dateInvoicing } = filter;
+    console.log(filter);
     return await this.contractService.getInvoicing(dateInvoicing, user);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
+  @Get('/detailed')
+  async getDetailedContract(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+  ): Promise<any> {
+    const { dateInvoicing } = filter;
+    console.log(filter);
+    return await this.contractService.getDetailedContract(dateInvoicing, user);
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)

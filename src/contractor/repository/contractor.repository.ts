@@ -10,7 +10,6 @@ export class ContractorRepository extends Repository<ContratorEntity> {
     const endDate = initMonth.add(1, 'month').format('YYYY-MM-DD');
     //convierto a string para trabajar con el a nivel de dbc
     const startDate = initMonth.format('YYYY-MM-DD');
-    console.log(startDate, endDate, dateInvoicing);
     const query = await this.createQueryBuilder('contractor')
       .leftJoin(
         'contractor.travelers',
@@ -21,12 +20,33 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       .addSelect('SUM(travelerEntity.total_amount)', 'total_import')
       .addSelect('count(travelerEntity.id)', 'total_travelers')
       .groupBy('contractor.id');
+    query
+      .leftJoinAndSelect('contractor.travelers', 'travelers')
+      .addGroupBy('travelers.id');
+
     if (id) {
       query.andWhere('contractor.id=:id', { id });
     }
     return this.getTotal(
       this.convertInObjectCOntractor(await query.getRawMany()),
     );
+  }
+  async getDetailedTravelers(dateInvoicing: Date, id: number): Promise<any> {
+    const initMonth = dayjs(dateInvoicing).set('date', 1); //cambio la fecha a inicio del mes
+    //le sumo otro mes a la fecha fin para que esete en el rango de ese mes
+    const endDate = initMonth.add(1, 'month').format('YYYY-MM-DD');
+    //convierto a string para trabajar con el a nivel de dbc
+    const startDate = initMonth.format('YYYY-MM-DD');
+    const query = this.createQueryBuilder('contractor').leftJoinAndSelect(
+      'contractor.travelers',
+      'travelerEntity',
+      'travelerEntity.start_date >:startDate AND travelerEntity.start_date <:endDate',
+      { startDate, endDate },
+    );
+    if (id) {
+      query.andWhere('contractor.id=:id', { id });
+    }
+    return await (await query.getMany()).filter((c) => c.travelers.length > 0);
   }
   convertInObjectCOntractor(list: any[]): ContractorResponseDto[] {
     return list

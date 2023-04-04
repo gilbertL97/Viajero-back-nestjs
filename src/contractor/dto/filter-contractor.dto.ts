@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsDateString,
   IsNumberString,
+  IsBooleanString,
 } from 'class-validator';
 
 export class FilterContractorDto {
