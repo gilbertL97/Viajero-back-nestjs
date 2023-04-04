@@ -43,6 +43,11 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       'travelerEntity.start_date >:startDate AND travelerEntity.start_date <:endDate',
       { startDate, endDate },
     );
+    query
+      .leftJoinAndSelect('travelerEntity.coverage', 'coverage')
+      .leftJoinAndSelect('travelerEntity.contractor', 'contractorss')
+      .leftJoinAndSelect('travelerEntity.origin_country', 'origin_country')
+      .leftJoinAndSelect('travelerEntity.nationality', 'nationality');
     if (id) {
       query.andWhere('contractor.id=:id', { id });
     }
