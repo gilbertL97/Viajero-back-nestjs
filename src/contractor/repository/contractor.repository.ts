@@ -20,10 +20,6 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       .addSelect('SUM(travelerEntity.total_amount)', 'total_import')
       .addSelect('count(travelerEntity.id)', 'total_travelers')
       .groupBy('contractor.id');
-    query
-      .leftJoinAndSelect('contractor.travelers', 'travelers')
-      .addGroupBy('travelers.id');
-
     if (id) {
       query.andWhere('contractor.id=:id', { id });
     }
