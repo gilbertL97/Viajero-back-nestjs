@@ -33,7 +33,7 @@ export class ContractorService {
       const userC = await this.userService.getUser(user.id);
       return userC.contractors;
     }
-    return await this.contractRepository.find({ relations: ['users'] });
+    return await this.contractRepository.find(); //aqui elimine todos los usuarios
   }
 
   async getAllContrators(): Promise<ContratorEntity[]> {
