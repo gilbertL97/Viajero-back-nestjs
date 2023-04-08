@@ -33,9 +33,12 @@ export class FileService {
       const userC = await this.userService.getUser(user.id);
       return this.fileRepository.find({
         where: { contractor: userC.contractors[0] },
+        relations: ['contractor'],
       });
     }
-    return this.fileRepository.find();
+    return this.fileRepository.find({
+      relations: ['contractor'],
+    });
   }
 
   async findOne(id: number): Promise<FileEntity> {
@@ -78,6 +81,7 @@ export class FileService {
       query.andWhere('files.created_at>:start_date_create', {
         start_date_create,
       });
+    query.leftJoinAndSelect('files.contractor', 'contractor');
     return query.getMany();
   }
 }
