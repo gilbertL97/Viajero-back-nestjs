@@ -84,4 +84,7 @@ export class FileService {
     query.leftJoinAndSelect('files.contractor', 'contractor');
     return query.getMany();
   }
+  exportExcel(files:FileEntity[]){
+
+  }
 }

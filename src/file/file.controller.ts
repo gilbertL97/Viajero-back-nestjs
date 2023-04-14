@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Res,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -39,6 +40,24 @@ export class FileController {
   filterFile(@Query() filter: FilterFileDto, @GetUser() user: UserEntity) {
     console.log(filter);
     return this.fileService.filterFile(filter, user);
+  }
+  @Get('/filter')
+  getExcel(
+    @Query() filter: FilterFileDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ) {
+    console.log(filter);
+    const files = this.fileService.filterFile(filter, user);
+    const buffer = this.fileService.exportExcel(files);
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+    //return res.send(buffer);
   }
   @Get(':id')
   findOne(@Param('id') id: string) {
