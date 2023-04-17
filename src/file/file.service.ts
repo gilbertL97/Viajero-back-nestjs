@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { use } from 'passport';
+import { exportExcel } from 'src/common/helper/export/exportExcel';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
@@ -84,7 +85,15 @@ export class FileService {
     query.leftJoinAndSelect('files.contractor', 'contractor');
     return query.getMany();
   }
-  exportExcel(files:FileEntity[]){
-
+  exporToExcel(files: FileEntity[]) {
+    const columns = [
+      { key: 'id', header: 'ID' },
+      { key: 'name', header: 'Nombre' },
+      {
+        key: 'contractor',
+        header: 'Cliente',
+      },
+    ];
+    return exportExcel(files, columns, 'Archivos');
   }
 }
