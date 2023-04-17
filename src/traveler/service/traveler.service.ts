@@ -141,4 +141,22 @@ export class TravelerService {
   async getCurrrentTravelers(filter: FilterTravelerDto) {
     return this.travelerRepository.getCurrentTravelers(filter);
   }
+  async getTravelerExcel(
+    filter: FilterTravelerDto,
+    user: UserEntity,
+  ) {
+    let userC: UserEntity = undefined;
+    if (user.role == UserRole.CLIENT)
+      userC = await this.userService.getUser(user.id);
+
+    const travelers = await this.travelerRepository.finAdllWithFilters(filter, userC);
+    const columns = [
+      { key: 'id', header: 'ID' },
+      { key: 'name', header: 'Nombre' },
+      {
+        key: 'contractor',
+        header: 'Cliente',
+      },
+    ];
+    return exportExcel(travelers, columns, 'Archivos');
 }

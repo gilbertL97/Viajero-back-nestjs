@@ -93,6 +93,10 @@ export class FileService {
         key: 'contractor',
         header: 'Cliente',
       },
+      {
+        key: 'created_at',
+        header: 'Fecha de Importacion',
+      },
     ];
     return exportExcel(files, columns, 'Archivos');
   }
