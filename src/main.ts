@@ -17,12 +17,10 @@ import setDefaultUser from './script/default-user';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
-  }); /*, { cors: true })*/
+  });
   const port: number = parseInt(process.env.PORT);
   app.setGlobalPrefix('viajero');
   const config = app.get(ConfigService);
-  //setDefaultUser(config);
-  // console.log('entro aqui');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

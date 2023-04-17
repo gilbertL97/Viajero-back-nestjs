@@ -32,40 +32,43 @@ export class FileController {
     UserRole.CONSULT,
   )
   @Get()
-  findAll(@GetUser() user: UserEntity) {
-    return this.fileService.findAll(user);
+  async findAll(@GetUser() user: UserEntity) {
+    return await this.fileService.findAll(user);
   }
 
   @Get('/filter')
-  filterFile(@Query() filter: FilterFileDto, @GetUser() user: UserEntity) {
+  async filterFile(
+    @Query() filter: FilterFileDto,
+    @GetUser() user: UserEntity,
+  ) {
     console.log(filter);
-    return this.fileService.filterFile(filter, user);
+    return await this.fileService.filterFile(filter, user);
   }
-  @Get('/filter')
-  getExcel(
+  @Get('/excel')
+  async getExcel(
     @Query() filter: FilterFileDto,
     @GetUser() user: UserEntity,
     @Res() res,
   ) {
     console.log(filter);
-    const files = this.fileService.filterFile(filter, user);
-    const buffer = this.fileService.exportExcel(files);
+    const files = await this.fileService.filterFile(filter, user);
+    const buffer = await this.fileService.exporToExcel(files);
     res.set({
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
-      'Content-Lenght': buffer.length,
+      'Content-Lenght': buffer.byteLength,
     });
     res.end(buffer);
     //return res.send(buffer);
   }
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fileService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.fileService.findOne(+id);
   }
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.fileService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.fileService.remove(+id);
   }
 }

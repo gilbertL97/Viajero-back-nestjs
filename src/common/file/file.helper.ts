@@ -10,11 +10,11 @@ export class FileHelper {
     name: string,
   ): Promise<void> {
     const folderContract = join(this.uploadsPath, entities, name);
-    console.log(folderContract);
+    //console.log(folderContract);
     fs.mkdir(folderContract, { recursive: true }, (error) => {
       if (error) console.log(error);
     });
-    console.log(folderContract);
+    //console.log(folderContract);
   }
   public static async updateFolder(
     entities: string,
