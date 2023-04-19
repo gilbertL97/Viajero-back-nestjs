@@ -96,6 +96,7 @@ export class FileService {
       {
         key: 'created_at',
         header: 'Fecha de Importacion',
+        style: { numFmt: 'dd/mm/yyyy' },
       },
     ];
     return exportExcel(files, columns, 'Archivos');

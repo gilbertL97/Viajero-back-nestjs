@@ -3,7 +3,7 @@ import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import * as ExcelJS from 'exceljs';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 type Columns = {
   header: string;
@@ -40,7 +40,5 @@ const getName = (elem: any) => {
   if (elem instanceof CoverageEntity) return elem.name;
   if (elem instanceof CountryEntity) return elem.comun_name;
   if (elem instanceof ContratorEntity) return elem.client;
-  if (elem instanceof Date) {
-    return dayjs(elem).format('DD/MM/YYYY');
-  }
+  console.log(elem instanceof Date, elem);
 };
