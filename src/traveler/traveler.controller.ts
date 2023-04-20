@@ -91,6 +91,24 @@ export class TravelerController {
     );
     return data;
   }
+  @Get('/excel')
+  async exportTravelerToExcel(
+    @GetUser() user: UserEntity,
+    @Query() travelerFilter: FilterTravelerDto,
+    @Res() res,
+  ) {
+    const buffer = await this.travelerService.getTravelerExcel(
+      travelerFilter,
+      user,
+    );
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
   @Get('/current')
   async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
     const data = await this.travelerService.getCurrrentTravelers(

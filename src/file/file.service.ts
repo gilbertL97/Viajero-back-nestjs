@@ -87,7 +87,6 @@ export class FileService {
   }
   exporToExcel(files: FileEntity[]) {
     const columns = [
-      { key: 'id', header: 'ID' },
       { key: 'name', header: 'Nombre' },
       {
         key: 'contractor',
