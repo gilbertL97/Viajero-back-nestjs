@@ -116,6 +116,11 @@ export class TravelerController {
     );
     return data;
   }
+  @Get('/file/:id')
+  async getTravelersBfile(@Param() id: number) {
+    const data = await this.travelerService.findByFile(id);
+    return data;
+  }
   @Get('/cert')
   async generateCertPdf(@Query('id') id: string, @Res() res): Promise<void> {
     const traveler = await this.travelerService.findOne(id);

@@ -73,7 +73,9 @@ export class TravelerEntity extends BaseEntity {
   @JoinColumn({ name: 'origin_country_id' })
   origin_country: CountryEntity;
 
-  @ManyToOne(() => FileEntity, (file) => file.travelers, {})
+  @ManyToOne(() => FileEntity, (file) => file.travelers, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'file_id' })
   file: FileEntity;
 

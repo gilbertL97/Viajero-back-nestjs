@@ -169,13 +169,16 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       //query.andWhere('viajeros.state  =:state ', { state });
     }
 
-    return query
-      .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
-      .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
-      .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
-      .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
-      .orderBy('viajeros.name')
-      .getMany();
+    return (
+      query
+        .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
+        .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
+        .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
+        .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
+        .leftJoinAndSelect('viajeros.file', 'FileEntity')
+        //.orderBy('viajeros.name')
+        .getMany()
+    );
   }
   async getCurrentTravelers(filter: FilterTravelerDto) {
     //const now = dayjs(new Date()).add(1, 'day').format('YYYY-MM-DD');

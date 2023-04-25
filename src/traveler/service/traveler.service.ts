@@ -89,6 +89,15 @@ export class TravelerService {
     if (!traveler) throw new NotFoundException('The traveler does not exist');
     return traveler;
   }
+  async findByFile(id: number): Promise<TravelerEntity[]> {
+    const travelers = await this.travelerRepository.find({
+      where: { file: id },
+      relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+    });
+    //await new Promise((resolve) => setTimeout(resolve, 5000));
+    if (!travelers) throw new NotFoundException('The traveler does not exist');
+    return travelers;
+  }
 
   async update(
     id: string,
@@ -170,13 +179,22 @@ export class TravelerService {
 
       { key: 'end_date_policy', header: 'Fecha de Fin de Viaje' },
 
-      { key: 'number_high_risk_days', header: 'Numero de dias Alto Riesgo' },
+      {
+        key: 'number_high_risk_days',
+        header: 'Numero de dias Alto Riesgo',
+      },
 
-      { key: 'number_days', header: 'Cantidad de Dias' },
+      { key: 'number_days', header: 'Cantidad de Dias', type: 'number' },
 
-      { key: 'amount_days_high_risk', header: 'Monto de dias de alto riesgo' },
+      {
+        key: 'amount_days_high_risk',
+        header: 'Monto de dias de alto riesgo',
+      },
 
-      { key: 'amount_days_covered', header: 'Monto de dias cubiertos' },
+      {
+        key: 'amount_days_covered',
+        header: 'Monto de dias cubiertos',
+      },
 
       { key: 'total_amount', header: 'Monto total' },
 
@@ -184,13 +202,13 @@ export class TravelerService {
 
       { key: 'contractor', header: 'Cliente' },
 
-      { key: ' origin_country', header: 'Pais origen' },
+      { key: 'origin_country', header: 'Pais origen' },
 
       { key: 'file', header: 'Fichero' },
 
       { key: 'nationality', header: 'Nacionalidad' },
 
-      { key: ' coverage', header: 'Cobertura' },
+      { key: 'coverage', header: 'Cobertura' },
     ];
     return exportExcel(travelers, columns, 'Viajeros');
   }
