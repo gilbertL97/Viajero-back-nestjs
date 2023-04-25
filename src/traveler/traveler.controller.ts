@@ -63,7 +63,7 @@ export class TravelerController {
       return response.status(HttpStatus.ACCEPTED).send();
     }
 
-    if (resp[1] instanceof FileErrorsTravelerDto)
+    if (resp[0] instanceof FileErrorsTravelerDto)
       return response.status(HttpStatus.BAD_REQUEST).send(resp);
     return response.status(HttpStatus.CONFLICT).send(resp);
   }
