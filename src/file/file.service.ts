@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -53,11 +54,8 @@ export class FileService {
 
   async remove(id: number): Promise<FileEntity> {
     const file = await this.findOne(id);
-    console.log(file.travelers);
-    if (file.travelers.length > 0)
-      throw new BadRequestException(
-        'NO se puede borrar el archivo contiene viajeros',
-      );
+    /* if (file.travelers.length > 0 && !confirm)
+      throw new ConflictException(file.travelers.length);*/
     return this.fileRepository.remove(file);
   }
   async filterFile(

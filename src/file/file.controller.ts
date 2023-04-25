@@ -9,6 +9,7 @@ import {
   UseGuards,
   Query,
   Res,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -41,7 +42,6 @@ export class FileController {
     @Query() filter: FilterFileDto,
     @GetUser() user: UserEntity,
   ) {
-    console.log(filter);
     return await this.fileService.filterFile(filter, user);
   }
   @Get('/excel')
@@ -50,7 +50,6 @@ export class FileController {
     @GetUser() user: UserEntity,
     @Res() res,
   ) {
-    console.log(filter);
     const files = await this.fileService.filterFile(filter, user);
     const buffer = await this.fileService.exporToExcel(files);
     res.set({

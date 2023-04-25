@@ -17,7 +17,9 @@ export class FileEntity extends BaseEntity {
   name: string;
   @CreateDateColumn({ type: 'date' })
   created_at: Date;
-  @OneToMany(() => TravelerEntity, (traveler) => traveler.file, {})
+  @OneToMany(() => TravelerEntity, (traveler) => traveler.file, {
+    cascade: ['remove'],
+  })
   travelers: TravelerEntity[];
   @ManyToOne(() => ContratorEntity, (contractor) => contractor.files, {})
   contractor: ContratorEntity;
