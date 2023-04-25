@@ -9,6 +9,7 @@ import {
   Post,
   UseGuards,
   Query,
+  Res,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -36,11 +37,25 @@ export class ContractorController {
     return data;
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
   @Get('/active')
   async getContractsActive(): Promise<ContratorEntity[]> {
     const data = this.contractService.getContratorsActive();
     return data;
+  }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
+  @Get('/excel')
+  async getContractExcel(@GetUser() user: UserEntity, @Res() res) {
+    const data = await this.contractService.getContrators(user);
+    const buffer = await this.contractService.exportExcel(data);
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
   }
   @UseGuards(RolesGuard)
   @Roles(
@@ -58,6 +73,24 @@ export class ContractorController {
     const { dateInvoicing } = filter;
     console.log(filter);
     return await this.contractService.getInvoicing(dateInvoicing, user);
+  }
+  @Get('/invoicing/excel')
+  async getFacturationExcel(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<any> {
+    const { dateInvoicing } = filter;
+    console.log(filter);
+    const data = await this.contractService.getInvoicing(dateInvoicing, user);
+    const buffer = await this.contractService.exportExcelInvoicing(data);
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
   }
   @UseGuards(RolesGuard)
   @Roles(

@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { exportExcel } from 'src/common/helper/export/exportExcel';
 
 //import { FileHelper } from 'src/common/helper/file.helper';
 import { TravelerService } from 'src/traveler/service/traveler.service';
@@ -112,5 +113,58 @@ export class ContractorService {
     if (user.role == UserRole.CLIENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
     return await this.contractRepository.getDetailedTravelers(date, id);
+  }
+  async exportExcel(contractor: ContratorEntity[]) {
+    const columns = [
+      { key: 'client', header: 'Nombre' },
+      {
+        key: 'poliza',
+        header: 'Poliza',
+      },
+      {
+        key: 'total_amount, ',
+        header: 'Correo',
+      },
+      {
+        key: 'telf',
+        header: 'Telefono',
+      },
+      {
+        key: 'file',
+        header: 'Carpeta',
+      },
+      {
+        key: 'isActive',
+        header: 'Estado',
+      },
+    ];
+    return exportExcel(contractor, columns, 'Clientes');
+  }
+
+  async exportExcelInvoicing(contractor: any) {
+    const { total_amount, total_travelers } = contractor;
+    const total = {
+      client: 'Total',
+      poliza: '-',
+      total_travelers: total_travelers,
+      total_import: total_amount,
+    };
+    contractor.contractors.push(total);
+    const columns = [
+      { key: 'client', header: 'Nombre' },
+      {
+        key: 'poliza',
+        header: 'Poliza',
+      },
+      {
+        key: 'total_travelers',
+        header: 'Total de Viajeros',
+      },
+      {
+        key: 'total_import',
+        header: 'Importe',
+      },
+    ];
+    return exportExcel(contractor.contractors, columns, 'Clientes');
   }
 }
