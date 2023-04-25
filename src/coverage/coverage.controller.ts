@@ -9,7 +9,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
-  Req,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -34,7 +34,6 @@ export class CoverageController {
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createCoverageDto: CreateCoverageDto,
-    @Req() eq,
   ) {
     //console.log(eq.rawHeaders, file);
     return this.coverageService.createCoverage(createCoverageDto, file);
@@ -57,15 +56,26 @@ export class CoverageController {
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get()
   async findAll() {
-    return this.coverageService.getCoverages();
+    return await this.coverageService.getCoverages();
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get('/active')
   async findAllActive() {
-    return this.coverageService.getCoveragesActives();
+    return await this.coverageService.getCoveragesActives();
   }
-
+  @Get('/excel')
+  async excelCoverage(@Res() res) {
+    const data = await this.coverageService.getCoveragesActives();
+    const buffer = await this.coverageService.exportExcel(data);
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get(':id')

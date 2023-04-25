@@ -9,6 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { join } from 'path';
 import { FileHelper } from 'src/common/file/file.helper';
+import { exportExcel } from 'src/common/helper/export/exportExcel';
 
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
@@ -112,5 +113,36 @@ export class CoverageService {
     coverage.isActive = false;
     await this.coverageRepository.save(coverage);
     throw new ConflictException('cant delete the Coverage');
+  }
+
+  async exportExcel(coverage: CoverageEntity[]) {
+    const columns = [
+      { key: 'name', header: 'Nombre' },
+      {
+        key: 'price',
+        header: 'Precio',
+      },
+      {
+        key: 'daily',
+        header: 'Diario',
+      },
+      {
+        key: 'high_risk',
+        header: 'Alto Riesgo',
+      },
+      {
+        key: 'number_of_days',
+        header: 'Cant de dias',
+      },
+      {
+        key: 'isActive',
+        header: 'Estado',
+      },
+      {
+        key: 'config_string',
+        header: 'Cadena de Configuracion',
+      },
+    ];
+    return exportExcel(coverage, columns, 'Covertura');
   }
 }
