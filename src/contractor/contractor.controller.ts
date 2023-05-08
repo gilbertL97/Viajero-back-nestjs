@@ -110,6 +110,35 @@ export class ContractorController {
     return await this.contractService.getDetailedContract(dateInvoicing, user);
   }
   @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
+  @Get('/detailed/excel')
+  async getDetailedContractExcel(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<any> {
+    const { dateInvoicing } = filter;
+    console.log(filter);
+    const data = await this.contractService.getDetailedContract(
+      dateInvoicing,
+      user,
+    );
+    const buffer = await this.contractService.exportExcelDetailedContract(data);
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
+  @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get(':id')
   getContract(@Param('id', ParseIntPipe) id: number): Promise<ContratorEntity> {

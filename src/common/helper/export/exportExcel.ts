@@ -57,6 +57,6 @@ function tranformDate(elem: any, key: string) {
     key == 'end_date_policy' ||
     key == 'created_at'
   )
-    return dayjs(elem[key]).format('DD/MM/YYYY');
+    return dayjs(elem).format('DD/MM/YYYY');
   return elem;
 }

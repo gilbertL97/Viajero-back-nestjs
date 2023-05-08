@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { exportExcel } from 'src/common/helper/export/exportExcel';
+import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 
 //import { FileHelper } from 'src/common/helper/file.helper';
 import { TravelerService } from 'src/traveler/service/traveler.service';
@@ -108,7 +109,10 @@ export class ContractorService {
       id = (await this.userService.getUser(user.id)).contractors[0].id;
     return await this.contractRepository.getInvoicingOfMonth(date, id);
   }
-  async getDetailedContract(date: Date, user: UserEntity): Promise<any> {
+  async getDetailedContract(
+    date: Date,
+    user: UserEntity,
+  ): Promise<ContratorEntity[]> {
     let id = undefined;
     if (user.role == UserRole.CLIENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
@@ -166,5 +170,64 @@ export class ContractorService {
       },
     ];
     return exportExcel(contractor.contractors, columns, 'Clientes');
+  }
+  exportExcelDetailedContract(data: ContratorEntity[]) {
+    let allTravelers = [];
+    data.map((contractor) => {
+      allTravelers = allTravelers.concat(contractor.travelers);
+    });
+
+    const columns = [
+      { key: 'name', header: 'Nombre' },
+      {
+        key: 'contractor',
+        header: 'Cliente',
+      },
+      { key: 'sex', header: 'Sexo' },
+      { key: 'born_date', header: 'Fecha de Nacimiento' },
+      { key: 'email', header: 'Correo' },
+
+      { key: 'passport', header: 'Pasaporte' },
+
+      { key: 'flight', header: 'Vuelo' },
+      { key: 'sale_date', header: 'Fecha de Venta' },
+
+      { key: 'start_date', header: 'Fecha de Inicio' },
+
+      { key: 'end_date_policy', header: 'Fecha de Fin de Viaje' },
+
+      {
+        key: 'number_high_risk_days',
+        header: 'Numero de dias Alto Riesgo',
+      },
+
+      { key: 'number_days', header: 'Cantidad de Dias', type: 'number' },
+
+      {
+        key: 'amount_days_high_risk',
+        header: 'Monto de dias de alto riesgo',
+      },
+
+      {
+        key: 'amount_days_covered',
+        header: 'Monto de dias cubiertos',
+      },
+
+      { key: 'total_amount', header: 'Monto total' },
+
+      { key: 'state', header: 'Estado' },
+
+      { key: 'contractor', header: 'Cliente' },
+
+      { key: 'origin_country', header: 'Pais origen' },
+
+      { key: 'file', header: 'Fichero' },
+
+      { key: 'nationality', header: 'Nacionalidad' },
+
+      { key: 'coverage', header: 'Cobertura' },
+    ];
+    console.log(allTravelers, data);
+    return exportExcel(allTravelers, columns, 'Viajeros por Cliente');
   }
 }
