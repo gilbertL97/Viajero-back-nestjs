@@ -27,7 +27,10 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       this.convertInObjectCOntractor(await query.getRawMany()),
     );
   }
-  async getDetailedTravelers(dateInvoicing: Date, id: number): Promise<any> {
+  async getDetailedTravelers(
+    dateInvoicing: Date,
+    id: number,
+  ): Promise<ContratorEntity[]> {
     const initMonth = dayjs(dateInvoicing).set('date', 1); //cambio la fecha a inicio del mes
     //le sumo otro mes a la fecha fin para que esete en el rango de ese mes
     const endDate = initMonth.add(1, 'month').format('YYYY-MM-DD');
@@ -43,11 +46,12 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       .leftJoinAndSelect('travelerEntity.coverage', 'coverage')
       .leftJoinAndSelect('travelerEntity.contractor', 'contractorss')
       .leftJoinAndSelect('travelerEntity.origin_country', 'origin_country')
-      .leftJoinAndSelect('travelerEntity.nationality', 'nationality');
+      .leftJoinAndSelect('travelerEntity.nationality', 'nationality')
+      .leftJoinAndSelect('travelerEntity.file', 'file');
     if (id) {
       query.andWhere('contractor.id=:id', { id });
     }
-    return await (await query.getMany()).filter((c) => c.travelers.length > 0);
+    return (await query.getMany()).filter((c) => c.travelers.length > 0);
   }
   convertInObjectCOntractor(list: any[]): ContractorResponseDto[] {
     return list
