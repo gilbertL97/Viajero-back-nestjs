@@ -116,7 +116,7 @@ export class TravelerUploadFilesService {
     countries: CountryEntity[],
   ): Promise<FileErrorsTravelerDto[] | void> {
     const validator = new Validator();
-    let i = 2;
+    let i = 2; //numero de fila minimo
     const listFileErrors: FileErrorsTravelerDto[] = [];
     for (const traveler of travelers) {
       const validatorError = await validator.validate(traveler, {
@@ -149,25 +149,31 @@ export class TravelerUploadFilesService {
     //fileErrors.errors = [];
     const coverage = ValidateFile.findCoverage(traveler, coverages);
     if (coverage instanceof CoverageEntity) {
-      const amount_days_covered = ValidateFile.validateAmountDays(
-        coverage,
-        traveler,
-      );
-      if (typeof amount_days_covered == 'string')
-        fileErrors.amount_days_covered = amount_days_covered;
-      const amount_days_high_risk = ValidateFile.validateAmountHighRisk(
-        coverage,
-        traveler,
-      );
-      if (typeof amount_days_high_risk == 'string')
-        fileErrors.amount_days_high_risk = amount_days_high_risk;
-      const total = ValidateFile.validateTotalAmount(
-        traveler,
-        amount_days_high_risk,
-        amount_days_covered,
-      );
-      if (typeof total == 'string') fileErrors.total_amount = total;
-      if (!coverage.daily) delete validationErrors.number_days;
+      if (
+        //este fue el cambio q me pidio evely quitar los errores innecesarios en las fechas
+        validationErrors.start_date == undefined &&
+        validationErrors.end_date_policy == undefined
+      ) {
+        const amount_days_covered = ValidateFile.validateAmountDays(
+          coverage,
+          traveler,
+        );
+        if (typeof amount_days_covered == 'string')
+          fileErrors.amount_days_covered = amount_days_covered;
+        const amount_days_high_risk = ValidateFile.validateAmountHighRisk(
+          coverage,
+          traveler,
+        );
+        if (typeof amount_days_high_risk == 'string')
+          fileErrors.amount_days_high_risk = amount_days_high_risk;
+        const total = ValidateFile.validateTotalAmount(
+          traveler,
+          amount_days_high_risk,
+          amount_days_covered,
+        );
+        if (typeof total == 'string') fileErrors.total_amount = total;
+        if (!coverage.daily) delete validationErrors.number_days;
+      } else validationErrors.number_days = undefined;
     } else fileErrors.coverage = coverage;
     const nationality = ValidateFile.validateNationality(traveler, countries);
     if (nationality) fileErrors.nationality = nationality;
