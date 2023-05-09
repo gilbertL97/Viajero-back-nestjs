@@ -71,7 +71,6 @@ export class ContractorController {
     @GetUser() user: UserEntity,
   ): Promise<any> {
     const { dateInvoicing } = filter;
-    console.log(filter);
     return await this.contractService.getInvoicing(dateInvoicing, user);
   }
   @Get('/invoicing/excel')
@@ -107,7 +106,7 @@ export class ContractorController {
   ): Promise<any> {
     const { dateInvoicing } = filter;
     console.log(filter);
-    return await this.contractService.getDetailedContract(dateInvoicing, user);
+    return await this.contractService.getDetailedContract(filter, user);
   }
   @UseGuards(RolesGuard)
   @Roles(
@@ -125,10 +124,7 @@ export class ContractorController {
   ): Promise<any> {
     const { dateInvoicing } = filter;
     console.log(filter);
-    const data = await this.contractService.getDetailedContract(
-      dateInvoicing,
-      user,
-    );
+    const data = await this.contractService.getDetailedContract(filter, user);
     const buffer = await this.contractService.exportExcelDetailedContract(data);
     res.set({
       'Content-Type':

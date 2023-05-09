@@ -16,6 +16,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
 import { CreateContratorDto } from './dto/create-contrator.dto';
+import { FilterContractorDto } from './dto/filter-contractor.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
 import { ContractorRepository } from './repository/contractor.repository';
@@ -110,13 +111,17 @@ export class ContractorService {
     return await this.contractRepository.getInvoicingOfMonth(date, id);
   }
   async getDetailedContract(
-    date: Date,
+    filter: FilterContractorDto,
     user: UserEntity,
   ): Promise<ContratorEntity[]> {
     let id = undefined;
     if (user.role == UserRole.CLIENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
-    return await this.contractRepository.getDetailedTravelers(date, id);
+    else id = filter.id;
+    return await this.contractRepository.getDetailedTravelers(
+      filter.dateInvoicing,
+      id,
+    );
   }
   async exportExcel(contractor: ContratorEntity[]) {
     const columns = [
