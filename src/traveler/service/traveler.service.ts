@@ -11,7 +11,6 @@ import { CountryService } from 'src/country/country.service';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageService } from 'src/coverage/coverage.service';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
-import { FileService } from 'src/file/file.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
