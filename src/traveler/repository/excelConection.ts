@@ -19,7 +19,8 @@ export class ExcelJSCOn {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
     const excel = await workbook.xlsx.readFile(file.path);
-    const worksheet = excel.getWorksheet(1);
+    // se cambio ya q este metodo excel.getWorksheet(1) no devolvia el primero
+    const worksheet = excel.worksheets[0];
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
     worksheet.eachRow(async (r) => {
       const traveler = this.testParseTraveler(r, coverages);
