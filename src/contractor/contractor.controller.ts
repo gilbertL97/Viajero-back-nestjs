@@ -104,7 +104,6 @@ export class ContractorController {
     @Query() filter: FilterContractorDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
-    const { dateInvoicing } = filter;
     console.log(filter);
     return await this.contractService.getDetailedContract(filter, user);
   }
@@ -122,7 +121,6 @@ export class ContractorController {
     @GetUser() user: UserEntity,
     @Res() res,
   ): Promise<any> {
-    const { dateInvoicing } = filter;
     console.log(filter);
     const data = await this.contractService.getDetailedContract(filter, user);
     const buffer = await this.contractService.exportExcelDetailedContract(data);

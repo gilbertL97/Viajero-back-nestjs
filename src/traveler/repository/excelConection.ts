@@ -76,7 +76,7 @@ export class ExcelJSCOn {
   }
   static isDate(date: Excel.Cell): string | undefined {
     const newDate = this.isEmptyString(date.text);
-    //console.log(newDate);
+    console.log(newDate);
     if (!newDate) return undefined;
     if (newDate[2] == '/') return newDate;
     return dayjs(newDate).format('DD/MM/YYYY');

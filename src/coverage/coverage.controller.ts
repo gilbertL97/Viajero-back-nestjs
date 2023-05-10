@@ -64,15 +64,30 @@ export class CoverageController {
   async findAllActive() {
     return await this.coverageService.getCoveragesActives();
   }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get('/excel')
   async excelCoverage(@Res() res) {
-    const data = await this.coverageService.getCoveragesActives();
+    const data = await this.coverageService.getCoverages();
     const buffer = await this.coverageService.exportExcel(data);
     res.set({
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
       'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Get('/pdf')
+  async exporCoveragePdf(@Res() res): Promise<void> {
+    const data = await this.coverageService.getCoverages();
+    const buffer = await this.coverageService.exportToPdf(data);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Coberturas.pdf',
+      'Content-Lenght': buffer.length,
     });
     res.end(buffer);
   }

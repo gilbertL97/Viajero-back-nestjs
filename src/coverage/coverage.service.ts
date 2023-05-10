@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { join } from 'path';
 import { FileHelper } from 'src/common/file/file.helper';
 import { exportExcel } from 'src/common/helper/export/exportExcel';
+import { exportPdf } from 'src/common/helper/export/exportPdf';
 
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
@@ -115,7 +116,7 @@ export class CoverageService {
     throw new ConflictException('cant delete the Coverage');
   }
 
-  async exportExcel(coverage: CoverageEntity[]) {
+  exportExcel(coverage: CoverageEntity[]) {
     const columns = [
       { key: 'name', header: 'Nombre' },
       {
@@ -144,5 +145,35 @@ export class CoverageService {
       },
     ];
     return exportExcel(coverage, columns, 'Covertura');
+  }
+  exportToPdf(coverage: CoverageEntity[]) {
+    const columns = [
+      { key: 'name', header: 'Nombre' },
+      {
+        key: 'price',
+        header: 'Precio',
+      },
+      {
+        key: 'daily',
+        header: 'Diario',
+      },
+      {
+        key: 'high_risk',
+        header: 'Alto Riesgo',
+      },
+      {
+        key: 'number_of_days',
+        header: 'Cant de dias',
+      },
+      {
+        key: 'isActive',
+        header: 'Estado',
+      },
+      {
+        key: 'config_string',
+        header: 'Cadena de Configuracion',
+      },
+    ];
+    return exportPdf('Cobertura');
   }
 }

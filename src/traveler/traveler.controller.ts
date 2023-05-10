@@ -109,6 +109,20 @@ export class TravelerController {
     });
     res.end(buffer);
   }
+  @Get('/pdf')
+  async exportTravelerToPdf(
+    @Query('id') id: string,
+    @Res() res,
+  ): Promise<void> {
+    const traveler = await this.travelerService.findOne(id);
+    const buffer = await this.travelerDocService.createTestPDf(traveler);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;' + traveler.name + '.pdf',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
   @Get('/current')
   async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
     const data = await this.travelerService.getCurrrentTravelers(
