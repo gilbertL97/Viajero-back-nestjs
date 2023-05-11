@@ -1,12 +1,13 @@
-
-import { Columns } from './utils/types/columnsTypes';
+import { ColumnsExcel, ColumnsPdf } from './utils/types/columnsTypes';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const PDFDocument = require('pdfkit-table');
+// const PDFDocument = require('pdfkit-table');
+import PDFDocument from 'pdfkit-table';
 export async function exportPdf(
-  //   data: any[],
-  //   columns: Columns[],
+  data: any[],
+  columns: ColumnsPdf[],
   title: string,
 ): Promise<Uint8Array> {
+  const pantoneColor = '#1b1462';
   const pdfBuffer: Buffer = await new Promise((resolve) => {
     const doc = new PDFDocument({
       size: 'LETTER',
@@ -32,11 +33,11 @@ export async function exportPdf(
         },
       );
       doc.page.margins.bottom = bottom;
-      doc.image('assets/esicubaLogo.jpg', doc.page.width / 2 - 100, 25, {
-        scale: 0.2,
+      doc.image('assets/esicubaLogo.jpg', doc.page.width / 2 - 50, 25, {
+        scale: 0.15,
       });
-      doc.text('', 0, 400);
-      doc.font('Helvetica-Bold').fontSize(24);
+      doc.text('', 0, 100);
+      doc.font('Helvetica-Bold').fontSize(20).fillColor(pantoneColor);
       doc.text(title, {
         width: doc.page.width,
         align: 'center',

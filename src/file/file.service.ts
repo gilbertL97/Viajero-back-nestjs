@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { use } from 'passport';
-import { exportExcel } from 'src/common/helper/export/exportExcel';
+import { exportExcel } from 'src/common/export/exportExcel';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import { UserEntity } from 'src/user/entity/user.entity';

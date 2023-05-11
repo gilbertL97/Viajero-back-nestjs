@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { exportExcel } from 'src/common/helper/export/exportExcel';
+import { exportExcel } from 'src/common/export/exportExcel';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 
 //import { FileHelper } from 'src/common/helper/file.helper';

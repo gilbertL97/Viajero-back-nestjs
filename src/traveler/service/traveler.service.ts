@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { exportExcel } from 'src/common/helper/export/exportExcel';
+import { exportExcel } from 'src/common/export/exportExcel';
 import { ContractorService } from 'src/contractor/contractor.service';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryService } from 'src/country/country.service';

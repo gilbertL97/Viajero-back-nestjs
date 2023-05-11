@@ -9,8 +9,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { join } from 'path';
 import { FileHelper } from 'src/common/file/file.helper';
-import { exportExcel } from 'src/common/helper/export/exportExcel';
-import { exportPdf } from 'src/common/helper/export/exportPdf';
+import { exportExcel } from 'src/common/export/exportExcel';
+import { exportPdf } from 'src/common/export/exportPdf';
 
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
@@ -148,32 +148,33 @@ export class CoverageService {
   }
   exportToPdf(coverage: CoverageEntity[]) {
     const columns = [
-      { key: 'name', header: 'Nombre' },
+      { label: 'name', property: 'Nombre' },
       {
-        key: 'price',
-        header: 'Precio',
+        label: 'price',
+        property: 'Precio',
       },
       {
-        key: 'daily',
-        header: 'Diario',
+        label: 'daily',
+        property: 'Diario',
       },
       {
-        key: 'high_risk',
-        header: 'Alto Riesgo',
+        label: 'high_risk',
+        property: 'Alto Riesgo',
       },
       {
-        key: 'number_of_days',
-        header: 'Cant de dias',
+        label: 'number_of_days',
+        property: 'Cant de dias',
       },
       {
-        key: 'isActive',
-        header: 'Estado',
+        label: 'isActive',
+        property: 'Estado',
+        wi
       },
       {
-        key: 'config_string',
-        header: 'Cadena de Configuracion',
+        label: 'config_string',
+        property: 'Cadena de Configuracion',
       },
     ];
-    return exportPdf('Cobertura');
+    return exportPdf(coverage, columns, 'Cobertura');
   }
 }

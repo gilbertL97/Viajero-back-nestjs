@@ -1,10 +1,10 @@
 import * as ExcelJS from 'exceljs';
-import { Columns } from './utils/types/columnsTypes';
+import { ColumnsExcel } from './utils/types/columnsTypes';
 import { flater } from './utils/methods/utils';
 
 export async function exportExcel(
   data: any[],
-  columns: Columns[],
+  columns: ColumnsExcel[],
   title: string,
 ) {
   const workbook = new ExcelJS.Workbook();
