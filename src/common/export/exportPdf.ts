@@ -2,6 +2,7 @@ import { ColumnsExcel, ColumnsPdf } from './utils/types/columnsTypes';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const PDFDocument = require('pdfkit-table');
 import PDFDocument from 'pdfkit-table';
+import { flater } from './utils/methods/utils';
 export async function exportPdf(
   data: any[],
   columns: ColumnsPdf[],
@@ -43,7 +44,14 @@ export async function exportPdf(
         align: 'center',
       });
     });
+    console.log(data);
+    const table = {
+      title: 'Tabla' + title,
+      headers: columns,
+      datas: data.map((elem: any) => flater(elem)),
+    };
     doc.addPage();
+    doc.table(table);
     const buffer = [];
     doc.on('data', buffer.push.bind(buffer));
     doc.on('end', () => {

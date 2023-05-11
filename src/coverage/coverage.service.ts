@@ -148,31 +148,36 @@ export class CoverageService {
   }
   exportToPdf(coverage: CoverageEntity[]) {
     const columns = [
-      { label: 'name', property: 'Nombre' },
+      { label: 'Nombre', property: 'name', width: 100 },
       {
-        label: 'price',
-        property: 'Precio',
+        label: 'Precio',
+        property: 'price',
+        width: 40,
       },
       {
-        label: 'daily',
-        property: 'Diario',
+        label: 'Diario',
+        property: 'daily',
+        width: 60,
       },
       {
-        label: 'high_risk',
-        property: 'Alto Riesgo',
+        label: 'Alto Riesgo',
+        property: 'high_risk',
+        width: 50,
       },
       {
-        label: 'number_of_days',
-        property: 'Cant de dias',
+        label: 'Cant de dias',
+        property: 'number_of_days',
+        width: 100,
       },
       {
-        label: 'isActive',
-        property: 'Estado',
-        wi
+        label: 'Estado',
+        property: 'isActive',
+        width: 50,
       },
       {
-        label: 'config_string',
-        property: 'Cadena de Configuracion',
+        label: 'Cadena de Configuracion',
+        property: 'config_string',
+        width: 100,
       },
     ];
     return exportPdf(coverage, columns, 'Cobertura');
