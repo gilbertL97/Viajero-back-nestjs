@@ -1,32 +1,12 @@
-import {
-  BadRequestException,
-  ConflictException,
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { ContratorEntity } from '../entity/contrator.entity';
+
 import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 
-//import { FileHelper } from 'src/common/helper/file.helper';
-import { TravelerService } from 'src/traveler/service/traveler.service';
-import { UserService } from 'src/user/user.service';
-import { ContratorEntity } from '../entity/contrator.entity';
-import { ContractorRepository } from '../repository/contractor.repository';
-
 @Injectable()
 export class ContractorExportService {
-  constructor(
-    @InjectRepository(ContractorRepository)
-    private readonly contractRepository: ContractorRepository,
-    @Inject(forwardRef(() => TravelerService))
-    private readonly travelerService: TravelerService,
-    @Inject(forwardRef(() => UserService))
-    private readonly userService: UserService,
-  ) {}
   async exportExcel(contractor: ContratorEntity[]) {
     const columns = [
       { key: 'client', header: 'Nombre' },

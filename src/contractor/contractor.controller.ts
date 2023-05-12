@@ -47,8 +47,7 @@ export class ContractorController {
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
   @Get('/excel')
   async getContractExcel(@GetUser() user: UserEntity, @Res() res) {
-    const data = await this.contractService.getContrators(user);
-    const buffer = await this.contractService.exportExcel(data);
+    const buffer = await this.contractService.exportAllContractorExcel(user);
     res.set({
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -81,8 +80,10 @@ export class ContractorController {
   ): Promise<any> {
     const { dateInvoicing } = filter;
     console.log(filter);
-    const data = await this.contractService.getInvoicing(dateInvoicing, user);
-    const buffer = await this.contractService.exportExcelInvoicing(data);
+    const buffer = await this.contractService.exportInvoicingExcel(
+      dateInvoicing,
+      user,
+    );
     res.set({
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -104,7 +105,6 @@ export class ContractorController {
     @Query() filter: FilterContractorDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
-    console.log(filter);
     return await this.contractService.getDetailedContract(filter, user);
   }
   @UseGuards(RolesGuard)
@@ -121,9 +121,10 @@ export class ContractorController {
     @GetUser() user: UserEntity,
     @Res() res,
   ): Promise<any> {
-    console.log(filter);
-    const data = await this.contractService.getDetailedContract(filter, user);
-    const buffer = await this.contractService.exportExcelDetailedContract(data);
+    const buffer = await this.contractService.exportDetailedExxcel(
+      filter,
+      user,
+    );
     res.set({
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
