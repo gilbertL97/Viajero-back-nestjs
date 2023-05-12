@@ -115,7 +115,6 @@ export class ContractorExportService {
 
       { key: 'coverage', header: 'Cobertura' },
     ];
-    console.log(allTravelers, data);
     return exportExcel(allTravelers, columns, 'Viajeros por Cliente');
   }
   exportAllContractorToPdf(contractor: ContratorEntity[]) {
@@ -182,5 +181,64 @@ export class ContractorExportService {
       },
     ];
     return exportPdf(contractor.contractors, columns, 'Facturacion Mensual');
+  }
+  exportPdfDetailedContract(data: ContratorEntity[]) {
+    let allTravelers = [];
+    data.map((contractor) => {
+      allTravelers = allTravelers.concat(contractor.travelers);
+    });
+
+    const columns = [
+      { property: 'name', label: 'Nombre' },
+      {
+        property: 'contractor',
+        label: 'Cliente',
+      },
+      { property: 'sex', label: 'Sexo' },
+      { property: 'born_date', label: 'Fecha de Nacimiento' },
+      { property: 'email', label: 'Correo' },
+
+      { property: 'passport', label: 'Pasaporte' },
+
+      { property: 'flight', label: 'Vuelo' },
+      { property: 'sale_date', label: 'Fecha de Venta' },
+
+      { property: 'start_date', label: 'Fecha de Inicio' },
+
+      { property: 'end_date_policy', label: 'Fecha de Fin de Viaje' },
+
+      {
+        property: 'number_high_risk_days',
+        label: 'Numero de dias Alto Riesgo',
+      },
+
+      { property: 'number_days', label: 'Cantidad de Dias' },
+
+      {
+        property: 'amount_days_high_risk',
+        label: 'Monto de dias de alto riesgo',
+      },
+
+      {
+        property: 'amount_days_covered',
+        label: 'Monto de dias cubiertos',
+      },
+
+      { property: 'total_amount', label: 'Monto total' },
+
+      { property: 'state', label: 'Estado' },
+
+      { property: 'contractor', label: 'Cliente' },
+
+      { property: 'origin_country', label: 'Pais origen' },
+
+      { property: 'file', label: 'Fichero' },
+
+      { property: 'nationality', label: 'Nacionalidad' },
+
+      { property: 'coverage', label: 'Cobertura' },
+    ];
+    console.log(allTravelers, data);
+    return exportPdf(allTravelers, columns, 'Viajeros por Cliente');
   }
 }

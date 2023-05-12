@@ -85,6 +85,13 @@ export class ContractorController {
     const { dateInvoicing } = filter;
     return await this.contractService.getInvoicing(dateInvoicing, user);
   }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get('/invoicing/excel')
   async getFacturationExcel(
     @Query() filter: FilterContractorDto,
@@ -105,6 +112,13 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get('/invoicing/pdf')
   async getFacturationPdf(
     @Query() filter: FilterContractorDto,
@@ -161,6 +175,31 @@ export class ContractorController {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
       'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
+  @Get('/detailed/pdf')
+  async getDetailedContractPdf(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const { dateInvoicing } = filter;
+    const buffer = await this.contractService.exportInvoicingPdf(
+      dateInvoicing,
+      user,
+    );
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Coberturas.pdf',
+      'Content-Lenght': buffer.length,
     });
     res.end(buffer);
   }
