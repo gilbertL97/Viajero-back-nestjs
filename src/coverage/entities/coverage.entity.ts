@@ -1,8 +1,6 @@
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import {
   BaseEntity,
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   OneToMany,
@@ -34,11 +32,4 @@ export class CoverageEntity extends BaseEntity {
     cascade: true,
   })
   travelers: TravelerEntity[];
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  notNumberDaysIfDaily() {
-    if (this.daily == false) this.number_of_days = null;
-    else if (this.number_of_days == null) this.number_of_days = 30;
-  }
 }

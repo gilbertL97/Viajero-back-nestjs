@@ -33,6 +33,8 @@ export class CoverageService {
   ): Promise<CoverageEntity> {
     const coverage = this.coverageRepository.create(createCoverageDto);
     if (file) coverage.benefitTable = file.filename;
+    if (coverage.daily) coverage.number_of_days = null;
+    else if (coverage.number_of_days == null) coverage.number_of_days = 30; // puse por defecto 30 dias
     const newCoverage = await this.coverageRepository
       .save(coverage)
       .catch(() => {
@@ -73,6 +75,10 @@ export class CoverageService {
     const fileBefore = coverag.benefitTable;
     const updatedCoverage = Object.assign(coverag, updateCoverageDto);
     if (file) updatedCoverage.benefitTable = file.filename;
+    if (updatedCoverage.daily) updatedCoverage.number_of_days = null;
+    else if (updatedCoverage.number_of_days == null)
+      updatedCoverage.number_of_days = 30; // puse por defecto 30 dias
+
     const coverageSaved = await this.coverageRepository
       .save(updatedCoverage)
       .catch(() => {
@@ -167,7 +173,7 @@ export class CoverageService {
       {
         label: 'Cant de dias',
         property: 'number_of_days',
-        width: 100,
+        width: 60,
       },
       {
         label: 'Estado',
