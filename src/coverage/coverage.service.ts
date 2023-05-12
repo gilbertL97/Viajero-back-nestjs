@@ -164,21 +164,25 @@ export class CoverageService {
         label: 'Diario',
         property: 'daily',
         width: 60,
+        align: 'center',
       },
       {
         label: 'Alto Riesgo',
         property: 'high_risk',
         width: 50,
+        align: 'center',
       },
       {
         label: 'Cant de dias',
         property: 'number_of_days',
         width: 60,
+        align: 'center',
       },
       {
-        label: 'Estado',
+        label: 'Activo',
         property: 'isActive',
         width: 50,
+        align: 'center',
       },
       {
         label: 'Cadena de Configuracion',

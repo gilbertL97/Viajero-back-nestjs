@@ -1,4 +1,4 @@
-import { ColumnsExcel, ColumnsPdf } from './utils/types/columnsTypes';
+import { ColumnsPdf } from './utils/types/columnsTypes';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const PDFDocument = require('pdfkit-table');
 import PDFDocument from 'pdfkit-table';
@@ -44,7 +44,6 @@ export async function exportPdf(
         align: 'center',
       });
     });
-    console.log(data);
     const table = {
       title: 'Tabla' + title,
       headers: columns,
