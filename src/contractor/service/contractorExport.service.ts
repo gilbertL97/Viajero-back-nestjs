@@ -3,7 +3,6 @@ import { ContratorEntity } from '../entity/contrator.entity';
 
 import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
-import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 
 @Injectable()
 export class ContractorExportService {
@@ -15,7 +14,7 @@ export class ContractorExportService {
         header: 'Poliza',
       },
       {
-        key: 'total_amount, ',
+        key: 'email',
         header: 'Correo',
       },
       {
@@ -119,44 +118,69 @@ export class ContractorExportService {
     console.log(allTravelers, data);
     return exportExcel(allTravelers, columns, 'Viajeros por Cliente');
   }
-  exportToPdf(coverage: CoverageEntity[]) {
+  exportAllContractorToPdf(contractor: ContratorEntity[]) {
     const columns = [
-      { label: 'Nombre', property: 'name', width: 100 },
+      { property: 'client', label: 'Nombre', width: 100 },
       {
-        label: 'Precio',
-        property: 'price',
-        width: 40,
-      },
-      {
-        label: 'Diario',
-        property: 'daily',
-        width: 60,
+        property: 'poliza',
+        label: 'Poliza',
         align: 'center',
-      },
-      {
-        label: 'Alto Riesgo',
-        property: 'high_risk',
         width: 50,
-        align: 'center',
       },
       {
-        label: 'Cant de dias',
-        property: 'number_of_days',
-        width: 60,
-        align: 'center',
+        property: 'email',
+        label: 'Correo',
+        width: 120,
       },
       {
-        label: 'Activo',
+        property: 'telf',
+        label: 'Telefono',
+        width: 120,
+      },
+      {
+        property: 'file',
+        label: 'Carpeta',
+        width: 50,
+      },
+      {
         property: 'isActive',
-        width: 50,
+        label: 'Activo',
         align: 'center',
-      },
-      {
-        label: 'Cadena de Configuracion',
-        property: 'config_string',
-        width: 100,
+        width: 50,
       },
     ];
-    return exportPdf(coverage, columns, 'Cobertura');
+    return exportPdf(contractor, columns, 'Clientes');
+  }
+  exportPdfInvoicing(contractor: any) {
+    //creo un objeto nuevo para q al final se agrege una fila con los totales
+    const { total_amount, total_travelers } = contractor;
+    const total = {
+      client: 'Total',
+      poliza: '-',
+      total_travelers: total_travelers,
+      total_import: total_amount,
+    };
+    contractor.contractors.push(total);
+    const columns = [
+      { property: 'client', label: 'Nombre', width: 120 },
+      {
+        property: 'poliza',
+        label: 'Poliza',
+        width: 50,
+      },
+      {
+        property: 'total_travelers',
+        label: 'Total de Viajeros',
+        width: 50,
+        align: 'center',
+      },
+      {
+        property: 'total_import',
+        label: 'Importe',
+        width: 50,
+        align: 'center',
+      },
+    ];
+    return exportPdf(contractor, columns, 'Facturacion Mensual');
   }
 }

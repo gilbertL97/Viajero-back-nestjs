@@ -56,6 +56,19 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @Get('/pdf')
+  async exportContractorPdf(
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const buffer = await this.contractService.exportAllContractorPdf(user);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Coberturas.pdf',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
