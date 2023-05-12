@@ -189,56 +189,44 @@ export class ContractorExportService {
     });
 
     const columns = [
-      { property: 'name', label: 'Nombre' },
+      { property: 'name', label: 'Nombre', width: 100 },
+
+      { property: 'passport', label: 'Pasaporte', width: 80 },
+
+      { property: 'start_date', label: 'Fecha de Inicio', width: 50 },
+
       {
-        property: 'contractor',
-        label: 'Cliente',
+        property: 'end_date_policy',
+        label: 'Fecha de Fin de Viaje',
+        width: 50,
       },
-      { property: 'sex', label: 'Sexo' },
-      { property: 'born_date', label: 'Fecha de Nacimiento' },
-      { property: 'email', label: 'Correo' },
-
-      { property: 'passport', label: 'Pasaporte' },
-
-      { property: 'flight', label: 'Vuelo' },
-      { property: 'sale_date', label: 'Fecha de Venta' },
-
-      { property: 'start_date', label: 'Fecha de Inicio' },
-
-      { property: 'end_date_policy', label: 'Fecha de Fin de Viaje' },
 
       {
         property: 'number_high_risk_days',
-        label: 'Numero de dias Alto Riesgo',
+        label: 'Cant dias Alto Riesgo',
+        width: 30,
       },
 
-      { property: 'number_days', label: 'Cantidad de Dias' },
+      { property: 'number_days', label: 'Num de Dias', width: 30 },
 
       {
         property: 'amount_days_high_risk',
-        label: 'Monto de dias de alto riesgo',
+        label: 'Monto alto riesgo',
+        width: 30,
       },
 
       {
         property: 'amount_days_covered',
-        label: 'Monto de dias cubiertos',
+        label: 'Monto dias cubiertos',
+        width: 30,
       },
 
-      { property: 'total_amount', label: 'Monto total' },
+      { property: 'total_amount', label: 'Monto total', width: 30 },
 
-      { property: 'state', label: 'Estado' },
+      { property: 'contractor', label: 'Cliente', width: 50 },
 
-      { property: 'contractor', label: 'Cliente' },
-
-      { property: 'origin_country', label: 'Pais origen' },
-
-      { property: 'file', label: 'Fichero' },
-
-      { property: 'nationality', label: 'Nacionalidad' },
-
-      { property: 'coverage', label: 'Cobertura' },
+      { property: 'coverage', label: 'Cobertura', width: 50 },
     ];
-    console.log(allTravelers, data);
     return exportPdf(allTravelers, columns, 'Viajeros por Cliente');
   }
 }

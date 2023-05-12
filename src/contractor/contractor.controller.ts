@@ -150,6 +150,7 @@ export class ContractorController {
     @Query() filter: FilterContractorDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
+    console.log(filter);
     return await this.contractService.getDetailedContract(filter, user);
   }
   @UseGuards(RolesGuard)
@@ -191,11 +192,7 @@ export class ContractorController {
     @GetUser() user: UserEntity,
     @Res() res,
   ): Promise<void> {
-    const { dateInvoicing } = filter;
-    const buffer = await this.contractService.exportInvoicingPdf(
-      dateInvoicing,
-      user,
-    );
+    const buffer = await this.contractService.exportDetailedPdf(filter, user);
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Dispotition': 'attachment;Coberturas.pdf',
