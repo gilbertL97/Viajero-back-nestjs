@@ -105,6 +105,24 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @Get('/invoicing/pdf')
+  async getFacturationPdf(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const { dateInvoicing } = filter;
+    const buffer = await this.contractService.exportInvoicingPdf(
+      dateInvoicing,
+      user,
+    );
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Coberturas.pdf',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,

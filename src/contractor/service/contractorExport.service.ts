@@ -162,11 +162,11 @@ export class ContractorExportService {
     };
     contractor.contractors.push(total);
     const columns = [
-      { property: 'client', label: 'Nombre', width: 120 },
+      { property: 'client', label: 'Nombre', width: 150 },
       {
         property: 'poliza',
         label: 'Poliza',
-        width: 50,
+        width: 80,
       },
       {
         property: 'total_travelers',
@@ -181,6 +181,6 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
-    return exportPdf(contractor, columns, 'Facturacion Mensual');
+    return exportPdf(contractor.contractors, columns, 'Facturacion Mensual');
   }
 }

@@ -139,4 +139,8 @@ export class ContractorService {
     const data = await this.getContrators(user);
     return this.contratctorExportService.exportAllContractorToPdf(data);
   }
+  async exportInvoicingPdf(date: Date, user: UserEntity) {
+    const data = await this.getInvoicing(date, user);
+    return this.contratctorExportService.exportPdfInvoicing(data);
+  }
 }
