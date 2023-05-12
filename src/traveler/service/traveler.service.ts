@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { exportExcel } from 'src/common/export/exportExcel';
-import { ContractorService } from 'src/contractor/contractor.service';
+import { ContractorService } from 'src/contractor/service/contractor.service';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryService } from 'src/country/country.service';
 import { CountryEntity } from 'src/country/entities/country.entity';

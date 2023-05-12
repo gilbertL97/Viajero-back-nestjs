@@ -18,7 +18,7 @@ import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 
-import { ContractorService } from './contractor.service';
+import { ContractorService } from './service/contractor.service';
 import { CreateContratorDto } from './dto/create-contrator.dto';
 import { FilterContractorDto } from './dto/filter-contractor.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';

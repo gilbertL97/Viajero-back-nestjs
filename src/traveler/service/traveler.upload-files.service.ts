@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileHelper } from 'src/common/file/file.helper';
-import { ContractorService } from 'src/contractor/contractor.service';
+import { ContractorService } from 'src/contractor/service/contractor.service';
 import { CountryService } from 'src/country/country.service';
 import { CoverageService } from 'src/coverage/coverage.service';
 import { TravelerRepository } from '../repository/traveler.repository';

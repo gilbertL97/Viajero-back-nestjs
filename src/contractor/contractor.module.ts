@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TravelerModule } from 'src/traveler/traveler.module';
 import { UserModule } from 'src/user/user.module';
 import { ContractorController } from './contractor.controller';
-import { ContractorService } from './contractor.service';
+import { ContractorService } from './service/contractor.service';
 import { ContratorEntity } from './entity/contrator.entity';
 import { ContractorRepository } from './repository/contractor.repository';
 

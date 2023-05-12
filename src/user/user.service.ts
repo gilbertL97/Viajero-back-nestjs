@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare } from 'bcryptjs';
-import { ContractorService } from 'src/contractor/contractor.service';
+import { ContractorService } from 'src/contractor/service/contractor.service';
 import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
