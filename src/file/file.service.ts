@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { use } from 'passport';
 import { exportExcel } from 'src/common/export/exportExcel';
+import { exportPdf } from 'src/common/export/exportPdf';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
@@ -97,5 +98,21 @@ export class FileService {
       },
     ];
     return exportExcel(files, columns, 'Archivos');
+  }
+  exporToPdf(files: FileEntity[]) {
+    const columns = [
+      { property: 'name', label: 'Nombre', width: 200 },
+      {
+        property: 'contractor',
+        label: 'Cliente',
+        width: 200,
+      },
+      {
+        property: 'created_at',
+        label: 'Fecha de Importacion',
+        width: 100,
+      },
+    ];
+    return exportPdf(files, columns, 'Archivos');
   }
 }

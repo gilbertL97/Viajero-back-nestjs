@@ -61,6 +61,21 @@ export class FileController {
     res.end(buffer);
     //return res.send(buffer);
   }
+  @Get('/pdf')
+  async getPdf(
+    @Query() filter: FilterFileDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ) {
+    const files = await this.fileService.filterFile(filter, user);
+    const buffer = await this.fileService.exporToPdf(files);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Archivos.pdf',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.fileService.findOne(+id);
