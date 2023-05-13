@@ -110,7 +110,7 @@ export class FileService {
       {
         property: 'created_at',
         label: 'Fecha de Importacion',
-        width: 100,
+        width: 90,
       },
     ];
     return exportPdf(files, columns, 'Archivos');
