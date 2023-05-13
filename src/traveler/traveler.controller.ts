@@ -111,14 +111,17 @@ export class TravelerController {
   }
   @Get('/pdf')
   async exportTravelerToPdf(
-    @Query('id') id: string,
+    @GetUser() user: UserEntity,
+    @Query() travelerFilter: FilterTravelerDto,
     @Res() res,
   ): Promise<void> {
-    const traveler = await this.travelerService.findOne(id);
-    const buffer = await this.travelerDocService.createTestPDf(traveler);
+    const buffer = await this.travelerService.getTravelerPdf(
+      travelerFilter,
+      user,
+    );
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Dispotition': 'attachment;' + traveler.name + '.pdf',
+      'Content-Dispotition': 'attachment;Viajero.pdf',
       'Content-Lenght': buffer.length,
     });
     res.end(buffer);
@@ -138,7 +141,7 @@ export class TravelerController {
   @Get('/cert')
   async generateCertPdf(@Query('id') id: string, @Res() res): Promise<void> {
     const traveler = await this.travelerService.findOne(id);
-    const buffer = await this.travelerDocService.createTestPDf(traveler);
+    const buffer = await this.travelerDocService.generateCerticate(traveler);
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Dispotition': 'attachment;' + traveler.name + '.pdf',

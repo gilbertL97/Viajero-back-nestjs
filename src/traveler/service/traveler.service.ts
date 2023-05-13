@@ -19,6 +19,7 @@ import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { UpdateTravelerDto } from '../dto/update-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerRepository } from '../repository/traveler.repository';
+import { exportPdf } from 'src/common/export/exportPdf';
 
 @Injectable()
 export class TravelerService {
@@ -210,5 +211,55 @@ export class TravelerService {
       { key: 'coverage', header: 'Cobertura' },
     ];
     return exportExcel(travelers, columns, 'Viajeros');
+  }
+  async getTravelerPdf(filter: FilterTravelerDto, user: UserEntity) {
+    let userC: UserEntity = undefined;
+    if (user.role == UserRole.CLIENT)
+      userC = await this.userService.getUser(user.id);
+
+    const travelers = await this.travelerRepository.finAdllWithFilters(
+      filter,
+      userC,
+    );
+    const columns = [
+      { property: 'name', label: 'Nombre', width: 100 },
+
+      { property: 'passport', label: 'Pasaporte', width: 80 },
+
+      { property: 'start_date', label: 'Fecha de Inicio', width: 50 },
+
+      {
+        property: 'end_date_policy',
+        label: 'Fecha de Fin de Viaje',
+        width: 50,
+      },
+
+      {
+        property: 'number_high_risk_days',
+        label: 'Cant dias Alto Riesgo',
+        width: 30,
+      },
+
+      { property: 'number_days', label: 'Num de Dias', width: 30 },
+
+      {
+        property: 'amount_days_high_risk',
+        label: 'Monto alto riesgo',
+        width: 30,
+      },
+
+      {
+        property: 'amount_days_covered',
+        label: 'Monto dias cubiertos',
+        width: 30,
+      },
+
+      { property: 'total_amount', label: 'Monto total', width: 30 },
+
+      { property: 'contractor', label: 'Cliente', width: 50 },
+
+      { property: 'coverage', label: 'Cobertura', width: 50 },
+    ];
+    return exportPdf(travelers, columns, 'Viajeros');
   }
 }

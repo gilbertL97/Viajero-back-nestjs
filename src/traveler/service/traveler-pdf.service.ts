@@ -16,7 +16,7 @@ export class TravelerPdfService {
     private readonly travelerRepository: TravelerRepository,
   ) {}
 
-  async createTestPDf(traveler: TravelerEntity): Promise<Uint8Array> {
+  async generateCerticate(traveler: TravelerEntity): Promise<Uint8Array> {
     const pantoneColor = '#1b1462';
     const blackColor = 'black';
     const font = 'Helvetica';
