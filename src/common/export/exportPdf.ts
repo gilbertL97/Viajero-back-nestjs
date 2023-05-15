@@ -38,14 +38,9 @@ export async function exportPdf(
         scale: 0.15,
       });
       doc.text('', 0, 100);
-      doc.font('Helvetica-Bold').fontSize(20).fillColor(pantoneColor);
-      doc.text(title, {
-        width: doc.page.width,
-        align: 'center',
-      });
     });
     const table = {
-      title: 'Tabla' + title,
+      title: 'Tabla ' + title,
       headers: columns,
       datas: data.map((elem: any) => flater(elem)),
     };
