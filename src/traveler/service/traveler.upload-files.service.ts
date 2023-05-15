@@ -33,13 +33,23 @@ export class TravelerUploadFilesService {
     idClient: number,
   ): Promise<FileTravelerDto[] | FileErrorsTravelerDto[] | void> {
     //const TravelersErrors: TravelerEntity[] = [];
-    const client = await this.contratctoService.getContractor(idClient);
-    const countries = await this.countryService.findAll();
-    const coverages = await this.coverageService.getCoveragesActives();
+    // const client = await this.contratctoService.getContractor(idClient);
+    // const countries = await this.countryService.findAll();
+    // const coverages = await this.coverageService.getCoveragesActives();
+    //1-pirmero cargo todos los paises clientes y planes en memoria
+    const [client, countries, coverages] = await Promise.all([
+      this.contratctoService.getContractor(idClient),
+      this.countryService.findAll(),
+      this.coverageService.getCoveragesActives(),
+    ]);
+    //2-cargo el archivo dependiendo del tip de archivo
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
+    // 3-elimino el archivo
     await FileHelper.deletFile(file.path);
+    //4-val   ido para saber si hay errores
     const erors = await this.validateTravelers(travelers, coverages, countries);
     if (erors) return erors;
+    //5-inserto y verifico si hay viajeros repetidos
     return await this.insertTraveler(
       travelers,
       coverages,

@@ -67,9 +67,9 @@ export class FileTravelerDto {
 
   // @Type(() => string)
   //@IsDateString()
-  @IsDateAfter('start_date', {
-    message: 'Fecha inicio anterior a fecha de fin ',
-  })
+  // @IsDateAfter('start_date', {
+  //   message: 'Fecha inicio anterior a fecha de fin ',
+  // })
   @IsNotEmpty({
     message: 'Campo Obligatorio',
   })
