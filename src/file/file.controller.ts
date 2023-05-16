@@ -80,6 +80,10 @@ export class FileController {
   async findOne(@Param('id') id: string) {
     return await this.fileService.findOne(+id);
   }
+  @Get(':name')
+  async findOneByName(@Param('name') name: string) {
+    return await this.fileService.findByName(name);
+  }
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Delete(':id')
   async remove(@Param('id') id: string) {

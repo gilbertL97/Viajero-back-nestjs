@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileHelper } from 'src/common/file/file.helper';
 import { ContractorService } from 'src/contractor/service/contractor.service';
@@ -32,17 +32,15 @@ export class TravelerUploadFilesService {
     file: Express.Multer.File,
     idClient: number,
   ): Promise<FileTravelerDto[] | FileErrorsTravelerDto[] | void> {
-    //const TravelersErrors: TravelerEntity[] = [];
-    // const client = await this.contratctoService.getContractor(idClient);
-    // const countries = await this.countryService.findAll();
-    // const coverages = await this.coverageService.getCoveragesActives();
+    //0-busco el nombre del archivo para saber si existe
+
     //1-pirmero cargo todos los paises clientes y planes en memoria
     const [client, countries, coverages] = await Promise.all([
       this.contratctoService.getContractor(idClient),
       this.countryService.findAll(),
       this.coverageService.getCoveragesActives(),
     ]);
-    //2-cargo el archivo dependiendo del tip de archivo
+    //2-cargo el archivo dependiendo del tipo de archivo
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
     // 3-elimino el archivo
     await FileHelper.deletFile(file.path);
@@ -69,8 +67,9 @@ export class TravelerUploadFilesService {
     const createTraveler = new CreateTravelerDto();
     const duplicate: FileTravelerDto[] = [];
     const travelersFile: TravelerEntity[] = [];
-    const file2 = await this.fileService.create(file, client);
+    const file2 = await this.verifyAndDeletFile(file, client);
     for (const traveler of travelers) {
+      // por cada viajero
       const coverage = ValidateFile.findCoverage(traveler, coverages);
       const origin = ValidateFile.findCountry(
         traveler.origin_country,
@@ -115,7 +114,6 @@ export class TravelerUploadFilesService {
     }
     if (travelersFile.length == 0) {
       this.fileService.remove(file2.id);
-      console.log(file2);
     }
 
     if (duplicate.length > 0) return duplicate;
@@ -222,5 +220,15 @@ export class TravelerUploadFilesService {
   }
   isNotEmptyObject(obj: any): boolean {
     return Object.entries(obj).length > 0 ? true : false;
+  }
+  async verifyAndDeletFile(file: string, client: ContratorEntity) {
+    const fileTraveler = await this.fileService.findByName(file).catch((e) => {
+      if (e instanceof NotFoundException) console.log('error mismo archivo');
+      else throw e;
+    });
+    if (fileTraveler) {
+      this.fileService.remove(fileTraveler.id);
+    }
+    return await this.fileService.create(file, client);
   }
 }
