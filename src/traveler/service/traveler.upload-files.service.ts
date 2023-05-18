@@ -68,6 +68,7 @@ export class TravelerUploadFilesService {
     const duplicate: FileTravelerDto[] = [];
     const travelersFile: TravelerEntity[] = [];
     const file2 = await this.verifyAndDeletFile(file, client);
+    console.log(file2);
     for (const traveler of travelers) {
       // por cada viajero
       const coverage = ValidateFile.findCoverage(traveler, coverages);
@@ -223,11 +224,13 @@ export class TravelerUploadFilesService {
   }
   async verifyAndDeletFile(file: string, client: ContratorEntity) {
     const fileTraveler = await this.fileService.findByName(file).catch((e) => {
-      if (e instanceof NotFoundException) console.log('error mismo archivo');
+      if (e instanceof NotFoundException)
+        console.log('No se encuentra el archivo');
       else throw e;
     });
     if (fileTraveler) {
-      this.fileService.remove(fileTraveler.id);
+      console.log(fileTraveler, 'se ecncontro uno');
+      await this.fileService.remove(fileTraveler.id);
     }
     return await this.fileService.create(file, client);
   }

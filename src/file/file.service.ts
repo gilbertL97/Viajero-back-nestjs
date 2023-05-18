@@ -56,7 +56,6 @@ export class FileService {
   async findByName(name: string): Promise<FileEntity> {
     const file = await this.fileRepository.findOne({
       where: { name: name },
-      relations: ['travelers'],
     });
     if (!file) throw new NotFoundException('file does not exist');
     return file;

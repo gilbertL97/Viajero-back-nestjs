@@ -80,7 +80,7 @@ export class FileController {
   async findOne(@Param('id') id: string) {
     return await this.fileService.findOne(+id);
   }
-  @Get(':name')
+  @Get('/name/:name')
   async findOneByName(@Param('name') name: string) {
     return await this.fileService.findByName(name);
   }
