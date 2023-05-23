@@ -113,8 +113,8 @@ export class FileController {
     UserRole.CONSULTAGENT,
   )
   @Get(':id')
-  async findOneFile(@Param('id') id: string) {
-    return await this.fileService.findOne(+id);
+  async findOneFile(@Param('id') id: string, @GetUser() user: UserEntity) {
+    return await this.fileService.findOneFile(+id, user);
   }
   @UseGuards(RolesGuard)
   @Roles(

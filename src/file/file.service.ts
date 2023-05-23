@@ -53,6 +53,20 @@ export class FileService {
     return file;
   }
 
+  async findOneFile(id: number, user: UserEntity): Promise<FileEntity> {
+    let contractorid: number;
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
+      contractorid = await (
+        await this.userService.getUser(user.id)
+      ).contractors[0].id;
+    }
+    const file = await this.fileRepository.findOne({
+      where: { id: id, contractor: contractorid },
+      relations: ['travelers'],
+    });
+    if (!file) throw new NotFoundException('file does not exist');
+    return file;
+  }
   async findByName(name: string): Promise<FileEntity> {
     const file = await this.fileRepository.findOne({
       where: { name: name },
