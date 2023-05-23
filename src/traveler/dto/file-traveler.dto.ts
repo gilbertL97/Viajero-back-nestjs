@@ -9,7 +9,6 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { IsDateAfter } from './decorator/customDateAfter.decorator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsDateFile } from './decorator/customDateExcel.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
