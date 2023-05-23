@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
@@ -8,6 +9,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { UserRole } from '../user.role';
+import { ExcludeIfNotClient } from './decorator/removeFields';
 
 export class CreateUserDto {
   @IsString()
@@ -37,6 +39,7 @@ export class CreateUserDto {
     (user: CreateUserDto) =>
       user.role === UserRole.CLIENT || user.role === UserRole.CONSULTAGENT,
   )
+  @Transform(ExcludeIfNotClient)
   // @IsOptional()
   contractor: number;
 }
