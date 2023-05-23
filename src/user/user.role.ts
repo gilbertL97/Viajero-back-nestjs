@@ -4,5 +4,5 @@ export enum UserRole {
   CONSULT = 'consult',
   MARKAGENT = 'marketing',
   COMAGENT = 'comercial',
-  CONSULTaGEN = 'consultAgenci',
+  CONSULTAGENT = 'consultagenci',
 }

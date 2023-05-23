@@ -26,7 +26,7 @@ export class UserEntity extends BaseEntity {
   active: boolean;
   @Column({
     type: 'varchar',
-    length: 10,
+    length: 20,
     nullable: false,
   })
   role: string;

@@ -61,7 +61,8 @@ export class UserService {
         user.contractors = [contrator];
       }
     }
-    const newUser = await this.userRepository.save(user).catch(() => {
+    const newUser = await this.userRepository.save(user).catch((e) => {
+      console.log(e);
       throw new BadRequestException('duplicate name or email');
     });
     delete newUser.password; // para no devolver en la res el atributo password en user
