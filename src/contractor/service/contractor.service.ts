@@ -32,7 +32,7 @@ export class ContractorService {
     private readonly contratctorExportService,
   ) {}
   async getContrators(user: UserEntity): Promise<ContratorEntity[]> {
-    if (user.role == UserRole.CLIENT) {
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
       const userC = await this.userService.getUser(user.id);
       return userC.contractors;
     }
@@ -106,7 +106,7 @@ export class ContractorService {
   }
   async getInvoicing(date: Date, user: UserEntity): Promise<any> {
     let id = undefined;
-    if (user.role == UserRole.CLIENT)
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
     return await this.contractRepository.getInvoicingOfMonth(date, id);
   }
@@ -115,7 +115,7 @@ export class ContractorService {
     user: UserEntity,
   ): Promise<ContratorEntity[]> {
     let id = undefined;
-    if (user.role == UserRole.CLIENT)
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
     else id = filter.id;
     return await this.contractRepository.getDetailedTravelers(
