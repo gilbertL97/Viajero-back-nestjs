@@ -2,11 +2,12 @@ import {
   IsEmail,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
+import { UserRole } from '../user.role';
 
 export class CreateUserDto {
   @IsString()
@@ -26,12 +27,16 @@ export class CreateUserDto {
   @MaxLength(250)
   password: string;
 
-  @MinLength(6)
+  @MinLength(4)
   @MaxLength(20)
   @IsNotEmpty()
   role: string;
 
-  @IsOptional()
   @IsNumber()
+  @ValidateIf(
+    (user: CreateUserDto) =>
+      user.role === UserRole.CLIENT || user.role === UserRole.CONSULTAGENT,
+  )
+  // @IsOptional()
   contractor: number;
 }
