@@ -32,7 +32,7 @@ export class FileService {
   }
 
   async findAll(user: UserEntity): Promise<FileEntity[]> {
-    if (user.role == UserRole.CLIENT) {
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
       const userC = await this.userService.getUser(user.id);
       return this.fileRepository.find({
         where: { contractor: userC.contractors[0] },
@@ -72,7 +72,7 @@ export class FileService {
   ): Promise<FileEntity[]> {
     let contractor = file.contractor;
 
-    if (user.role == UserRole.CLIENT) {
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
       const userC = await this.userService.getUser(user.id);
       contractor = userC.contractors[0].id;
     }

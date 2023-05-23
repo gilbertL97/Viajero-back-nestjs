@@ -68,7 +68,7 @@ export class TravelerService {
 
   async findAll(user: UserEntity): Promise<TravelerEntity[]> {
     // await new Promise((resolve) => setTimeout(resolve, 5000));
-    if (user.role == UserRole.CLIENT) {
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
       const userC = await this.userService.getUser(user.id);
       return this.travelerRepository.find({
         relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
@@ -143,7 +143,7 @@ export class TravelerService {
     user: UserEntity,
   ): Promise<TravelerEntity[]> {
     let userC: UserEntity = undefined;
-    if (user.role == UserRole.CLIENT)
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       userC = await this.userService.getUser(user.id);
 
     return this.travelerRepository.finAdllWithFilters(filter, userC);
@@ -153,7 +153,7 @@ export class TravelerService {
   }
   async getTravelerExcel(filter: FilterTravelerDto, user: UserEntity) {
     let userC: UserEntity = undefined;
-    if (user.role == UserRole.CLIENT)
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       userC = await this.userService.getUser(user.id);
 
     const travelers = await this.travelerRepository.finAdllWithFilters(
@@ -214,7 +214,7 @@ export class TravelerService {
   }
   async getTravelerPdf(filter: FilterTravelerDto, user: UserEntity) {
     let userC: UserEntity = undefined;
-    if (user.role == UserRole.CLIENT)
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       userC = await this.userService.getUser(user.id);
 
     const travelers = await this.travelerRepository.finAdllWithFilters(
