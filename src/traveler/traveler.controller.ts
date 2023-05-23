@@ -33,7 +33,6 @@ import { FileTravelerDto } from './dto/file-traveler.dto';
 import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
 @Controller('traveler')
 export class TravelerController {
   constructor(
@@ -41,7 +40,8 @@ export class TravelerController {
     private readonly travelerDocService: TravelerPdfService,
     private readonly travelerUploadService: TravelerUploadFilesService,
   ) {}
-
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post()
   async createTraveler(
     //@GetUser() user: UserEntity,
@@ -50,6 +50,8 @@ export class TravelerController {
     const data = await this.travelerService.create(createTravelerDto);
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post('/file/:id')
   @UseInterceptors(FileInterceptor('travelers', TravelersStorage))
   async uploadTravelers(
@@ -67,20 +69,31 @@ export class TravelerController {
       return response.status(HttpStatus.BAD_REQUEST).send(resp);
     return response.status(HttpStatus.CONFLICT).send(resp);
   }
+  @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
     UserRole.COMAGENT,
     UserRole.CLIENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
   @Get()
   async getTravelers(@GetUser() user: UserEntity): Promise<TravelerEntity[]> {
     const data = await this.travelerService.findAll(user);
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/filter')
-  async advanceSearch(
+  async advanceSearchTraveler(
     @GetUser() user: UserEntity,
     @Query() travelerFilter: FilterTravelerDto,
   ): Promise<TravelerEntity[]> {
@@ -91,6 +104,15 @@ export class TravelerController {
     );
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/excel')
   async exportTravelerToExcel(
     @GetUser() user: UserEntity,
@@ -109,6 +131,15 @@ export class TravelerController {
     });
     res.end(buffer);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/pdf')
   async exportTravelerToPdf(
     @GetUser() user: UserEntity,
@@ -126,6 +157,15 @@ export class TravelerController {
     });
     res.end(buffer);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/current')
   async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
     const data = await this.travelerService.getCurrrentTravelers(
@@ -133,11 +173,29 @@ export class TravelerController {
     );
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/file/:id')
   async getTravelersBfile(@Param() id: number) {
     const data = await this.travelerService.findByFile(id);
     return data;
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/cert')
   async generateCertPdf(@Query('id') id: string, @Res() res): Promise<void> {
     const traveler = await this.travelerService.findOne(id);
@@ -149,6 +207,15 @@ export class TravelerController {
     });
     res.end(buffer);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get(':id')
   async getTraveler(
     //@GetUser() user: UserEntity,
@@ -157,7 +224,8 @@ export class TravelerController {
     const data = await this.travelerService.findOne(id);
     return data;
   }
-
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Patch(':id')
   async updateTraveler(
     //@GetUser() user: UserEntity,
@@ -167,7 +235,8 @@ export class TravelerController {
     const data = await this.travelerService.update(id, updateTravelerDto);
     return data;
   }
-
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Delete(':id')
   async deleteTraveler(
     //@GetUser() user: UserEntity,

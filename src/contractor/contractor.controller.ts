@@ -30,21 +30,36 @@ export class ContractorController {
   constructor(private readonly contractService: ContractorService) {}
 
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get()
   async getContracts(@GetUser() user: UserEntity): Promise<ContratorEntity[]> {
     const data = this.contractService.getContrators(user);
     return data;
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get('/active')
   async getContractsActive(): Promise<ContratorEntity[]> {
     const data = this.contractService.getContratorsActive();
     return data;
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.CLIENT)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get('/excel')
   async getContractExcel(@GetUser() user: UserEntity, @Res() res) {
     const buffer = await this.contractService.exportAllContractorExcel(user);
@@ -56,6 +71,12 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+  )
   @Get('/pdf')
   async exportContractorPdf(
     @GetUser() user: UserEntity,
@@ -76,6 +97,7 @@ export class ContractorController {
     UserRole.CLIENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
   @Get('/invoicing')
   async getFacturation(
@@ -144,6 +166,7 @@ export class ContractorController {
     UserRole.CLIENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
   @Get('/detailed')
   async getDetailedContract(
@@ -160,6 +183,7 @@ export class ContractorController {
     UserRole.CLIENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
   @Get('/detailed/excel')
   async getDetailedContractExcel(
@@ -185,6 +209,7 @@ export class ContractorController {
     UserRole.CLIENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
   @Get('/detailed/pdf')
   async getDetailedContractPdf(
@@ -201,14 +226,14 @@ export class ContractorController {
     res.end(buffer);
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Get(':id')
   getContract(@Param('id', ParseIntPipe) id: number): Promise<ContratorEntity> {
     const data = this.contractService.getContractor(id);
     return data;
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Post()
   createContract(
     @Body() createContractor: CreateContratorDto,

@@ -31,19 +31,13 @@ export class CoverageController {
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
   @UseInterceptors(FileInterceptor('tablePdf', coverageStorage))
-  async create(
+  async createCoverage(
     @UploadedFile() file: Express.Multer.File,
     @Body() createCoverageDto: CreateCoverageDto,
   ) {
-    //console.log(eq.rawHeaders, file);
     return this.coverageService.createCoverage(createCoverageDto, file);
   }
-  /* @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
-  @Post('/config')
-  async test(@Body() bod: { test: string; aprobar: string }) {
-    return this.coverageService.test(bod.test, bod.aprobar);
-  }*/
+
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -51,17 +45,24 @@ export class CoverageController {
     UserRole.CLIENT,
     UserRole.MARKAGENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
-  @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get()
-  async findAll() {
+  async findAllCoverage() {
     return await this.coverageService.getCoverages();
   }
   @UseGuards(RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.MARKAGENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/active')
-  async findAllActive() {
+  async findAllActiveCoverage() {
     return await this.coverageService.getCoveragesActives();
   }
   @UseGuards(RolesGuard)
@@ -94,14 +95,14 @@ export class CoverageController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOneCoverage(@Param('id') id: number) {
     return this.coverageService.getCoverage(id);
   }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @UseInterceptors(FileInterceptor('tablePdf', coverageStorage))
   @Patch(':id')
-  async update(
+  async updateCoverage(
     @Param('id') id: number,
     @Body() updateCoverageDto: UpdateCoverageDto,
     @UploadedFile() file: Express.Multer.File,
@@ -111,7 +112,7 @@ export class CoverageController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async removeCoverage(@Param('id') id: number) {
     return this.coverageService.deleteCoverage(id);
   }
 }

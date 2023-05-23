@@ -20,23 +20,32 @@ import { UserRole } from 'src/user/user.role';
 import { FilterFileDto } from './dto/filter-file.dto';
 import { FileService } from './file.service';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
+@UseGuards(JwtAuthGuard)
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
+  @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
     UserRole.COMAGENT,
     UserRole.CLIENT,
     UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
   )
   @Get()
-  async findAll(@GetUser() user: UserEntity) {
+  async findAllFile(@GetUser() user: UserEntity) {
     return await this.fileService.findAll(user);
   }
-
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/filter')
   async filterFile(
     @Query() filter: FilterFileDto,
@@ -44,8 +53,17 @@ export class FileController {
   ) {
     return await this.fileService.filterFile(filter, user);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/excel')
-  async getExcel(
+  async getExcelFile(
     @Query() filter: FilterFileDto,
     @GetUser() user: UserEntity,
     @Res() res,
@@ -61,8 +79,17 @@ export class FileController {
     res.end(buffer);
     //return res.send(buffer);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/pdf')
-  async getPdf(
+  async getPdfFile(
     @Query() filter: FilterFileDto,
     @GetUser() user: UserEntity,
     @Res() res,
@@ -76,17 +103,36 @@ export class FileController {
     });
     res.end(buffer);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOneFile(@Param('id') id: string) {
     return await this.fileService.findOne(+id);
   }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get('/name/:name')
-  async findOneByName(@Param('name') name: string) {
+  async findOneFileByName(@Param('name') name: string) {
     return await this.fileService.findByName(name);
   }
-  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async removeFile(@Param('id') id: string) {
     return await this.fileService.remove(+id);
   }
 }
