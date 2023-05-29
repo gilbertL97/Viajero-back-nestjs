@@ -9,7 +9,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare } from 'bcryptjs';
 import { ContractorService } from 'src/contractor/service/contractor.service';
-import { TravelerService } from 'src/traveler/service/traveler.service';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EditProfileUserDto } from './dto/edit-profile-user.dto';
@@ -51,7 +50,10 @@ export class UserService {
 
   async createUser(userDto: CreateUserDto): Promise<UserEntity> {
     const user = this.userRepository.create(userDto);
-    if (userDto.role === UserRole.CLIENT) {
+    if (
+      userDto.role === UserRole.CLIENT ||
+      userDto.role === UserRole.CONSULTAGENT
+    ) {
       // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
       //console.log(userDto.role);
       if (userDto.contractor) {
@@ -60,7 +62,7 @@ export class UserService {
         );
         user.contractors = [contrator];
       }
-    }
+    } else delete userDto.contractor;
     const newUser = await this.userRepository.save(user).catch((e) => {
       console.log(e);
       throw new BadRequestException('duplicate name or email');
@@ -76,17 +78,20 @@ export class UserService {
     const editedUser = Object.assign(user, updateUserDto);
 
     // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
-    console.log('el rol del usuario es ' + editedUser.role);
-    if (editedUser.role === UserRole.CLIENT) {
-      console.log('contractor numero ' + updateUserDto.contractor);
+    if (
+      editedUser.role === UserRole.CLIENT ||
+      editedUser.role === UserRole.CONSULTAGENT
+    ) {
       if (updateUserDto.contractor) {
         const contrator = await this.contractorService.getContractor(
           updateUserDto.contractor,
         );
         //console.log(editedUser);
         editedUser.contractors = [contrator]; //solo un contractor
+        delete editedUser.contractor;
       }
-    }
+    } else delete updateUserDto.contractor;
+
     return await this.userRepository.save(editedUser);
   }
   async updateProfile(
