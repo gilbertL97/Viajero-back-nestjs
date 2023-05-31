@@ -51,8 +51,8 @@ export class UserService {
   async createUser(userDto: CreateUserDto): Promise<UserEntity> {
     const user = this.userRepository.create(userDto);
     if (
-      userDto.role === UserRole.CLIENT ||
-      userDto.role === UserRole.CONSULTAGENT
+      userDto.role == UserRole.CLIENT ||
+      userDto.role == UserRole.CONSULTAGENT
     ) {
       // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
       //console.log(userDto.role);
@@ -76,22 +76,19 @@ export class UserService {
   ): Promise<UserEntity> {
     const user = await this.getUser(id);
     const editedUser = Object.assign(user, updateUserDto);
-
     // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
     if (
-      editedUser.role === UserRole.CLIENT ||
-      editedUser.role === UserRole.CONSULTAGENT
+      editedUser.role == UserRole.CLIENT ||
+      editedUser.role == UserRole.CONSULTAGENT
     ) {
       if (updateUserDto.contractor) {
         const contrator = await this.contractorService.getContractor(
           updateUserDto.contractor,
         );
-        //console.log(editedUser);
         editedUser.contractors = [contrator]; //solo un contractor
         delete editedUser.contractor;
       }
     } else delete updateUserDto.contractor;
-
     return await this.userRepository.save(editedUser);
   }
   async updateProfile(

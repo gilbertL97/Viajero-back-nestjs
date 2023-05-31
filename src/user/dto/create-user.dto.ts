@@ -37,9 +37,8 @@ export class CreateUserDto {
   @IsNumber()
   @ValidateIf(
     (user: CreateUserDto) =>
-      user.role === UserRole.CLIENT || user.role === UserRole.CONSULTAGENT,
+      user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT,
   )
-  @Transform(ExcludeIfNotClient)
   // @IsOptional()
   contractor: number;
 }
