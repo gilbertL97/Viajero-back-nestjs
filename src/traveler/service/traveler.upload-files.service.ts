@@ -44,11 +44,15 @@ export class TravelerUploadFilesService {
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
     // 3-elimino el archivo
     await FileHelper.deletFile(file.path);
-    //4-val   ido para saber si hay errores
-    const erors = await this.validateTravelers(travelers, coverages, countries);
-    if (erors) return erors;
+    //4-valido para saber si hay errores primero cambiar todo para maNhaba
+
+    const [errors, warnings] = await Promise.all([
+      this.validateTravelersErrors(travelers, coverages),
+      this.validateTravelersWarnings(travelers, countries),
+    ]);
+    if (errors) return this.bindWarningsAndErrors(errors, warnings);
     //5-inserto y verifico si hay viajeros repetidos
-    return await this.insertTraveler(
+    const travelersRepeat = await this.insertTraveler(
       travelers,
       coverages,
       countries,
@@ -119,26 +123,24 @@ export class TravelerUploadFilesService {
 
     if (duplicate.length > 0) return duplicate;
   }
-  async validateTravelers(
+  async validateTravelersErrors(
     travelers: FileTravelerDto[],
     coverages: CoverageEntity[],
-    countries: CountryEntity[],
   ): Promise<FileErrorsTravelerDto[] | void> {
     const validator = new Validator();
     let i = 2; //numero de fila minimo
     const listFileErrors: FileErrorsTravelerDto[] = [];
     for (const traveler of travelers) {
       const validatorError = await validator.validate(traveler, {
+        groups: ['errors'],
         validationError: { target: false },
       });
       const validationErrors = this.handleErrors(validatorError);
-      const errors: FileErrorsTravelerDto = this.manualValidation(
+      const errors: FileErrorsTravelerDto = this.manualValidationErrors(
         coverages,
         traveler,
-        countries,
         validationErrors,
       );
-
       if (errors) {
         errors.row = i;
         listFileErrors.push(errors);
@@ -148,10 +150,37 @@ export class TravelerUploadFilesService {
     if (listFileErrors.length > 0) return listFileErrors;
   }
 
-  manualValidation(
+  async validateTravelersWarnings(
+    travelers: FileTravelerDto[],
+    countries: CountryEntity[],
+  ): Promise<FileErrorsTravelerDto[] | void> {
+    const validator = new Validator();
+    // esta variable la uso para saber si hay algun error
+    let i = 2; //numero de fila minimo
+    const listWarnings: FileErrorsTravelerDto[] = [];
+    for (const traveler of travelers) {
+      const validatorWarnings = await validator.validate(traveler, {
+        groups: ['warnings'],
+        validationError: { target: false },
+      });
+      const validationWarnings = this.handleErrors(validatorWarnings);
+      const warnings = this.manualValidationsWarnings(
+        traveler,
+        countries,
+        validationWarnings,
+      );
+      if (warnings) {
+        warnings.row = i;
+        listWarnings.push(warnings);
+      }
+      i++;
+    }
+    if (listWarnings.length > 0) return listWarnings;
+  }
+
+  manualValidationErrors(
     coverages: CoverageEntity[],
     traveler: FileTravelerDto,
-    countries: CountryEntity[],
     validationErrors: FileErrorsTravelerDto,
   ): FileErrorsTravelerDto | undefined {
     const fileErrors = new FileErrorsTravelerDto();
@@ -184,13 +213,20 @@ export class TravelerUploadFilesService {
         if (!coverage.daily) delete validationErrors.number_days;
       } else validationErrors.number_days = undefined;
     } else fileErrors.coverage = coverage;
-    const nationality = ValidateFile.validateNationality(traveler, countries);
-    if (nationality) fileErrors.nationality = nationality;
-    const origin = ValidateFile.validateOriginCountry(traveler, countries);
-    if (origin) fileErrors.origin_country = origin;
     return this.parseErors(validationErrors, fileErrors);
   }
-
+  manualValidationsWarnings(
+    traveler: FileTravelerDto,
+    countries: CountryEntity[],
+    fileWarnings: FileErrorsTravelerDto,
+  ) {
+    const warnings = new FileErrorsTravelerDto();
+    const nationality = ValidateFile.validateNationality(traveler, countries);
+    if (nationality) warnings.nationality = nationality;
+    const origin = ValidateFile.validateOriginCountry(traveler, countries);
+    if (origin) warnings.origin_country = origin;
+    return Object.assign(fileWarnings, warnings);
+  }
   handleErrors(lisValidation: ValidationError[]): FileErrorsTravelerDto {
     const fileErrors = new FileErrorsTravelerDto();
     lisValidation.map((e) => {
@@ -233,5 +269,16 @@ export class TravelerUploadFilesService {
       await this.fileService.remove(fileTraveler.id);
     }
     return await this.fileService.create(file, client);
+  }
+  amendWarningsInTravelers(traveler: FileTravelerDto) {}
+  bindWarningsAndErrors(
+    errors: FileErrorsTravelerDto[],
+    warnings: FileErrorsTravelerDto[] | void,
+  ) {
+    if (!warnings || warnings.length == 0) return errors;
+    return errors.map((error) => {
+      const warn = warnings.find((w) => error.row == w.row);
+      return Object.assign(error, warn);
+    });
   }
 }

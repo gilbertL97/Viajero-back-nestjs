@@ -17,51 +17,62 @@ import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
 export class FileTravelerDto {
   @IsString()
   @Length(5, 70, {
+    groups: ['errors'],
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   @IsNotEmpty({
+    groups: ['errors'],
     message: 'Campo Obligatorio',
   })
   name: string;
 
-  @IsOptional()
-  @IsString()
+  @IsOptional({ groups: ['warnings'] })
+  @IsString({ groups: ['warnings'] })
   @Length(1, 10, {
+    groups: ['warnings'],
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   sex: string;
 
-  @IsOptional()
+  @IsOptional({ groups: ['warnings'] })
   // @IsDateString()
-  @IsDateFile()
+  @IsDateFile({ groups: ['warnings'] })
   born_date: Date | string;
 
-  @IsOptional()
-  @IsEmail()
+  @IsOptional({ groups: ['warnings'] })
+  @IsEmail(undefined, {
+    groups: ['warnings'],
+    message: 'Debe poseer formato de correo',
+  })
   email: string;
+
   @Length(6, 60, {
+    groups: ['errors'],
     message: 'Pasaporte invalido',
   })
   @IsNotEmpty({
+    groups: ['errors'],
     message: 'Campo Obligatorio',
   })
   passport: string;
 
   //@Type(() => string)
-  @IsOptional()
-  @IsDateFile()
+  @IsOptional({ groups: ['warnings'] })
+  @IsDateFile({ groups: ['warnings'] })
   //@IsDateString()
   sale_date: Date | string;
 
   //@Type(() => string)
   // @IsDateString()
   @IsDateBefore('end_date_policy', {
+    groups: ['errors'],
     message: 'Fecha inicio posterior a fecha de fin ',
   })
   @IsNotEmpty({
+    groups: ['errors'],
     message: 'Campo Obligatorio',
   })
-  @IsDateFile()
+  @IsDateFile({ groups: ['errors'] })
   start_date: Date | string;
 
   // @Type(() => string)
@@ -69,89 +80,95 @@ export class FileTravelerDto {
   // @IsDateAfter('start_date', {
   //   message: 'Fecha inicio anterior a fecha de fin ',
   // })
-  @IsNotEmpty({
-    message: 'Campo Obligatorio',
-  })
-  @IsDateFile()
+  @IsNotEmpty({ groups: ['errors'], message: 'Campo Obligatorio' })
+  @IsDateFile({ groups: ['errors'] })
   end_date_policy: Date | string;
 
-  @IsOptional()
-  @IsString()
-  @MinLength(2, {
-    message: 'El Texto es muy corto .',
-  })
-  @MaxLength(40, {
-    message: 'El Texto es muy largo.',
+  @IsOptional({ groups: ['warnings'] })
+  @IsString({ groups: ['warnings'] })
+  @Length(2, 40, {
+    groups: ['warnings'],
+    message: 'Tamaño de texto invalido .',
   })
   origin_country: string;
 
-  @IsOptional()
-  @IsString()
-  @MinLength(2, {
-    message: 'El Texto es muy corto .',
-  })
-  @MaxLength(30, {
-    message: 'El Texto es muy largo. ',
+  @IsOptional({ groups: ['warnings'] })
+  @IsString({ groups: ['warnings'] })
+  @Length(2, 40, {
+    groups: ['warnings'],
+    message: 'Tamaño de texto invalido .',
   })
   nationality: string;
 
-  @IsOptional()
-  @IsString()
-  @MinLength(3)
-  @MaxLength(30)
+  @IsOptional({ groups: ['warnings'] })
+  @IsString({ groups: ['warnings'] })
+  @Length(4, 20, {
+    groups: ['warnings'],
+    message: 'No se encuentra entre la longitud de letras permitidas',
+  })
   flight: string;
 
   @IsNumber(undefined, {
+    groups: ['errors'],
     message: 'El valor introducido debe de tipo numerico.',
   })
-  @Min(1)
+  @Min(1, { groups: ['errors'] })
   @IsNotEmpty({
+    groups: ['errors'],
     message: 'Campo Obligatorio',
   })
-  @CalculateNumberOfDays('start_date', 'end_date_policy')
+  @CalculateNumberOfDays('start_date', 'end_date_policy', {
+    groups: ['errors'],
+  })
   number_days: number;
 
-  @IsOptional()
+  @IsOptional({ groups: ['errors'] })
   @IsNumber(undefined, {
+    groups: ['errors'],
     message: 'El valor introducido  debe de tipo numerico.',
   })
-  @Min(0)
+  @Min(0, { groups: ['errors'] })
   @IsNumberLessThan('number_days', {
+    groups: ['errors'],
     message: 'Cantidad de dias incorrectos',
   })
   number_high_risk_days: number;
 
   @IsNumber(undefined, {
+    groups: ['errors'],
     message: 'El valor introducido  debe de tipo numerico',
   })
-  @Min(0)
+  @Min(0, { groups: ['errors'] })
   @IsNotEmpty({
     message: 'Campo Obligatorio',
   })
   amount_days_covered: number;
 
   @IsNumber(undefined, {
+    groups: ['errors'],
     message: 'El valor introducido debe ser tipo numerico .',
   })
-  @Min(0)
+  @Min(0, { groups: ['errors'] })
   amount_days_high_risk: number;
 
   @IsNumber(undefined, {
+    groups: ['errors'],
     message: 'El valor introducido debe ser tipo numerico ',
   })
   @Min(0, {
+    groups: ['errors'],
     message: 'El valor introducido debe ser mayor que 0',
   })
   @IsNotEmpty({
+    groups: ['errors'],
     message: 'Campo Obligatorio',
   })
   total_amount: number;
 
   @Length(4, 40, {
+    groups: ['errors'],
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
-  @IsNotEmpty({
-    message: 'Campo Obligatorio',
-  })
+  @IsNotEmpty({ groups: ['errors'], message: 'Campo Obligatorio' })
   coverage: string;
 }

@@ -34,4 +34,6 @@ export class FileErrorsTravelerDto {
   total_amount?: string;
 
   coverage?: string;
+
+  repeat?: boolean;
 }
