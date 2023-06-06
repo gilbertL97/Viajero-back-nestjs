@@ -17,11 +17,13 @@ import dayjs = require('dayjs');
 import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
 import { FileService } from 'src/file/file.service';
 import { TravelerEntity } from '../entity/traveler.entity';
+import { TravelerService } from './traveler.service';
 
 @Injectable()
 export class TravelerUploadFilesService {
   constructor(
     @InjectRepository(TravelerRepository)
+    private readonly travelerService: TravelerService,
     private readonly travelerRepository: TravelerRepository,
     private readonly contratctoService: ContractorService,
     private readonly countryService: CountryService,
@@ -32,8 +34,6 @@ export class TravelerUploadFilesService {
     file: Express.Multer.File,
     idClient: number,
   ): Promise<FileTravelerDto[] | FileErrorsTravelerDto[] | void> {
-    //0-busco el nombre del archivo para saber si existe
-
     //1-pirmero cargo todos los paises clientes y planes en memoria
     const [client, countries, coverages] = await Promise.all([
       this.contratctoService.getContractor(idClient),
@@ -46,19 +46,21 @@ export class TravelerUploadFilesService {
     await FileHelper.deletFile(file.path);
     //4-valido para saber si hay errores primero cambiar todo para maNhaba
 
-    const [errors, warnings] = await Promise.all([
-      this.validateTravelersErrors(travelers, coverages),
-      this.validateTravelersWarnings(travelers, countries),
-    ]);
-    if (errors) return this.bindWarningsAndErrors(errors, warnings);
+    const errors = await this.validateTravelersErrors(travelers, coverages);
+    if (errors)
+      return this.bindWarningsAndErrors(
+        errors,
+        await this.validateTravelersWarnings(travelers, countries),
+      );
     //5-inserto y verifico si hay viajeros repetidos
-    const travelersRepeat = await this.insertTraveler(
+    /*const travelersRepeat = await this.insertTraveler(
       travelers,
       coverages,
       countries,
       client,
       file.originalname,
-    );
+      warnings,
+    );*/
   }
 
   async insertTraveler(
@@ -67,13 +69,15 @@ export class TravelerUploadFilesService {
     countries: CountryEntity[],
     client: ContratorEntity,
     file: string,
-  ): Promise<FileTravelerDto[] | void> {
+    warnings?: FileErrorsTravelerDto[],
+  ): Promise<FileErrorsTravelerDto[] | void> {
     const createTraveler = new CreateTravelerDto();
-    const duplicate: FileTravelerDto[] = [];
+    const duplicate: FileErrorsTravelerDto[] = [];
     const travelersFile: TravelerEntity[] = [];
     const file2 = await this.verifyAndDeletFile(file, client);
-    console.log(file2);
+    let indice = 0;
     for (const traveler of travelers) {
+      // necesito terminar esto para mañana primero validar cada viajero sanitizar guaradra si hay error
       // por cada viajero
       const coverage = ValidateFile.findCoverage(traveler, coverages);
       const origin = ValidateFile.findCountry(
@@ -85,6 +89,7 @@ export class TravelerUploadFilesService {
         countries,
       );
       const obj = Object.assign(createTraveler, traveler);
+
       if (obj.born_date) {
         obj.born_date = new Date(
           dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
@@ -112,10 +117,11 @@ export class TravelerUploadFilesService {
         )
         .catch((error) => {
           if (error instanceof Error) {
-            duplicate.push(traveler); //arreglar este metodo para mañana
+            //duplicate.push(traveler); //arreglar este metodo para mañana
           } else throw error;
         });
       if (travelerfil) travelersFile.push(travelerfil);
+      indice++;
     }
     if (travelersFile.length == 0) {
       this.fileService.remove(file2.id);
@@ -159,15 +165,10 @@ export class TravelerUploadFilesService {
     let i = 2; //numero de fila minimo
     const listWarnings: FileErrorsTravelerDto[] = [];
     for (const traveler of travelers) {
-      const validatorWarnings = await validator.validate(traveler, {
-        groups: ['warnings'],
-        validationError: { target: false },
-      });
-      const validationWarnings = this.handleErrors(validatorWarnings);
-      const warnings = this.manualValidationsWarnings(
+      const warnings = await this.validateOneTravelersWarning(
         traveler,
         countries,
-        validationWarnings,
+        validator,
       );
       if (warnings) {
         warnings.row = i;
@@ -178,6 +179,22 @@ export class TravelerUploadFilesService {
     if (listWarnings.length > 0) return listWarnings;
   }
 
+  async validateOneTravelersWarning(
+    traveler: FileTravelerDto,
+    countries: CountryEntity[],
+    validator: Validator,
+  ): Promise<FileErrorsTravelerDto | undefined> {
+    const validatorWarnings = await validator.validate(traveler, {
+      groups: ['warnings'],
+      validationError: { target: false },
+    });
+    const validationWarnings = this.handleErrors(validatorWarnings);
+    return this.manualValidationsWarnings(
+      traveler,
+      countries,
+      validationWarnings,
+    );
+  }
   manualValidationErrors(
     coverages: CoverageEntity[],
     traveler: FileTravelerDto,
@@ -218,16 +235,18 @@ export class TravelerUploadFilesService {
   manualValidationsWarnings(
     traveler: FileTravelerDto,
     countries: CountryEntity[],
-    fileWarnings: FileErrorsTravelerDto,
+    fileWarnings?: FileErrorsTravelerDto,
   ) {
     const warnings = new FileErrorsTravelerDto();
     const nationality = ValidateFile.validateNationality(traveler, countries);
     if (nationality) warnings.nationality = nationality;
     const origin = ValidateFile.validateOriginCountry(traveler, countries);
     if (origin) warnings.origin_country = origin;
-    return Object.assign(fileWarnings, warnings);
+    if (fileWarnings) return Object.assign(fileWarnings, warnings);
   }
-  handleErrors(lisValidation: ValidationError[]): FileErrorsTravelerDto {
+  handleErrors(
+    lisValidation: ValidationError[],
+  ): FileErrorsTravelerDto | undefined {
     const fileErrors = new FileErrorsTravelerDto();
     lisValidation.map((e) => {
       if (e.property) {
@@ -265,12 +284,15 @@ export class TravelerUploadFilesService {
       else throw e;
     });
     if (fileTraveler) {
-      console.log(fileTraveler, 'se ecncontro uno');
       await this.fileService.remove(fileTraveler.id);
     }
     return await this.fileService.create(file, client);
   }
-  amendWarningsInTravelers(traveler: FileTravelerDto) {}
+  amendWarningsInTravelers(
+    indicne: number,
+    warninngs: FileErrorsTravelerDto[],
+    traveler: FileTravelerDto,
+  ): FileTravelerDto {}
   bindWarningsAndErrors(
     errors: FileErrorsTravelerDto[],
     warnings: FileErrorsTravelerDto[] | void,
