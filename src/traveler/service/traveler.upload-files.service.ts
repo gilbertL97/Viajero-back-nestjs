@@ -18,6 +18,8 @@ import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
 import { FileService } from 'src/file/file.service';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerService } from './traveler.service';
+import { ResponseErrorOrWarningDto } from '../dto/responseErrorOrWarning.dto';
+import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -33,7 +35,7 @@ export class TravelerUploadFilesService {
   async processFile(
     file: Express.Multer.File,
     idClient: number,
-  ): Promise<FileTravelerDto[] | FileErrorsTravelerDto[] | void> {
+  ): Promise<ResponseErrorOrWarningDto | void> {
     //1-pirmero cargo todos los paises clientes y planes en memoria
     const [client, countries, coverages] = await Promise.all([
       this.contratctoService.getContractor(idClient),
@@ -53,14 +55,13 @@ export class TravelerUploadFilesService {
         await this.validateTravelersWarnings(travelers, countries),
       );
     //5-inserto y verifico si hay viajeros repetidos
-    /*const travelersRepeat = await this.insertTraveler(
+    return await this.insertTraveler(
       travelers,
       coverages,
       countries,
       client,
       file.originalname,
-      warnings,
-    );*/
+    );
   }
 
   async insertTraveler(
@@ -69,17 +70,22 @@ export class TravelerUploadFilesService {
     countries: CountryEntity[],
     client: ContratorEntity,
     file: string,
-    warnings?: FileErrorsTravelerDto[],
-  ): Promise<FileErrorsTravelerDto[] | void> {
+  ): Promise<ResponseErrorOrWarningDto | void> {
     const createTraveler = new CreateTravelerDto();
-    const duplicate: FileErrorsTravelerDto[] = [];
+    const warn: FileErrorsTravelerDto[] = [];
     const travelersFile: TravelerEntity[] = [];
     const file2 = await this.verifyAndDeletFile(file, client);
-    let indice = 0;
+    let row = 2;
     for (const traveler of travelers) {
       // necesito terminar esto para mañana primero validar cada viajero sanitizar guaradra si hay error
       // por cada viajero
       const coverage = ValidateFile.findCoverage(traveler, coverages);
+      const warning = await this.validateOneTravelersWarning(
+        traveler,
+        countries,
+      );
+      if (warning) this.amendWarningsInTravelers(traveler, warning);
+      console.log(warning);
       const origin = ValidateFile.findCountry(
         traveler.origin_country,
         countries,
@@ -116,18 +122,31 @@ export class TravelerUploadFilesService {
           file2,
         )
         .catch((error) => {
-          if (error instanceof Error) {
-            //duplicate.push(traveler); //arreglar este metodo para mañana
+          if (error instanceof RepeatTravelerError) {
+            if (warning) warning.duplicate = true;
+            else {
+              const duplicate = new FileErrorsTravelerDto();
+              duplicate.duplicate = true;
+              duplicate.row = row;
+              warn.push(duplicate);
+            }
+            //arreglar este metodo para mañana
           } else throw error;
         });
       if (travelerfil) travelersFile.push(travelerfil);
-      indice++;
+      if (warning) warn.push(warning);
+      row++;
     }
     if (travelersFile.length == 0) {
       this.fileService.remove(file2.id);
     }
 
-    if (duplicate.length > 0) return duplicate;
+    if (warn.length > 0) {
+      const resp = new ResponseErrorOrWarningDto();
+      resp.containErrors = false;
+      resp.errorAndWarning = warn;
+      return resp;
+    }
   }
   async validateTravelersErrors(
     travelers: FileTravelerDto[],
@@ -160,15 +179,12 @@ export class TravelerUploadFilesService {
     travelers: FileTravelerDto[],
     countries: CountryEntity[],
   ): Promise<FileErrorsTravelerDto[] | void> {
-    const validator = new Validator();
-    // esta variable la uso para saber si hay algun error
     let i = 2; //numero de fila minimo
     const listWarnings: FileErrorsTravelerDto[] = [];
     for (const traveler of travelers) {
       const warnings = await this.validateOneTravelersWarning(
         traveler,
         countries,
-        validator,
       );
       if (warnings) {
         warnings.row = i;
@@ -182,8 +198,8 @@ export class TravelerUploadFilesService {
   async validateOneTravelersWarning(
     traveler: FileTravelerDto,
     countries: CountryEntity[],
-    validator: Validator,
   ): Promise<FileErrorsTravelerDto | undefined> {
+    const validator = new Validator();
     const validatorWarnings = await validator.validate(traveler, {
       groups: ['warnings'],
       validationError: { target: false },
@@ -289,18 +305,28 @@ export class TravelerUploadFilesService {
     return await this.fileService.create(file, client);
   }
   amendWarningsInTravelers(
-    indicne: number,
-    warninngs: FileErrorsTravelerDto[],
     traveler: FileTravelerDto,
-  ): FileTravelerDto {}
+    warninngs: FileErrorsTravelerDto,
+  ) {
+    const key = Object.keys(warninngs);
+    key.forEach((k) => {
+      traveler[k] = undefined;
+    });
+  }
   bindWarningsAndErrors(
     errors: FileErrorsTravelerDto[],
     warnings: FileErrorsTravelerDto[] | void,
   ) {
-    if (!warnings || warnings.length == 0) return errors;
-    return errors.map((error) => {
+    const resp = new ResponseErrorOrWarningDto();
+    resp.containErrors = true;
+    if (!warnings || warnings.length == 0) {
+      resp.errorAndWarning = errors;
+      return resp;
+    }
+    resp.errorAndWarning = errors.map((error) => {
       const warn = warnings.find((w) => error.row == w.row);
       return Object.assign(error, warn);
     });
+    return resp;
   }
 }

@@ -10,6 +10,7 @@ import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
+import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 
 @EntityRepository(TravelerEntity)
 export class TravelerRepository extends Repository<TravelerEntity> {
@@ -66,7 +67,8 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     if (file) traveler.file = file;
     const newTraveler = await this.save(traveler).catch((error) => {
       //console.log(error);
-      if (error.code == 23505) throw new Error('Viajero duplicado');
+      if (error.code == 23505)
+        throw new RepeatTravelerError('duplicado', error.code);
       throw new BadRequestException('error in database');
     });
     return newTraveler;

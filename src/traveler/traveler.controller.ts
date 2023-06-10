@@ -31,6 +31,7 @@ import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { FileTravelerDto } from './dto/file-traveler.dto';
 import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
+import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('traveler')
@@ -59,15 +60,14 @@ export class TravelerController {
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: number,
     @Res() response: Response,
-  ): Promise<Response<FileTravelerDto[] | FileErrorsTravelerDto[] | void>> {
+  ): Promise<Response<ResponseErrorOrWarningDto | void>> {
     const resp = await this.travelerUploadService.processFile(file, id);
     if (!resp) {
-      return response.status(HttpStatus.ACCEPTED).send();
+      return response.status(HttpStatus.OK).send();
     }
-
-    if (resp[0] instanceof FileErrorsTravelerDto)
-      return response.status(HttpStatus.BAD_REQUEST).send(resp);
-    return response.status(HttpStatus.CONFLICT).send(resp);
+    if (resp.containErrors)
+      return response.status(HttpStatus.BAD_REQUEST).send(resp.errorAndWarning);
+    return response.status(HttpStatus.ACCEPTED).send(resp.errorAndWarning);
   }
   @UseGuards(RolesGuard)
   @Roles(
