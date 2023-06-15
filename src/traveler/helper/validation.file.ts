@@ -92,6 +92,7 @@ export class ValidateFile {
     return undefined;
   }
   public static findCountry(coun: string, countries: CountryEntity[]) {
+    if (!coun) return undefined;
     return countries.find((country) => {
       if (
         coun.length == 2 &&
