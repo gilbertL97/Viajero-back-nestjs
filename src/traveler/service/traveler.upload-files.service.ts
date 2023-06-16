@@ -95,7 +95,7 @@ export class TravelerUploadFilesService {
         countries,
       );
       const obj = Object.assign(createTraveler, traveler);
-
+      console.log(obj);
       if (obj.born_date) {
         obj.born_date = new Date(
           dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
@@ -245,7 +245,12 @@ export class TravelerUploadFilesService {
           amount_days_covered,
         );
         if (typeof total == 'string') fileErrors.total_amount = total;
-        if (!coverage.daily) delete validationErrors.number_days;
+        if (!coverage.daily)
+          this.amendDateNoDaylyInCoverages(
+            validationErrors,
+            traveler,
+            coverage,
+          );
       } else validationErrors.number_days = undefined;
     } else fileErrors.coverage = coverage;
     return this.parseErors(validationErrors, fileErrors);
@@ -330,5 +335,13 @@ export class TravelerUploadFilesService {
       return Object.assign(error, warn);
     });
     return resp;
+  }
+
+  amendDateNoDaylyInCoverages(
+    validationErrors: FileErrorsTravelerDto,
+    traveler: FileTravelerDto,
+    coverage: CoverageEntity,
+  ) {
+    delete validationErrors.number_days;
   }
 }
