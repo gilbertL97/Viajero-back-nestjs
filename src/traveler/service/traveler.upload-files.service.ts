@@ -85,7 +85,7 @@ export class TravelerUploadFilesService {
         countries,
       );
       if (warning) this.amendWarningsInTravelers(traveler, warning);
-      console.log(warning);
+
       const origin = ValidateFile.findCountry(
         traveler.origin_country,
         countries,
@@ -205,11 +205,13 @@ export class TravelerUploadFilesService {
       validationError: { target: false },
     });
     const validationWarnings = this.handleErrors(validatorWarnings);
-    return this.manualValidationsWarnings(
+
+    const validations = this.manualValidationsWarnings(
       traveler,
       countries,
       validationWarnings,
     );
+    return validations;
   }
   manualValidationErrors(
     coverages: CoverageEntity[],
@@ -271,7 +273,7 @@ export class TravelerUploadFilesService {
       }
     });
 
-    if (Object.entries.length > 0) return fileErrors;
+    if (Object.entries(fileErrors).length > 0) return fileErrors;
 
     return undefined;
   }
