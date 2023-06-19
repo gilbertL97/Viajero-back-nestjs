@@ -347,5 +347,8 @@ export class TravelerUploadFilesService {
     coverage: CoverageEntity,
   ) {
     delete validationErrors.number_days;
+    traveler.end_date_policy = dayjs(traveler.start_date) //creo una instancia de dayjs con el inicio
+      .add(coverage.number_of_days, 'days') //agrego al inicio la cantidad de dias de la cobertura
+      .format('YYYY-MM-DD'); //lo llevo al formato y se lo asigno al final
   }
 }

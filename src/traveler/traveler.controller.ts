@@ -29,8 +29,6 @@ import { TravelerPdfService } from './service/traveler-pdf.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
-import { FileTravelerDto } from './dto/file-traveler.dto';
-import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
