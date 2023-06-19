@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { UserRole } from 'src/user/user.role';
 import { CountryService } from './country.service';
@@ -17,6 +18,7 @@ import { UpdateCountryDto } from './dto/update-country.dto';
 import { CountryEntity } from './entities/country.entity';
 
 @Controller('country')
+@UseGuards(JwtAuthGuard)
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}
   @UseGuards(RolesGuard)

@@ -28,6 +28,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
   ): Promise<TravelerEntity> {
     const {
       name,
+      sex,
       email,
       passport,
       sale_date,
@@ -37,6 +38,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     } = createTravelerDto;
     const traveler = this.create({
       name,
+      sex,
       email,
       passport,
       sale_date,
@@ -66,7 +68,6 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     );
     if (file) traveler.file = file;
     const newTraveler = await this.save(traveler).catch((error) => {
-      //console.log(error);
       if (error.code == 23505)
         throw new RepeatTravelerError('duplicado', error.code);
       throw new BadRequestException('error in database');
@@ -194,7 +195,6 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
       .getManyAndCount();
-    console.log(state);
     return query;
   }
 }

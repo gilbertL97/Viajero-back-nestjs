@@ -85,7 +85,7 @@ export class TravelerUploadFilesService {
         countries,
       );
       if (warning) this.amendWarningsInTravelers(traveler, warning);
-      console.log(warning);
+
       const origin = ValidateFile.findCountry(
         traveler.origin_country,
         countries,
@@ -95,7 +95,7 @@ export class TravelerUploadFilesService {
         countries,
       );
       const obj = Object.assign(createTraveler, traveler);
-
+      console.log(obj);
       if (obj.born_date) {
         obj.born_date = new Date(
           dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
@@ -134,7 +134,11 @@ export class TravelerUploadFilesService {
           } else throw error;
         });
       if (travelerfil) travelersFile.push(travelerfil);
-      if (warning) warn.push(warning);
+
+      if (warning) {
+        warning.row = row;
+        warn.push(warning);
+      }
       row++;
     }
     if (travelersFile.length == 0) {
@@ -205,11 +209,13 @@ export class TravelerUploadFilesService {
       validationError: { target: false },
     });
     const validationWarnings = this.handleErrors(validatorWarnings);
-    return this.manualValidationsWarnings(
+
+    const validations = this.manualValidationsWarnings(
       traveler,
       countries,
       validationWarnings,
     );
+    return validations;
   }
   manualValidationErrors(
     coverages: CoverageEntity[],
@@ -243,7 +249,12 @@ export class TravelerUploadFilesService {
           amount_days_covered,
         );
         if (typeof total == 'string') fileErrors.total_amount = total;
-        if (!coverage.daily) delete validationErrors.number_days;
+        if (!coverage.daily)
+          this.amendDateNoDaylyInCoverages(
+            validationErrors,
+            traveler,
+            coverage,
+          );
       } else validationErrors.number_days = undefined;
     } else fileErrors.coverage = coverage;
     return this.parseErors(validationErrors, fileErrors);
@@ -271,7 +282,7 @@ export class TravelerUploadFilesService {
       }
     });
 
-    if (Object.entries.length > 0) return fileErrors;
+    if (Object.entries(fileErrors).length > 0) return fileErrors;
 
     return undefined;
   }
@@ -328,5 +339,13 @@ export class TravelerUploadFilesService {
       return Object.assign(error, warn);
     });
     return resp;
+  }
+
+  amendDateNoDaylyInCoverages(
+    validationErrors: FileErrorsTravelerDto,
+    traveler: FileTravelerDto,
+    coverage: CoverageEntity,
+  ) {
+    delete validationErrors.number_days;
   }
 }
