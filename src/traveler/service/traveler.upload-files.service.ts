@@ -95,7 +95,6 @@ export class TravelerUploadFilesService {
         countries,
       );
       const obj = Object.assign(createTraveler, traveler);
-      console.log(obj);
       if (obj.born_date) {
         obj.born_date = new Date(
           dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
@@ -228,8 +227,7 @@ export class TravelerUploadFilesService {
     if (coverage instanceof CoverageEntity) {
       if (
         //este fue el cambio q me pidio evely quitar los errores innecesarios en las fechas
-        validationErrors.start_date == undefined &&
-        validationErrors.end_date_policy == undefined
+        this.haveValidationsDate(validationErrors)
       ) {
         const amount_days_covered = ValidateFile.validateAmountDays(
           coverage,
@@ -270,6 +268,7 @@ export class TravelerUploadFilesService {
     const origin = ValidateFile.validateOriginCountry(traveler, countries);
     if (origin) warnings.origin_country = origin;
     if (fileWarnings) return Object.assign(fileWarnings, warnings);
+    if (origin || nationality) return warnings;
   }
   handleErrors(
     lisValidation: ValidationError[],
@@ -350,5 +349,15 @@ export class TravelerUploadFilesService {
     traveler.end_date_policy = dayjs(traveler.start_date) //creo una instancia de dayjs con el inicio
       .add(coverage.number_of_days, 'days') //agrego al inicio la cantidad de dias de la cobertura
       .format('YYYY-MM-DD'); //lo llevo al formato y se lo asigno al final
+  }
+  haveValidationsDate(validation: FileErrorsTravelerDto): boolean {
+    if (!validation) return true;
+    if (!validation.start_date && !validation.end_date_policy) return true;
+    if (
+      validation.start_date == undefined &&
+      validation.end_date_policy == undefined
+    )
+      return true;
+    return false;
   }
 }
