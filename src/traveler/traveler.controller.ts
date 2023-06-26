@@ -95,7 +95,6 @@ export class TravelerController {
     @GetUser() user: UserEntity,
     @Query() travelerFilter: FilterTravelerDto,
   ): Promise<TravelerEntity[]> {
-    console.log(travelerFilter);
     const data = await this.travelerService.advancedSearch(
       travelerFilter,
       user,
@@ -230,6 +229,7 @@ export class TravelerController {
     @Param('id') id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
+    console.log(updateTravelerDto);
     const data = await this.travelerService.update(id, updateTravelerDto);
     return data;
   }
