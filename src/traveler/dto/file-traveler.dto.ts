@@ -5,9 +5,8 @@ import {
   IsOptional,
   IsString,
   Length,
-  MaxLength,
   Min,
-  MinLength,
+  ValidateIf,
 } from 'class-validator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsDateFile } from './decorator/customDateExcel.decorator';
@@ -15,7 +14,7 @@ import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
 
 export class FileTravelerDto {
-  @IsString()
+  @IsString({ groups: ['errors'], message: 'No es de tipo string' })
   @Length(5, 70, {
     groups: ['errors'],
     message: 'No se encuentra entre la longitud de letras permitidas',
@@ -75,11 +74,6 @@ export class FileTravelerDto {
   @IsDateFile({ groups: ['errors'] })
   start_date: Date | string;
 
-  // @Type(() => string)
-  //@IsDateString()
-  // @IsDateAfter('start_date', {
-  //   message: 'Fecha inicio anterior a fecha de fin ',
-  // })
   @IsNotEmpty({ groups: ['errors'], message: 'Campo Obligatorio' })
   @IsDateFile({ groups: ['errors'] })
   end_date_policy: Date | string;
@@ -138,7 +132,10 @@ export class FileTravelerDto {
     groups: ['errors'],
     message: 'El valor introducido  debe de tipo numerico',
   })
-  @Min(0, { groups: ['errors'] })
+  @Min(0, {
+    groups: ['errors'],
+    message: 'El valor introducido  debe ser mayor a 0',
+  })
   @IsNotEmpty({
     message: 'Campo Obligatorio',
   })
@@ -148,6 +145,7 @@ export class FileTravelerDto {
     groups: ['errors'],
     message: 'El valor introducido debe ser tipo numerico .',
   })
+  @IsOptional({ groups: ['errors'] })
   @Min(0, { groups: ['errors'] })
   amount_days_high_risk: number;
 
