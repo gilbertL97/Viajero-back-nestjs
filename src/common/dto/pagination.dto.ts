@@ -1,5 +1,13 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsPositive, Min } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Length,
+  Min,
+} from 'class-validator';
+import { Order } from '../constants/order';
 
 export class PaginationDto {
   @IsOptional()
@@ -10,6 +18,10 @@ export class PaginationDto {
   @IsOptional()
   @IsPositive()
   @Min(0)
-  @Type(() => Number)
+  @IsNumber()
   offset?: number;
+
+  @IsString()
+  @Length(3, 6)
+  order: string;
 }

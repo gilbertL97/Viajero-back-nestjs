@@ -30,6 +30,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('traveler')
@@ -78,6 +79,23 @@ export class TravelerController {
   )
   @Get()
   async getTravelers(@GetUser() user: UserEntity): Promise<TravelerEntity[]> {
+    const data = await this.travelerService.findAll(user);
+    return data;
+  }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
+  @Get('/pagination')
+  async getTravelersPagination(
+    @GetUser() user: UserEntity,
+    @Query() pag: PaginationDto,
+  ): Promise<TravelerEntity[]> {
     const data = await this.travelerService.findAll(user);
     return data;
   }
@@ -229,7 +247,6 @@ export class TravelerController {
     @Param('id') id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
-    console.log(updateTravelerDto);
     const data = await this.travelerService.update(id, updateTravelerDto);
     return data;
   }
