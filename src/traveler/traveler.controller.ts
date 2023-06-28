@@ -64,7 +64,7 @@ export class TravelerController {
       return response.status(HttpStatus.OK).send();
     }
     if (resp.containErrors)
-      return response.status(HttpStatus.BAD_REQUEST).send(resp.errorAndWarning);
+      return response.status(HttpStatus.CONFLICT).send(resp.errorAndWarning);
     return response.status(HttpStatus.ACCEPTED).send(resp.errorAndWarning);
   }
   @UseGuards(RolesGuard)

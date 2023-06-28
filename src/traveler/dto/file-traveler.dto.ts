@@ -20,6 +20,7 @@ export class FileTravelerDto {
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
   @IsNotEmpty({
+    always: true,
     groups: ['errors'],
     message: 'Campo Obligatorio',
   })
@@ -50,6 +51,7 @@ export class FileTravelerDto {
     message: 'Pasaporte invalido',
   })
   @IsNotEmpty({
+    always: true,
     groups: ['errors'],
     message: 'Campo Obligatorio',
   })
@@ -68,6 +70,7 @@ export class FileTravelerDto {
     message: 'Fecha inicio posterior a fecha de fin ',
   })
   @IsNotEmpty({
+    always: true,
     groups: ['errors'],
     message: 'Campo Obligatorio',
   })
@@ -108,6 +111,7 @@ export class FileTravelerDto {
   })
   @Min(1, { groups: ['errors'] })
   @IsNotEmpty({
+    always: true,
     groups: ['errors'],
     message: 'Campo Obligatorio',
   })
@@ -158,6 +162,7 @@ export class FileTravelerDto {
     message: 'El valor introducido debe ser mayor que 0',
   })
   @IsNotEmpty({
+    always: true,
     groups: ['errors'],
     message: 'Campo Obligatorio',
   })

@@ -48,11 +48,11 @@ export class TravelerUploadFilesService {
     ]);
     //2-cargo el archivo dependiendo del tipo de archivo
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
-    if ((travelers.length = 0))
+    if (travelers.length == 0) {
       throw new BadRequestException(
         'El fichero esta vacio o no se encuentran viajeros',
       );
-    // 3-elimino el archivo
+    } // 3-elimino el archivo
     await FileHelper.deletFile(file.path);
     //4-valido para saber si hay errores primero cambiar todo para maNhaba
 
