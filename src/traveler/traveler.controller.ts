@@ -31,6 +31,7 @@ import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { TravelerAndTotal } from './dto/TravelerPag.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('traveler')
@@ -95,8 +96,8 @@ export class TravelerController {
   async getTravelersPagination(
     @GetUser() user: UserEntity,
     @Query() pag: PaginationDto,
-  ): Promise<TravelerEntity[]> {
-    const data = await this.travelerService.findAll(user);
+  ):TravelerAndTotal {
+    const data =this.travelerService.findAllPagination(user, pag);
     return data;
   }
   @UseGuards(RolesGuard)

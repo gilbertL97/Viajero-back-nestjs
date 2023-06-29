@@ -21,6 +21,7 @@ import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerRepository } from '../repository/traveler.repository';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { TravelerAndTotal } from '../dto/TravelerPag.dto';
 
 @Injectable()
 export class TravelerService {
@@ -84,19 +85,31 @@ export class TravelerService {
   async findAllPagination(
     user: UserEntity,
     pag: PaginationDto,
-  ): Promise<TravelerEntity[]> {
+  ):TravelerAndTotal {
     // await new Promise((resolve) => setTimeout(resolve, 5000));
-    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
-      const userC = await this.userService.getUser(user.id);
-      return this.travelerRepository.find({
-        relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
-        
-        where: { contractor: userC.contractors[0] },
-      });
-    }
-    return this.travelerRepository.find({
+    console.log(pag);
+    // if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
+    //   const userC = await this.userService.getUser(user.id);
+    //   return this.travelerRepository.find({
+    //     relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+    //     skip: pag.offset,
+    //     take: pag.limit,
+    //     order: {
+    //       name: pag.order,
+    //     },
+    //     where: { contractor: userC.contractors[0] },
+    //   });
+    // }
+    const [traveler, total] = await this.travelerRepository.findAndCount({
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+      skip: pag.offset,
+      take: pag.limit,
+      order: {
+        name: pag.order,
+      },
     });
+
+    return new TravelerAndTotal(traveler, total);
   }
   async findOne(id: string): Promise<TravelerEntity> {
     const traveler = await this.travelerRepository.findOne({

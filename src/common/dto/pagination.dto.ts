@@ -13,15 +13,14 @@ export class PaginationDto {
   @IsOptional()
   @IsPositive()
   @Type(() => Number)
-  limit?: number;
+  limit?: number = 10;
 
   @IsOptional()
-  @IsPositive()
   @Min(0)
   @IsNumber()
-  offset?: number;
+  offset?: number = 0;
 
   @IsString()
   @Length(3, 6)
-  order: string;
+  order?: Order = Order.ASC;
 }
