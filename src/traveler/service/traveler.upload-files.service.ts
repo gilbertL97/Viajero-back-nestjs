@@ -24,6 +24,7 @@ import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerService } from './traveler.service';
 import { ResponseErrorOrWarningDto } from '../dto/responseErrorOrWarning.dto';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -39,6 +40,7 @@ export class TravelerUploadFilesService {
   async processFile(
     file: Express.Multer.File,
     idClient: number,
+    user: UserEntity,
   ): Promise<ResponseErrorOrWarningDto | void> {
     //1-pirmero cargo todos los paises clientes y planes en memoria
     const [client, countries, coverages] = await Promise.all([
@@ -69,6 +71,7 @@ export class TravelerUploadFilesService {
       countries,
       client,
       file.originalname,
+      user,
     );
   }
 
@@ -78,11 +81,12 @@ export class TravelerUploadFilesService {
     countries: CountryEntity[],
     client: ContratorEntity,
     file: string,
+    user: UserEntity,
   ): Promise<ResponseErrorOrWarningDto | void> {
     const createTraveler = new CreateTravelerDto();
     const warn: FileErrorsTravelerDto[] = [];
     const travelersFile: TravelerEntity[] = [];
-    const file2 = await this.verifyAndDeletFile(file, client);
+    const file2 = await this.verifyAndDeletFile(file, client, user);
     let row = 2;
     for (const traveler of travelers) {
       // necesito terminar esto para mañana primero validar cada viajero sanitizar guaradra si hay error
@@ -320,7 +324,11 @@ export class TravelerUploadFilesService {
   isNotEmptyObject(obj: any): boolean {
     return Object.entries(obj).length > 0 ? true : false;
   }
-  async verifyAndDeletFile(file: string, client: ContratorEntity) {
+  async verifyAndDeletFile(
+    file: string,
+    client: ContratorEntity,
+    user: UserEntity,
+  ) {
     const fileTraveler = await this.fileService.findByName(file).catch((e) => {
       if (e instanceof NotFoundException)
         console.log('No se encuentra el archivo');
@@ -329,7 +337,7 @@ export class TravelerUploadFilesService {
     if (fileTraveler) {
       await this.fileService.remove(fileTraveler.id);
     }
-    return await this.fileService.create(file, client);
+    return await this.fileService.create(file, client, user);
   }
   amendWarningsInTravelers(
     traveler: FileTravelerDto,
