@@ -24,8 +24,13 @@ export class FileService {
     private readonly fileRepository: Repository<FileEntity>,
     private readonly userService: UserService,
   ) {}
-  async create(name: string, client: ContratorEntity): Promise<FileEntity> {
+  async create(
+    name: string,
+    client: ContratorEntity,
+    user: UserEntity,
+  ): Promise<FileEntity> {
     const file = new FileEntity();
+    file.user = user;
     file.name = name;
     file.contractor = client;
     return this.fileRepository.save(file);

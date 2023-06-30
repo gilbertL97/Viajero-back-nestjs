@@ -85,7 +85,7 @@ export class TravelerService {
   async findAllPagination(
     user: UserEntity,
     pag: PaginationDto,
-  ):TravelerAndTotal {
+  ): Promise<TravelerAndTotal> {
     // await new Promise((resolve) => setTimeout(resolve, 5000));
     console.log(pag);
     // if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {

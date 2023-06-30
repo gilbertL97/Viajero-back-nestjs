@@ -1,5 +1,6 @@
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 import {
   BaseEntity,
   Column,
@@ -23,4 +24,6 @@ export class FileEntity extends BaseEntity {
   travelers: TravelerEntity[];
   @ManyToOne(() => ContratorEntity, (contractor) => contractor.files, {})
   contractor: ContratorEntity;
+  @ManyToOne(() => UserEntity, (user) => user.files, {})
+  user: UserEntity;
 }

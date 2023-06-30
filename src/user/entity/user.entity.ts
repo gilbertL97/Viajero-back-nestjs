@@ -8,9 +8,11 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
+import { FileEntity } from 'src/file/entities/file.entity';
 
 @Entity('usuarios')
 export class UserEntity extends BaseEntity {
@@ -38,6 +40,8 @@ export class UserEntity extends BaseEntity {
     name: 'usuarios_tomadores_de_seguro',
   })
   contractors: ContratorEntity[];
+  @OneToMany(() => FileEntity, (file) => file.user, { nullable: true })
+  files: FileEntity[];
 
   @BeforeInsert() // hashear contraseña
   @BeforeUpdate()

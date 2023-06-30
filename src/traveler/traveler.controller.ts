@@ -56,12 +56,12 @@ export class TravelerController {
   @Post('/file/:id')
   @UseInterceptors(FileInterceptor('travelers', TravelersStorage))
   async uploadTravelers(
-    //@GetUser() user: UserEntity,
+    @GetUser() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: number,
     @Res() response: Response,
   ): Promise<Response<ResponseErrorOrWarningDto | void>> {
-    const resp = await this.travelerUploadService.processFile(file, id);
+    const resp = await this.travelerUploadService.processFile(file, id, user);
     if (!resp) {
       return response.status(HttpStatus.OK).send();
     }
@@ -96,8 +96,8 @@ export class TravelerController {
   async getTravelersPagination(
     @GetUser() user: UserEntity,
     @Query() pag: PaginationDto,
-  ):TravelerAndTotal {
-    const data =this.travelerService.findAllPagination(user, pag);
+  ): Promise<TravelerAndTotal> {
+    const data = await this.travelerService.findAllPagination(user, pag);
     return data;
   }
   @UseGuards(RolesGuard)

@@ -66,7 +66,9 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       traveler.amount_days_covered,
       traveler.amount_days_high_risk,
     );
-    if (file) traveler.file = file;
+    if (file) {
+      traveler.file = file;
+    }
     const newTraveler = await this.save(traveler).catch((error) => {
       if (error.code == 23505)
         throw new RepeatTravelerError('duplicado', error.code);

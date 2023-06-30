@@ -6,7 +6,6 @@ import {
   IsString,
   Length,
   Min,
-  ValidateIf,
 } from 'class-validator';
 import { IsDateBefore } from './decorator/customDateBefore.decorator';
 import { IsDateFile } from './decorator/customDateExcel.decorator';
