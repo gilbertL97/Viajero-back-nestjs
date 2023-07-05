@@ -105,6 +105,7 @@ export class TravelerService {
       skip: pag.offset,
       take: pag.limit,
       order: {
+        start_date: pag.order,
         name: pag.order,
       },
     });

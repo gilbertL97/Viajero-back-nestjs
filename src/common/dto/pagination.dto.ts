@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsPositive,
   IsString,
@@ -13,14 +14,15 @@ export class PaginationDto {
   @IsOptional()
   @IsPositive()
   @Type(() => Number)
-  limit?: number = 10;
+  limit = 10;
 
   @IsOptional()
-  @Min(0)
   @IsNumber()
-  offset?: number = 0;
+  @Type(() => Number)
+  offset = 0;
 
+  @IsOptional()
   @IsString()
   @Length(3, 6)
-  order?: Order = Order.ASC;
+  order: Order = Order.ASC;
 }
