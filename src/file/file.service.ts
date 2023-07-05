@@ -5,11 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { use } from 'passport';
 import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
-import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
@@ -33,7 +31,8 @@ export class FileService {
     file.user = user;
     file.name = name;
     file.contractor = client;
-    return this.fileRepository.save(file);
+
+    return await this.fileRepository.save(file);
   }
 
   async findAll(user: UserEntity): Promise<FileEntity[]> {
@@ -41,11 +40,11 @@ export class FileService {
       const userC = await this.userService.getUser(user.id);
       return this.fileRepository.find({
         where: { contractor: userC.contractors[0] },
-        relations: ['contractor'],
+        relations: ['contractor', 'user'],
       });
     }
     return this.fileRepository.find({
-      relations: ['contractor'],
+      relations: ['contractor', 'user'],
     });
   }
 

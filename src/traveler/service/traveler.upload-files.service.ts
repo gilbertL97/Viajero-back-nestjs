@@ -25,17 +25,18 @@ import { TravelerService } from './traveler.service';
 import { ResponseErrorOrWarningDto } from '../dto/responseErrorOrWarning.dto';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class TravelerUploadFilesService {
   constructor(
     @InjectRepository(TravelerRepository)
-    private readonly travelerService: TravelerService,
     private readonly travelerRepository: TravelerRepository,
     private readonly contratctoService: ContractorService,
     private readonly countryService: CountryService,
     private readonly coverageService: CoverageService,
     private readonly fileService: FileService,
+    private readonly userService: UserService,
   ) {}
   async processFile(
     file: Express.Multer.File,
@@ -43,10 +44,11 @@ export class TravelerUploadFilesService {
     user: UserEntity,
   ): Promise<ResponseErrorOrWarningDto | void> {
     //1-pirmero cargo todos los paises clientes y planes en memoria
-    const [client, countries, coverages] = await Promise.all([
+    const [client, countries, coverages, userEntity] = await Promise.all([
       this.contratctoService.getContractor(idClient),
       this.countryService.findAll(),
       this.coverageService.getCoveragesActives(),
+      this.userService.getUser(user.id),
     ]);
     //2-cargo el archivo dependiendo del tipo de archivo
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
@@ -71,7 +73,7 @@ export class TravelerUploadFilesService {
       countries,
       client,
       file.originalname,
-      user,
+      userEntity,
     );
   }
 
@@ -174,17 +176,9 @@ export class TravelerUploadFilesService {
       const validatorError = await validator.validate(traveler, {
         groups: ['errors'],
         validationError: { target: false },
+        skipMissingProperties: false,
       });
-      validator
-        .validate(traveler, {
-          groups: ['errors'],
-          validationError: { target: false },
-        })
-        .then((errors) => {
-          console.log(errors);
-        });
       const validationErrors = this.handleErrors(validatorError);
-      console.log(validationErrors);
       const errors: FileErrorsTravelerDto = this.manualValidationErrors(
         coverages,
         traveler,
@@ -373,7 +367,7 @@ export class TravelerUploadFilesService {
     delete validationErrors.number_days;
     traveler.end_date_policy = dayjs(traveler.start_date) //creo una instancia de dayjs con el inicio
       .add(coverage.number_of_days, 'days') //agrego al inicio la cantidad de dias de la cobertura
-      .format('YYYY-MM-DD'); //lo llevo al formato y se lo asigno al final
+      .format('DD/MM/YYYY'); //lo llevo al formato y se lo asigno al final
   }
   haveValidationsDate(validation: FileErrorsTravelerDto): boolean {
     if (!validation) return true;
