@@ -107,6 +107,7 @@ export class FileService {
         start_date_create,
       });
     query.leftJoinAndSelect('files.contractor', 'contractor');
+    query.leftJoinAndSelect('files.user', 'user');
     return query.getMany();
   }
   exporToExcel(files: FileEntity[]) {
@@ -120,6 +121,10 @@ export class FileService {
         key: 'created_at',
         header: 'Fecha de Importacion',
         style: { numFmt: 'dd/mm/yyyy' },
+      },
+      {
+        key: 'user',
+        header: 'Usuario',
       },
     ];
     return exportExcel(files, columns, 'Archivos');
@@ -135,6 +140,11 @@ export class FileService {
       {
         property: 'created_at',
         label: 'Fecha de Importacion',
+        width: 90,
+      },
+      {
+        property: 'user',
+        label: 'Usuario',
         width: 90,
       },
     ];

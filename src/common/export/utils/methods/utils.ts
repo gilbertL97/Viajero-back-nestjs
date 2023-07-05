@@ -4,6 +4,7 @@ import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileEntity } from 'src/file/entities/file.entity';
 import { TravelerEntity } from 'src/traveler/entity/traveler.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 export function flater(elem: any) {
   const keys = Object.keys(elem);
@@ -26,6 +27,7 @@ function getName(elem: any) {
   if (elem instanceof CountryEntity) return elem.comun_name;
   if (elem instanceof ContratorEntity) return elem.client;
   if (elem instanceof FileEntity) return elem.name;
+  if (elem instanceof UserEntity) return elem.name;
 }
 function tranformDate(elem: any, key: string) {
   if (
