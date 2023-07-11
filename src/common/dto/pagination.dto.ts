@@ -13,13 +13,15 @@ import { Order } from '../constants/order';
 export class PaginationDto {
   @IsOptional()
   @IsPositive()
+  @Min(1)
   @Type(() => Number)
   limit = 10;
 
   @IsOptional()
   @IsNumber()
+  @Min(1)
   @Type(() => Number)
-  offset = 0;
+  page = 1;
 
   @IsOptional()
   @IsString()

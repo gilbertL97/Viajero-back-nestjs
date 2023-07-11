@@ -86,31 +86,8 @@ export class TravelerService {
     user: UserEntity,
     pag: PaginationDto,
   ): Promise<TravelerAndTotal> {
-    // await new Promise((resolve) => setTimeout(resolve, 5000));
-    console.log(pag);
-    // if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
-    //   const userC = await this.userService.getUser(user.id);
-    //   return this.travelerRepository.find({
-    //     relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
-    //     skip: pag.offset,
-    //     take: pag.limit,
-    //     order: {
-    //       name: pag.order,
-    //     },
-    //     where: { contractor: userC.contractors[0] },
-    //   });
-    // }
-    const [traveler, total] = await this.travelerRepository.findAndCount({
-      relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
-      skip: pag.offset,
-      take: pag.limit,
-      order: {
-        start_date: pag.order,
-        name: pag.order,
-      },
-    });
-
-    return new TravelerAndTotal(traveler, total);
+    const userC = await this.userService.getUser(user.id);
+    return await this.travelerRepository.getTravelersPagination(pag, userC);
   }
   async findOne(id: string): Promise<TravelerEntity> {
     const traveler = await this.travelerRepository.findOne({
@@ -179,6 +156,19 @@ export class TravelerService {
       userC = await this.userService.getUser(user.id);
 
     return this.travelerRepository.finAdllWithFilters(filter, userC);
+  }
+
+  async advancedSearchPag(
+    filter: FilterTravelerDto,
+    user: UserEntity,
+    pag: PaginationDto,
+  ): Promise<TravelerAndTotal> {
+    const userC: UserEntity = await this.userService.getUser(user.id);
+    return this.travelerRepository.findAllWithFiltersPagination(
+      filter,
+      userC,
+      pag,
+    );
   }
   async getCurrrentTravelers(filter: FilterTravelerDto) {
     return this.travelerRepository.getCurrentTravelers(filter);

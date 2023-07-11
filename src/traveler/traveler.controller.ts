@@ -120,6 +120,19 @@ export class TravelerController {
     );
     return data;
   }
+  @Post('/filter/pag')
+  async advanceSearchTravelerPag(
+    @GetUser() user: UserEntity,
+    @Body() travelerFilter: FilterTravelerDto,
+    @Query() pag: PaginationDto,
+  ): Promise<TravelerAndTotal> {
+    const data = await this.travelerService.advancedSearchPag(
+      travelerFilter,
+      user,
+      pag,
+    );
+    return data;
+  }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,

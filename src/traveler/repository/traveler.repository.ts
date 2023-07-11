@@ -11,6 +11,8 @@ import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { TravelerAndTotal } from '../dto/TravelerPag.dto';
 
 @EntityRepository(TravelerEntity)
 export class TravelerRepository extends Repository<TravelerEntity> {
@@ -198,5 +200,102 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
       .getManyAndCount();
     return query;
+  }
+  async getTravelersPagination(
+    pag: PaginationDto,
+    user: UserEntity,
+  ): Promise<TravelerAndTotal> {
+    let query = this.createQueryBuilder('traveler')
+      .leftJoinAndSelect('traveler.coverage', 'coverage')
+      .leftJoinAndSelect('traveler.contractor', 'contractor')
+      .leftJoinAndSelect('traveler.origin_country', 'origin_country')
+      .leftJoinAndSelect('traveler.nationality', 'nationality')
+      .skip((pag.page - 1) * pag.limit)
+      .take(pag.limit)
+      .orderBy('traveler.start_date', 'DESC')
+      .addOrderBy('traveler.name', pag.order);
+
+    if (user.contractors && user.contractors[0]) {
+      console.log(user);
+      query = query.andWhere('traveler.contractor = :contractor', {
+        contractor: user.contractors[0].id,
+      });
+    }
+
+    const [traveler, total] = await query.getManyAndCount();
+    return new TravelerAndTotal(traveler, total);
+  }
+  async findAllWithFiltersPagination(
+    filter: FilterTravelerDto,
+    user: UserEntity,
+    pag: PaginationDto,
+  ): Promise<TravelerAndTotal> {
+    let contractor = filter.contractor;
+    const {
+      name,
+      passport,
+      start_date_init,
+      start_date_end,
+      end_date_policy_init,
+      end_date_policy_end,
+      nationality,
+      origin_country,
+      coverage,
+      state,
+    } = filter;
+
+    if (user.contractors && user.contractors[0])
+      contractor = user.contractors[0].id;
+    const query = this.createQueryBuilder('viajeros');
+    if (name) query.where('viajeros.name LIKE :name', { name });
+    if (passport)
+      query.andWhere('viajeros.passport LIKE :passport', { passport });
+    if (origin_country)
+      query.andWhere('viajeros.origin_country LIKE :origin_country', {
+        origin_country,
+      });
+    if (nationality)
+      query.andWhere('viajeros.nationality LIKE :nationality', { nationality });
+    if (coverage) query.andWhere('viajeros.coverage =:coverage', { coverage });
+    if (contractor)
+      query.andWhere('viajeros.contractor =:contractor', { contractor });
+    if (end_date_policy_init)
+      query.andWhere('viajeros.end_date_policy >=:end_date_policy_init', {
+        end_date_policy_init,
+      });
+    if (end_date_policy_end)
+      query.andWhere('viajeros.end_date_policy <:end_date_policy_end', {
+        end_date_policy_end,
+      });
+    if (start_date_init)
+      query.andWhere('viajeros.start_date>=:start_date_init', {
+        start_date_init,
+      });
+    if (start_date_end)
+      query.andWhere('viajeros.start_date<:start_date_end', {
+        start_date_end,
+      });
+    if (state) {
+      const now = dayjs(new Date()).format('YYYY-MM-DD');
+      query.andWhere('viajeros.end_date_policy >=:now', { now }); //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+
+      //query.andWhere('viajeros.state  =:state ', { state });
+    }
+    query
+      .skip((pag.page - 1) * pag.limit)
+      .take(pag.limit)
+      .orderBy('viajeros.start_date', 'DESC')
+      .addOrderBy('viajeros.name', pag.order);
+
+    const [traveler, total] = await query
+      .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
+      .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
+      .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
+      .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
+      .leftJoinAndSelect('viajeros.file', 'FileEntity')
+      //.orderBy('viajeros.name')
+      .getManyAndCount();
+
+    return new TravelerAndTotal(traveler, total);
   }
 }
