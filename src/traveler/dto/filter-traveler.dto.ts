@@ -4,8 +4,8 @@ import {
   MaxLength,
   IsOptional,
   IsDateString,
-  IsNumberString,
   IsBooleanString,
+  IsNumber,
 } from 'class-validator';
 
 export class FilterTravelerDto {
@@ -38,7 +38,7 @@ export class FilterTravelerDto {
   end_date_policy_end: Date;
 
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   contractor: number;
 
   @IsOptional()
@@ -54,7 +54,7 @@ export class FilterTravelerDto {
   nationality: string;
 
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   coverage: number;
 
   @IsOptional()
