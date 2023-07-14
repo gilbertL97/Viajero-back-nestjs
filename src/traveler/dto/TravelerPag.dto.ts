@@ -2,9 +2,9 @@ import { TravelerEntity } from '../entity/traveler.entity';
 
 export class TravelerAndTotal {
   constructor(traveler: TravelerEntity[], total: number) {
-    this.traveler = traveler;
+    this.travelers = traveler;
     this.total = total;
   }
-  traveler: TravelerEntity[];
+  travelers: TravelerEntity[];
   total: number;
 }
