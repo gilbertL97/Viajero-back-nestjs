@@ -171,7 +171,8 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       });
     if (state) {
       const now = dayjs(new Date()).format('YYYY-MM-DD');
-      query.andWhere('viajeros.end_date_policy >=:now', { now }); //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+      query.andWhere('viajeros.end_date_policy >=:now', { now }); //para q sea vigente debe ser mayor la fecha fin a hoy
+      query.andWhere('viajeros.start_date<=:now', { now }); // y la fecha fin mayor a la de hoy //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
 
       //query.andWhere('viajeros.state  =:state ', { state });
     }
@@ -277,7 +278,9 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       });
     if (state) {
       const now = dayjs(new Date()).format('YYYY-MM-DD');
-      query.andWhere('viajeros.end_date_policy >=:now', { now }); //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+      query.andWhere('viajeros.end_date_policy >=:now', { now }); //para q sea vigente debe ser mayor la fecha fin a hoy
+      query.andWhere('viajeros.start_date<=:now', { now }); // y la fecha fin mayor a la de hoy
+      //para q sea vigente debe ser mayor la fecha fin a hoy // y la fecha fin mayor a la de hoy
 
       //query.andWhere('viajeros.state  =:state ', { state });
     }

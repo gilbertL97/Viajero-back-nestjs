@@ -21,9 +21,12 @@ export class DateHelper {
   public static dayState(finalDate: Date) {
     return new Date(finalDate).getTime() - new Date().getTime();
   }
-  public static dayStateBoolean(finalDate: Date) {
-    //console.log(dayjs(finalDate).diff(dayjs(new Date()), 'days'));
-    return dayjs(finalDate).diff(dayjs(new Date()), 'days') >= 0;
+  public static dayStateBoolean(date: Date) {
+    console.log(dayjs(new Date()).diff(dayjs(date), 'days'));
+    return (
+      dayjs(date).diff(dayjs(new Date()), 'days') >= 0 && //q fecha fin mayor q hoy
+      dayjs(new Date()).diff(dayjs(date), 'days') >= 0 //fecha inicio menor q hoy
+    );
   }
   public static daysDifferenceWithDaysjs(initialDate: Date, finalDate: Date) {
     const start = dayjs(initialDate, 'DD-MM-YYYY');
