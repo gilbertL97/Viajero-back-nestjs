@@ -1,8 +1,8 @@
 import {
   IsDateString,
   IsEmail,
-  IsEmpty,
   IsISO31661Alpha3,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -51,7 +51,7 @@ export class CreateTravelerDto {
 
   // @Type(() => string)
   @IsDateString()
-  @IsEmpty()
+  @IsNotEmpty()
   end_date_policy: Date;
 
   @IsOptional()
