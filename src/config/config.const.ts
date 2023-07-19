@@ -8,5 +8,5 @@ export enum Configuration {
   SECRET_KEY = 'SECRET_KEY',
   DEFAULT_ADMIN_USER = 'DEFAULT_ADMIN_USER',
   DEFAULT_ADMIN_PASSW = 'DEFAULT_ADMIN_PASSW',
-  DEFAULT_ADMIN_email = 'gilbert@gmail.com',
+  DEFAULT_ADMIN_email = 'DEFAULT_ADMIN_EMAIL',
 }
