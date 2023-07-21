@@ -4,8 +4,8 @@ import {
   MaxLength,
   IsOptional,
   IsDateString,
-  IsBooleanString,
   IsNumber,
+  IsBoolean,
 } from 'class-validator';
 
 export class FilterTravelerDto {
@@ -58,6 +58,6 @@ export class FilterTravelerDto {
   coverage: number;
 
   @IsOptional()
-  @IsBooleanString()
+  @IsBoolean()
   state: boolean;
 }
