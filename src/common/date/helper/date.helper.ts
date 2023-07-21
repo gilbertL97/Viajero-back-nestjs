@@ -24,7 +24,7 @@ export class DateHelper {
   public static dayStateBoolean(date: Date) {
     return (
       dayjs(date).diff(dayjs(new Date()), 'days') >= 0 && //q fecha fin mayor q hoy
-      dayjs(new Date()).diff(dayjs(date), 'days') >= 0 //fecha inicio menor q hoy
+      dayjs(new Date()).diff(dayjs(date), 'days') <= 0 //fecha inicio menor q hoy
     );
   }
   public static daysDifferenceWithDaysjs(initialDate: Date, finalDate: Date) {
