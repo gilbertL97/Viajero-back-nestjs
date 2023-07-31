@@ -1,15 +1,20 @@
-export class DaysCoverage implements CanActivate {
-    constructor(private readonly reflector: Reflector) {}
-    canActivate(
-      context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
-      const requiredRole = this.reflector.getAllAndOverride<UserRole[]>(
-        ROLES_KEY,
-        [context.getHandler(), context.getClass()],
-      );
-      if (!requiredRole) return true;
-  
-      const { user } = context.switchToHttp().getRequest();
-      const hasRole = requiredRole.includes(user.role);
-      return user && user.role && hasRole;
-    }
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  NotFoundException,
+} from '@nestjs/common';
+import { ContractorService } from 'src/contractor/service/contractor.service';
+
+@Injectable()
+export class ValidateCoverage implements CanActivate {
+  constructor(private contracorService: ContractorService) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const contractor = await this.contracorService.getContractor(
+      request.body.contractor,
+    );
+    if (contractor) return true;
+    throw new NotFoundException('Cobertura no encontrada');
+  }
+}

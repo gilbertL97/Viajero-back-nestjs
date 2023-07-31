@@ -32,6 +32,7 @@ import { TravelerUploadFilesService } from './service/traveler.upload-files.serv
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TravelerAndTotal } from './dto/TravelerPag.dto';
+import { ValidateCoverage } from './guard/daysOfCoverage,guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('traveler')
@@ -42,6 +43,7 @@ export class TravelerController {
     private readonly travelerUploadService: TravelerUploadFilesService,
   ) {}
   @UseGuards(RolesGuard)
+  @UseGuards(ValidateCoverage)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post()
   async createTraveler(
