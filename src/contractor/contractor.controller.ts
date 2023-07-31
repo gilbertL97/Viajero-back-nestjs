@@ -23,12 +23,15 @@ import { CreateContratorDto } from './dto/create-contrator.dto';
 import { FilterContractorDto } from './dto/filter-contractor.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('access-token')
+@ApiTags('Contratantes')
 @Controller('contractor')
 export class ContractorController {
   constructor(private readonly contractService: ContractorService) {}
-
+  @ApiOperation({ summary: 'Devuelve todos los contratantes' })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -41,6 +44,7 @@ export class ContractorController {
     const data = this.contractService.getContrators(user);
     return data;
   }
+  @ApiOperation({ summary: 'Devuelve todos los contratantes activos' })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -53,6 +57,7 @@ export class ContractorController {
     const data = this.contractService.getContratorsActive();
     return data;
   }
+  @ApiOperation({ summary: 'Devuelve un excel con todos los contratantes' })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -71,6 +76,7 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @ApiOperation({ summary: 'Devuelve un pdf los contratantes ' })
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
@@ -90,6 +96,7 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @ApiOperation({ summary: 'Devuelve devuelve la facturacion mensual' })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
