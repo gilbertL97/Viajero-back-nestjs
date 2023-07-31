@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import * as dayjs from 'dayjs';
 
-export function IsDateAfter(
+export function IsCustomDateAfter(
   date_after: string,
   validationOptions?: ValidationOptions,
 ) {
@@ -22,7 +22,7 @@ export function IsDateAfter(
   };
 }
 
-@ValidatorConstraint({ name: 'IsDateAfter' })
+@ValidatorConstraint({ name: 'IsCustomDateAfter' })
 export class ValidateDateIsDateAfter implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
     const [date_start] = args.constraints;
