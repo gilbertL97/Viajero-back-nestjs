@@ -7,7 +7,7 @@ import {
   Length,
   Min,
 } from 'class-validator';
-import { IsDateBefore } from './decorator/customDateBefore.decorator';
+import { IsCustomDateBefore } from './decorator/customDateBefore.decorator';
 import { IsDateFile } from './decorator/customDateExcel.decorator';
 import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
 import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
@@ -64,7 +64,7 @@ export class FileTravelerDto {
 
   //@Type(() => string)
   // @IsDateString()
-  @IsDateBefore('end_date_policy', {
+  @IsCustomDateBefore('end_date_policy', {
     groups: ['errors'],
     message: 'Fecha inicio posterior a fecha de fin ',
   })
