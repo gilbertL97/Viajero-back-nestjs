@@ -15,10 +15,10 @@ import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
-    AuthModule,
     ContractorModule,
     TravelerModule,
     CoverageModule,
