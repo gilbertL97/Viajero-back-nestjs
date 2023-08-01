@@ -23,7 +23,13 @@ import { CreateContratorDto } from './dto/create-contrator.dto';
 import { FilterContractorDto } from './dto/filter-contractor.dto';
 import { UpdateContratorDto } from './dto/update-contrator.dto';
 import { ContratorEntity } from './entity/contrator.entity';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('access-token')
@@ -96,7 +102,8 @@ export class ContractorController {
     });
     res.end(buffer);
   }
-  @ApiOperation({ summary: 'Devuelve devuelve la facturacion mensual' })
+  @ApiOperation({ summary: 'Devuelve la facturacion mensual con filtros' })
+  @ApiQuery({ name: 'filter', type: FilterContractorDto })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -114,6 +121,10 @@ export class ContractorController {
     const { dateInvoicing } = filter;
     return await this.contractService.getInvoicing(dateInvoicing, user);
   }
+  @ApiOperation({
+    summary: 'Devuelve la facturacion mensual en formato excel',
+  })
+  @ApiQuery({ name: 'filter', type: FilterContractorDto })
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
@@ -141,6 +152,10 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @ApiOperation({
+    summary: 'Devuelve  la facturacion mensual en formato PDF',
+  })
+  @ApiQuery({ name: 'filter', type: FilterContractorDto })
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
@@ -166,6 +181,9 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @ApiOperation({
+    summary: 'Devuelve la facturacion mensual detallada',
+  })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -183,6 +201,9 @@ export class ContractorController {
     console.log(filter);
     return await this.contractService.getDetailedContract(filter, user);
   }
+  @ApiOperation({
+    summary: 'Devuelve la facturacion mensual detallada en formato excel',
+  })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -210,6 +231,9 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @ApiOperation({
+    summary: 'Devuelve la facturacion mensual detallada en formato PDF',
+  })
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
@@ -232,6 +256,9 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @ApiOperation({
+    summary: 'Devuelve  la un contractante dado el id',
+  })
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Get(':id')
@@ -239,6 +266,9 @@ export class ContractorController {
     const data = this.contractService.getContractor(id);
     return data;
   }
+  @ApiOperation({
+    summary: 'Crea un contratante',
+  })
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Post()
@@ -248,7 +278,9 @@ export class ContractorController {
     const data = this.contractService.createContractor(createContractor);
     return data;
   }
-
+  @ApiOperation({
+    summary: 'Edita un contratante dado el id',
+  })
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Patch(':id')
@@ -259,6 +291,9 @@ export class ContractorController {
     const data = this.contractService.updateContractor(id, updateContratDto);
     return data;
   }
+  @ApiOperation({
+    summary: 'Elimina un contratante dado el id',
+  })
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Delete(':id')

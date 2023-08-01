@@ -33,8 +33,11 @@ import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TravelerAndTotal } from './dto/TravelerPag.dto';
 import { ValidateCoverage } from './guard/daysOfCoverage,guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('access-token')
+@ApiTags('Viajeros')
 @Controller('traveler')
 export class TravelerController {
   constructor(
