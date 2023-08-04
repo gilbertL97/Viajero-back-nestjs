@@ -1,15 +1,11 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Query,
   Res,
-  ParseBoolPipe,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -18,7 +14,7 @@ import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { FilterFileDto } from './dto/filter-file.dto';
-import { FileService } from './file.service';
+import { FileService } from './service/file.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('file')

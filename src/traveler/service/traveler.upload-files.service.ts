@@ -19,7 +19,7 @@ import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import dayjs = require('dayjs');
 import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
-import { FileService } from 'src/file/file.service';
+import { FileService } from 'src/file/service/file.service';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerService } from './traveler.service';
 import { ResponseErrorOrWarningDto } from '../dto/responseErrorOrWarning.dto';

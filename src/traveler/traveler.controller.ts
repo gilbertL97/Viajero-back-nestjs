@@ -32,7 +32,6 @@ import { TravelerUploadFilesService } from './service/traveler.upload-files.serv
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TravelerAndTotal } from './dto/TravelerPag.dto';
-import { ValidateCoverage } from './guard/daysOfCoverage,guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -46,7 +45,7 @@ export class TravelerController {
     private readonly travelerUploadService: TravelerUploadFilesService,
   ) {}
   @UseGuards(RolesGuard)
-  @UseGuards(ValidateCoverage)
+  //@UseGuards(ValidateCoverage)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post()
   async createTraveler(
