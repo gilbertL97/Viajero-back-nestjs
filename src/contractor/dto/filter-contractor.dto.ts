@@ -87,7 +87,7 @@ export class FilterContractorDto {
 
   @ApiProperty({
     description: 'Fecha de Facturacion',
-    example: '21-06-2023',
+    example: '2023-08-13',
     required: false,
   })
   @IsOptional()

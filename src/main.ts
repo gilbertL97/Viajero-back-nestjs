@@ -1,5 +1,4 @@
 import { ValidationPipe } from '@nestjs/common';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -33,7 +32,7 @@ async function bootstrap() {
     .addTag('Viajero')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-      'access-token', // Este es el nombre del campo en Swagger UI donde ingresarás el token
+      'access-token',
     )
     .build();
 
@@ -48,7 +47,11 @@ async function bootstrap() {
       TravelerModule,
     ],
   });
-  SwaggerModule.setup('viajero/doc', app, document);
+  SwaggerModule.setup('viajero/doc', app, document, {
+    swaggerOptions: {
+      lang: 'es', // Establece el idioma a español
+    },
+  });
   const port: number = parseInt(process.env.PORT);
 
   const config = app.get(ConfigService);

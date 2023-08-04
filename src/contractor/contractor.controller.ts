@@ -102,7 +102,11 @@ export class ContractorController {
     });
     res.end(buffer);
   }
-  @ApiOperation({ summary: 'Devuelve la facturacion mensual con filtros' })
+  @ApiOperation({
+    summary: 'Devuelve la facturacion mensual con filtros',
+    description:
+      'Solo se coge el campo de fecha del filtro para devolver la facturacion de ese mes',
+  })
   @ApiQuery({ name: 'filter', type: FilterContractorDto })
   @UseGuards(RolesGuard)
   @Roles(
@@ -183,6 +187,8 @@ export class ContractorController {
   }
   @ApiOperation({
     summary: 'Devuelve la facturacion mensual detallada',
+    description:
+      'Solo se coge el campo de fecha del filtro para devolver la facturacion de ese mes',
   })
   @UseGuards(RolesGuard)
   @Roles(
