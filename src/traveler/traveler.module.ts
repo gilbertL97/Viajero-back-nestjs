@@ -10,11 +10,9 @@ import { UserModule } from 'src/user/user.module';
 import { TravelerPdfService } from './service/traveler-pdf.service';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { FileModule } from 'src/file/file.module';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([TravelerRepository]),
     forwardRef(() => ContractorModule),
     forwardRef(() => CoverageModule),
