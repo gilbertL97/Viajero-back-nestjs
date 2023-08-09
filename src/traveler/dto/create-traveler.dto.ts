@@ -9,7 +9,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { IsDateBefore } from './decorator/dateBefore.decorator';
+import { IsDateAfter } from './decorator/dateAfter.decorator';
 
 export class CreateTravelerDto {
   @IsString()
@@ -51,7 +51,7 @@ export class CreateTravelerDto {
   start_date: Date;
 
   // @Type(() => string)
-  @IsDateBefore('start_date')
+  @IsDateAfter('start_date')
   @IsDateString()
   @IsNotEmpty()
   end_date_policy: Date;
