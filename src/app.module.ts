@@ -12,6 +12,8 @@ import { TravelerModule } from './traveler/traveler.module';
 import { CoverageModule } from './coverage/coverage.module';
 import { CountryModule } from './country/country.module';
 import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -24,6 +26,9 @@ import { FileModule } from './file/file.module';
     CoverageModule,
     CountryModule,
     FileModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
