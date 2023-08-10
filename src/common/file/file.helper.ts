@@ -42,4 +42,13 @@ export class FileHelper {
   public static async deletFile(path: string): Promise<void> {
     fs.rmSync(path);
   }
+  public static getAllFilesInFolder(path: string): string[] {
+    try {
+      const files = fs.readdirSync(path);
+      return files;
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  }
 }

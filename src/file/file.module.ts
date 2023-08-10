@@ -5,15 +5,18 @@ import { FileEntity } from './entities/file.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AutoImportFileService } from './service/automaticImportFile';
+import { ContractorModule } from 'src/contractor/contractor.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([FileEntity]),
     forwardRef(() => UserModule),
+    forwardRef(() => ContractorModule),
   ],
   controllers: [FileController],
-  providers: [FileService],
+  providers: [FileService, AutoImportFileService],
   exports: [FileService],
 })
 export class FileModule {}
