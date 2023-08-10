@@ -33,6 +33,7 @@ import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TravelerAndTotal } from './dto/TravelerPag.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('access-token')
@@ -55,6 +56,7 @@ export class TravelerController {
     const data = await this.travelerService.create(createTravelerDto);
     return data;
   }
+  @Throttle(1, 15) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post('/file/:id')
