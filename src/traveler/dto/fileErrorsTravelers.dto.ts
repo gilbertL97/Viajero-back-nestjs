@@ -36,4 +36,6 @@ export class FileErrorsTravelerDto {
   coverage?: string;
 
   duplicate?: boolean;
+
+  others?: string[];
 }
