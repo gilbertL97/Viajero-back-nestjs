@@ -21,7 +21,6 @@ import dayjs = require('dayjs');
 import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
 import { FileService } from 'src/file/service/file.service';
 import { TravelerEntity } from '../entity/traveler.entity';
-import { TravelerService } from './traveler.service';
 import { ResponseErrorOrWarningDto } from '../dto/responseErrorOrWarning.dto';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 import { UserEntity } from 'src/user/entity/user.entity';
@@ -76,7 +75,87 @@ export class TravelerUploadFilesService {
       userEntity,
     );
   }
+  async processOneFile(
+    file: Express.Multer.File,
+    idClient: number,
+    user: UserEntity,
+  ): Promise<ResponseErrorOrWarningDto | void> {
+    //1-pirmero cargo todos los paises clientes y planes en memoria
+    const [client, countries, coverages, userEntity] = await Promise.all([
+      this.contratctoService.getContractor(idClient),
+      this.countryService.findAll(),
+      this.coverageService.getCoveragesActives(),
+      this.userService.getUser(user.id),
+    ]);
+    //2-cargo el archivo dependiendo del tipo de archivo
+    const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
+    if (travelers.length == 0) {
+      throw new BadRequestException(
+        'El fichero esta vacio o no se encuentran viajeros',
+      );
+    } // 3-elimino el archivo
+    await FileHelper.deletFile(file.path);
+    //4-valido para saber si hay errores primero cambiar todo para maNhaba
 
+    const errors = await this.validateTravelersErrors(travelers, coverages);
+    if (errors)
+      return this.bindWarningsAndErrors(
+        errors,
+        await this.validateTravelersWarnings(travelers, countries),
+      );
+    //5-inserto y verifico si hay viajeros repetidos
+    return await this.insertTraveler(
+      travelers,
+      coverages,
+      countries,
+      client,
+      file.originalname,
+      userEntity,
+    );
+  }
+  async processBulkFile(
+    file: string,
+    client: ContratorEntity,
+    user: UserEntity,
+  ): Promise<ResponseErrorOrWarningDto | void> {
+    //1-pirmero cargo todos los paises clientes y planes en memoria
+    const [countries, coverages, userEntity] = await Promise.all([
+      this.countryService.findAll(),
+      this.coverageService.getCoveragesActives(),
+      this.userService.getUser(user.id),
+    ]);
+    //2-cargo el archivo dependiendo del tipo de archivo
+    const travelers = await ExcelJSCOn.getTravelerByFileBulk(file, coverages);
+
+    if (travelers.length == 0) {
+      const empty = new FileErrorsTravelerDto();
+      const errors: FileErrorsTravelerDto[] = [];
+      empty.others.push('El fichero esta vacio o no se encuentran viajeros');
+      errors.push(empty);
+      return new ResponseErrorOrWarningDto(errors, true);
+    }
+
+    // 3-elimino el archivo o muevo tengo q ver
+    //await FileHelper.deletFile(file);
+    //4-valido para saber si hay errores primero cambiar todo para maNhaba
+
+    const errors = await this.validateTravelersErrors(travelers, coverages);
+    if (errors)
+      return this.bindWarningsAndErrors(
+        errors,
+        await this.validateTravelersWarnings(travelers, countries),
+      );
+    //5-inserto y verifico si hay viajeros repetidos
+    const fileName = FileHelper.getFileName(file);
+    return await this.insertTraveler(
+      travelers,
+      coverages,
+      countries,
+      client,
+      fileName,
+      userEntity,
+    );
+  }
   async insertTraveler(
     travelers: FileTravelerDto[],
     coverages: CoverageEntity[],
@@ -159,10 +238,7 @@ export class TravelerUploadFilesService {
     }
 
     if (warn.length > 0) {
-      const resp = new ResponseErrorOrWarningDto();
-      resp.containErrors = false;
-      resp.errorAndWarning = warn;
-      return resp;
+      return new ResponseErrorOrWarningDto(warn, false);
     }
   }
   async validateTravelersErrors(
@@ -346,17 +422,14 @@ export class TravelerUploadFilesService {
     errors: FileErrorsTravelerDto[],
     warnings: FileErrorsTravelerDto[] | void,
   ) {
-    const resp = new ResponseErrorOrWarningDto();
-    resp.containErrors = true;
     if (!warnings || warnings.length == 0) {
-      resp.errorAndWarning = errors;
-      return resp;
+      return new ResponseErrorOrWarningDto(errors, true);
     }
-    resp.errorAndWarning = errors.map((error) => {
+    const warnAndErr = errors.map((error) => {
       const warn = warnings.find((w) => error.row == w.row);
       return Object.assign(error, warn);
     });
-    return resp;
+    return new ResponseErrorOrWarningDto(warnAndErr, true);
   }
 
   amendDateNoDaylyInCoverages(
