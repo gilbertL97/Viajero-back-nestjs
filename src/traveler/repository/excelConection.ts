@@ -3,22 +3,31 @@ import Excel = require('exceljs');
 import dayjs = require('dayjs');
 import { ValidateFile } from '../helper/validation.file';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
+import { FileHelper } from 'src/common/file/file.helper';
 export class ExcelJSCOn {
   static async getTravelerByFile(
     file: Express.Multer.File,
     coverages: CoverageEntity[],
   ): Promise<FileTravelerDto[]> {
     if (ValidateFile.isCSV(file))
+      return await this.getTravelerByCSV(file.path, coverages);
+    return await this.getTravelerByExcel(file.path, coverages);
+  }
+  static async getTravelerByFileBulk(
+    file: string,
+    coverages: CoverageEntity[],
+  ): Promise<FileTravelerDto[]> {
+    if (FileHelper.isCSV(file))
       return await this.getTravelerByCSV(file, coverages);
     return await this.getTravelerByExcel(file, coverages);
   }
   static async getTravelerByExcel(
-    file: Express.Multer.File,
+    file: string,
     coverages: CoverageEntity[],
   ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
-    const excel = await workbook.xlsx.readFile(file.path);
+    const excel = await workbook.xlsx.readFile(file);
     // se cambio ya q este metodo excel.getWorksheet(1) no devolvia el primero
     const worksheet = excel.worksheets[0];
     worksheet.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
@@ -29,12 +38,12 @@ export class ExcelJSCOn {
     return travelers;
   }
   static async getTravelerByCSV(
-    file: Express.Multer.File,
+    file: string,
     coverages: CoverageEntity[],
   ): Promise<FileTravelerDto[]> {
     const travelers: FileTravelerDto[] = [];
     const workbook = new Excel.Workbook();
-    const csv = await workbook.csv.readFile(file.path);
+    const csv = await workbook.csv.readFile(file);
     csv.spliceRows(1, 1); //elimino la primera fila que es la de los encabezados
     csv.eachRow(async (r) => {
       const traveler = this.testParseTraveler(r, coverages);
