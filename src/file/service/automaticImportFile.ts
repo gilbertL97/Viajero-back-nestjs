@@ -15,16 +15,19 @@ export class AutoImportFileService {
 
   @Cron('45 * * * * *')
   async handleCron() {
-    console.log('Called every day at 2 AM');
-    const folderList = (await this.contractorService.getContratorsActive()).map(
-      (con) => con.file,
-    );
+    console.log('Called when the current second is 45');
+
+    const contractors = await this.contractorService.getContratorsActive();
+
     const path = this.configService.get(Configuration.FILES_PATH);
-    const allFiles = FileHelper.getAllFilesInFolder(path);
-    console.log(join(path, 'Daiquiri'));
+    for (const contractor of contractors) {
+      //obtengo todos los archivos de ese contratante
+      const files = FileHelper.getAllFilesInFolder(join(path, contractor.file));
+    }
   }
+
   @Cron('0 2 * * *')
   handleCron45() {
-    console.log('Called when the current second is 45');
+    console.log('Called every day at 2 AM');
   }
 }
