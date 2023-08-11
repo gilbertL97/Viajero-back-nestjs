@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, extname, parse } from 'path';
 import * as fs from 'fs';
 export class FileHelper {
   static uploadsPath = join(__dirname, '..', '..', '..', 'uploads');
@@ -47,8 +47,17 @@ export class FileHelper {
       const files = fs.readdirSync(path);
       return files;
     } catch (err) {
-      console.error(err);
+      //if ((err.errno = -4058)) console.log(err.path + '  folder not found ');
       return [];
     }
+  }
+  public static isCSV(path: string) {
+    return extname(path) === '.csv';
+  }
+  public static isExcel(path: string) {
+    return extname(path) === '.xlsx' || extname(path) === '.xls';
+  }
+  public static getFileName(path: string) {
+    return parse(path).name;
   }
 }
