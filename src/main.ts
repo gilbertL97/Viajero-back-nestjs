@@ -40,7 +40,6 @@ async function bootstrap() {
     ignoreGlobalPrefix: false,
     include: [
       AuthModule,
-      ContractorModule,
       CountryModule,
       CoverageModule,
       FileModule,
