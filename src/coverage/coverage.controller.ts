@@ -20,13 +20,15 @@ import { UserRole } from 'src/user/user.role';
 import { CoverageService } from './coverage.service';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
 import { UpdateCoverageDto } from './dto/update-coverage.dto';
+import { ApiExcludeEndpoint, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Coberturas')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
 @Controller('coverage')
 export class CoverageController {
   constructor(private readonly coverageService: CoverageService) {}
-
+  @ApiExcludeEndpoint()
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Post()
@@ -51,7 +53,10 @@ export class CoverageController {
   async findAllCoverage() {
     return await this.coverageService.getCoverages();
   }
-  @UseGuards(RolesGuard)
+  @ApiOkResponse({
+    description: 'Devuelve una lista de Coberturas activas',
+    type: CreateCoverageDto,
+  })
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,

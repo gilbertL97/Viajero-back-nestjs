@@ -2,7 +2,6 @@ import { Controller, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -19,9 +18,11 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
-  @ApiCreatedResponse({ description: 'User Loged' })
+  @ApiCreatedResponse({ description: 'Usuario Logueado' })
   @ApiUnauthorizedResponse({ description: 'Credenciales Invalidas' })
-  @ApiBody({ type: LoginUserDto })
+  @ApiBody({
+    type: LoginUserDto,
+  })
   @Post('/login')
   async login(@GetUser() user: UserEntity) {
     return this.authService.login(user);
