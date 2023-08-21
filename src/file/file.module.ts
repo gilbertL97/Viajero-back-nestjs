@@ -7,11 +7,13 @@ import { UserModule } from 'src/user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AutoImportFileService } from './service/automaticImportFile';
 import { ContractorModule } from 'src/contractor/contractor.module';
+import { TravelerModule } from 'src/traveler/traveler.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([FileEntity]),
+    forwardRef(() => TravelerModule),
     forwardRef(() => UserModule),
     forwardRef(() => ContractorModule),
   ],

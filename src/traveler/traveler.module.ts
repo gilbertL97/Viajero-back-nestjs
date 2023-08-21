@@ -22,6 +22,6 @@ import { FileModule } from 'src/file/file.module';
   ],
   controllers: [TravelerController],
   providers: [TravelerService, TravelerPdfService, TravelerUploadFilesService],
-  exports: [TravelerService],
+  exports: [TravelerService, TravelerUploadFilesService],
 })
 export class TravelerModule {}
