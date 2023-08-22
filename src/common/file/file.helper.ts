@@ -60,4 +60,16 @@ export class FileHelper {
   public static getFileName(path: string) {
     return parse(path).name;
   }
+  public static joinPath(path1: string, path2: string) {
+    return join(path1, path2);
+  }
+  public static writeIntxt(data: any, fileName: string, path: string) {
+    const dir = join(path, `${fileName}.txt`);
+    try {
+      fs.writeFileSync(dir, data);
+      console.log('Data has been written to' + dir);
+    } catch (err) {
+      console.error('Error while writing data to txt file:', err);
+    }
+  }
 }
