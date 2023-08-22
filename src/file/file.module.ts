@@ -8,6 +8,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AutoImportFileService } from './service/automaticImportFile';
 import { ContractorModule } from 'src/contractor/contractor.module';
 import { TravelerModule } from 'src/traveler/traveler.module';
+import { ExportToTxt } from './service/exportToTxt';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { TravelerModule } from 'src/traveler/traveler.module';
     forwardRef(() => ContractorModule),
   ],
   controllers: [FileController],
-  providers: [FileService, AutoImportFileService],
+  providers: [FileService, AutoImportFileService, ExportToTxt],
   exports: [FileService],
 })
 export class FileModule {}
