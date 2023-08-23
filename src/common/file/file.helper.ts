@@ -16,6 +16,14 @@ export class FileHelper {
     });
     //console.log(folderContract);
   }
+  public static async createFolderPath(path: string): Promise<void> {
+    //console.log(folderContract);
+    fs.mkdir(path, { recursive: true }, (error) => {
+      if (error) console.log(error);
+    });
+
+    //console.log(folderContract);
+  }
   public static async updateFolder(
     entities: string,
     name: string,
@@ -63,8 +71,12 @@ export class FileHelper {
   public static joinPath(path1: string, path2: string) {
     return join(path1, path2);
   }
+  public static existFileOrFolder(path: string): boolean {
+    return fs.existsSync(path);
+  }
   public static writeIntxt(data: any, fileName: string, path: string) {
     const dir = join(path, `${fileName}.txt`);
+    if (!this.existFileOrFolder(path)) this.createFolderPath(path);
     try {
       fs.writeFileSync(dir, data);
       console.log('Data has been written to' + dir);
