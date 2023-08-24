@@ -13,6 +13,7 @@ export class ExportToTxt {
     filename: string,
   ) {
     const columns = [
+      { key: 'row', header: 'Fila' },
       { key: 'name', header: 'Nombre' },
       {
         key: 'contractor',
@@ -68,8 +69,8 @@ export class ExportToTxt {
     const headeer = this.headers(columns);
     const tableData = [headeer, ...dataArray];
     const isOnlyWarn = logs.containErrors
-      ? 'Solo Contiene Errores'
-      : 'Contiene errores Y Advertencias';
+      ? 'Contiene errores Y Advertencias'
+      : 'Solo Contiene Advertencias';
     FileHelper.writeIntxt(table(tableData) + isOnlyWarn, filename, path);
   }
 

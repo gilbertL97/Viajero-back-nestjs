@@ -6,6 +6,7 @@ import {
   UseGuards,
   Query,
   Res,
+  Post,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -14,12 +15,16 @@ import { GetUser } from 'src/common/decorator/user.decorator';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { FilterFileDto } from './dto/filter-file.dto';
+import { AutoImportFileService } from './service/automaticImportFile';
 import { FileService } from './service/file.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('file')
 export class FileController {
-  constructor(private readonly fileService: FileService) {}
+  constructor(
+    private readonly fileService: FileService,
+    private readonly autoImportService: AutoImportFileService,
+  ) {}
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -130,5 +135,17 @@ export class FileController {
   @Delete(':id')
   async removeFile(@Param('id') id: string) {
     return await this.fileService.remove(+id);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
+  @Post('/task')
+  async executeAutoImport(@Res() res, @GetUser() user: UserEntity) {
+    const buffer = await this.autoImportService.manuallyImportFiles(user);
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Dispotition': 'attachment;filename=Logs.zip',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
   }
 }

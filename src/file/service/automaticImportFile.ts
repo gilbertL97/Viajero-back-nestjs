@@ -9,6 +9,7 @@ import { UserService } from 'src/user/user.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { ResponseErrorOrWarningDto } from 'src/traveler/dto/responseErrorOrWarning.dto';
 import { ExportToTxt } from './exportToTxt';
+import { ExternalFilesHelper } from 'src/common/file/externalServiceFiles.helper';
 
 @Injectable()
 export class AutoImportFileService {
@@ -21,15 +22,27 @@ export class AutoImportFileService {
   ) {}
 
   @Cron('45 * * * * *')
-  async handleCron() {
+  async autoImportFiles() {
     console.log('Called when the current second is 45');
     const userSystem = await this.userService.findUserByName('system'); //usuario del sistema}
-    await this.importFiles(userSystem);
-  }
-  async importFiles(user: UserEntity) {
-    const contractors = await this.contractorService.getContratorsActive();
     const pathUnprocess = this.configService.get(Configuration.FILES_PATH);
     const pathToLogs = this.configService.get(Configuration.FILES_LOGS_PATH);
+    await this.importFiles(userSystem, pathUnprocess, pathToLogs);
+  }
+  async manuallyImportFiles(user: UserEntity) {
+    const pathUnprocess = this.configService.get(Configuration.FILES_PATH);
+    //guardo en una carpeta temporal para descargar un zip con todos los logs de las carpetas importadas en ese momento
+    const tempFile = this.configService.get(Configuration.TEMP_FILE);
+    await this.importFiles(user, pathUnprocess, tempFile);
+    return this.compressFile(tempFile);
+  }
+
+  private async importFiles(
+    user: UserEntity,
+    pathUnprocess: string,
+    pathToLogs: string,
+  ) {
+    const contractors = await this.contractorService.getContratorsActive();
     for (const contractor of contractors) {
       //direcciones de cada carpeta de los contratantes
       const unproceced = FileHelper.joinPath(pathUnprocess, contractor.file);
@@ -50,7 +63,12 @@ export class AutoImportFileService {
       }
     }
   }
-  writeLogs(
+  private async compressFile(path: string): Promise<Buffer> {
+    const buffer = await ExternalFilesHelper.compressFolder(path);
+    // if(buffer)FileHelper.m
+    return buffer;
+  }
+  private writeLogs(
     path: string,
     filename: string,
     logs?: ResponseErrorOrWarningDto | void,
