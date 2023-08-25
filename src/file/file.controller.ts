@@ -7,6 +7,7 @@ import {
   Query,
   Res,
   Post,
+  HttpStatus,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -140,12 +141,15 @@ export class FileController {
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Post('/task')
   async executeAutoImport(@Res() res, @GetUser() user: UserEntity) {
+    console.log(user);
     const buffer = await this.autoImportService.manuallyImportFiles(user);
-    res.set({
-      'Content-Type': 'application/zip',
-      'Content-Dispotition': 'attachment;filename=Logs.zip',
-      'Content-Lenght': buffer.byteLength,
-    });
-    res.end(buffer);
+    if (buffer.length > 0) {
+      res.set({
+        'Content-Type': 'application/zip',
+        'Content-Dispotition': 'attachment;filename=Logs.zip',
+        'Content-Lenght': buffer.byteLength,
+      });
+      res.end(buffer);
+    } else return res.status(HttpStatus.OK).send();
   }
 }
