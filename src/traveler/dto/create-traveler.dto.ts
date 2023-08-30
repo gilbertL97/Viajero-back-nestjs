@@ -25,6 +25,7 @@ export class CreateTravelerDto {
   @ApiProperty({
     description: 'sexo',
     example: 'M',
+    required: false,
   })
   @IsOptional()
   @IsString()
@@ -35,6 +36,7 @@ export class CreateTravelerDto {
   @ApiProperty({
     description: 'fecha de Nacimiento',
     example: '1997-01-01',
+    required: false,
   })
   @IsOptional()
   @IsDateString()
@@ -43,6 +45,7 @@ export class CreateTravelerDto {
   @ApiProperty({
     description: 'correo',
     example: 'example@gmail.com',
+    required: false,
   })
   @IsOptional()
   @IsEmail()
@@ -66,6 +69,7 @@ export class CreateTravelerDto {
   @ApiProperty({
     description: 'fecha de Venta',
     example: '2023-01-13',
+    required: false,
   })
   @IsOptional()
   @IsDateString()
@@ -92,22 +96,41 @@ export class CreateTravelerDto {
   @ApiProperty({
     description: 'Cantida dias alto Riesgo',
     example: 3,
+    required: false,
   })
   @IsOptional()
   @IsNumber()
   number_high_risk_days: number;
 
+  @ApiProperty({
+    description: 'Id del Contratante (de ser Cliente no es Necesario)',
+    example: 3,
+  })
   @IsNumber()
   contractor: number;
 
+  @ApiProperty({
+    description: 'Pais origen',
+    example: 'CUB',
+    required: false,
+  })
   @IsOptional()
   @IsISO31661Alpha3()
   origin_country: string;
 
+  @ApiProperty({
+    description: 'Nacionalidad',
+    example: 'CUB',
+    required: false,
+  })
   @IsOptional()
   @IsISO31661Alpha3()
   nationality: string;
 
+  @ApiProperty({
+    description: 'Cobertura',
+    example: 25,
+  })
   @IsNumber()
   coverage: number;
 }
