@@ -32,7 +32,15 @@ import { TravelerUploadFilesService } from './service/traveler.upload-files.serv
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TravelerAndTotal } from './dto/TravelerPag.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiAcceptedResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -60,6 +68,22 @@ export class TravelerController {
     const data = await this.travelerService.create(createTravelerDto);
     return data;
   }
+  @ApiOperation({
+    summary:
+      'Endpoint para realizar la importacion de un fichero (css, xlsx) con datos. ',
+    description: '![alt text](assets/excel.jpg)',
+  })
+  @ApiOkResponse({
+    description: 'No devuelve datos ya que la importacion fue exitosa',
+  })
+  @ApiAcceptedResponse({
+    description:
+      'De vuelve un objeto con las advertencias a pesar que se realizo la importacion del fichero',
+  })
+  @ApiConflictResponse({
+    description:
+      'De vuelve un objeto con las advertencias y errores sobre la no importacion',
+  })
   @Throttle(1, 15) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
