@@ -35,13 +35,17 @@ import { TravelerAndTotal } from './dto/TravelerPag.dto';
 import {
   ApiAcceptedResponse,
   ApiBearerAuth,
+  ApiBody,
   ApiConflictResponse,
+  ApiConsumes,
   ApiCreatedResponse,
+  ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
+import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('access-token')
@@ -68,6 +72,18 @@ export class TravelerController {
     const data = await this.travelerService.create(createTravelerDto);
     return data;
   }
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        travelers: {
+          type: 'Archivo',
+          format: '.xls , xlsx, cs',
+        },
+      },
+    },
+  })
   @ApiOperation({
     summary:
       'Endpoint para realizar la importacion de un fichero (css, xlsx) con datos. ',
@@ -79,10 +95,12 @@ export class TravelerController {
   @ApiAcceptedResponse({
     description:
       'De vuelve un objeto con las advertencias a pesar que se realizo la importacion del fichero',
+    type: FileErrorsTravelerDto,
   })
   @ApiConflictResponse({
     description:
       'De vuelve un objeto con las advertencias y errores sobre la no importacion',
+    type: FileErrorsTravelerDto,
   })
   @Throttle(1, 15) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
   @UseGuards(RolesGuard)
@@ -103,6 +121,8 @@ export class TravelerController {
       return response.status(HttpStatus.CONFLICT).send(resp.errorAndWarning);
     return response.status(HttpStatus.ACCEPTED).send(resp.errorAndWarning);
   }
+
+  @ApiExcludeEndpoint()
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -117,6 +137,7 @@ export class TravelerController {
     const data = await this.travelerService.findAll(user);
     return data;
   }
+
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -134,6 +155,8 @@ export class TravelerController {
     const data = await this.travelerService.findAllPagination(user, pag);
     return data;
   }
+
+  @ApiExcludeEndpoint()
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
