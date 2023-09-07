@@ -9,7 +9,6 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { UserRole } from '../user.role';
-import { ExcludeIfNotClient } from './decorator/removeFields';
 
 export class CreateUserDto {
   @IsString()

@@ -1,14 +1,13 @@
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { AuthModule } from './auth/auth.module';
-import { ContractorModule } from './contractor/contractor.module';
 import { CountryModule } from './country/country.module';
 import { CoverageModule } from './coverage/coverage.module';
 import { FileModule } from './file/file.module';
-import setDefaultUser from './script/default-user';
 import { TravelerModule } from './traveler/traveler.module';
 
 /*const corsConfig: CorsOptions = {
@@ -53,7 +52,6 @@ async function bootstrap() {
   });
   const port: number = parseInt(process.env.PORT);
 
-  const config = app.get(ConfigService);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -61,7 +59,10 @@ async function bootstrap() {
     }),
   );
   await app.listen(port || 3000);
-  setDefaultUser(config);
-  //app.enableCors();
+  //setDefaultUser(config);
+
+  ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', 'public'),
+  });
 }
 bootstrap();
