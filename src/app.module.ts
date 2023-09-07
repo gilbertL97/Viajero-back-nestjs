@@ -16,6 +16,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CustomConfigModule } from './config/config.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { APP_GUARD } from '@nestjs/core';
       ttl: 60, // time to live in seconds
       limit: 25, // number of requests allowed within the TTL 25 request por minuto
     }),
+    CustomConfigModule,
   ],
   controllers: [AppController],
   providers: [
