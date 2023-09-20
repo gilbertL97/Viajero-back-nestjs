@@ -8,7 +8,7 @@ export async function exportPdf(
   columns: ColumnsPdf[],
   title: string,
 ): Promise<Uint8Array> {
-  const pantoneColor = '#1b1462';
+  //const pantoneColor = '#1b1462';
   const pdfBuffer: Buffer = await new Promise((resolve) => {
     const doc = new PDFDocument({
       size: 'LETTER',

@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -100,7 +101,7 @@ export class CoverageController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Get(':id')
-  async findOneCoverage(@Param('id') id: number) {
+  async findOneCoverage(@Param('id', new ParseIntPipe()) id: number) {
     return this.coverageService.getCoverage(id);
   }
   @UseGuards(RolesGuard)
@@ -108,7 +109,7 @@ export class CoverageController {
   @UseInterceptors(FileInterceptor('tablePdf', coverageStorage))
   @Patch(':id')
   async updateCoverage(
-    @Param('id') id: number,
+    @Param('id', new ParseIntPipe()) id: number,
     @Body() updateCoverageDto: UpdateCoverageDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -117,7 +118,7 @@ export class CoverageController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT)
   @Delete(':id')
-  async removeCoverage(@Param('id') id: number) {
+  async removeCoverage(@Param('id', new ParseIntPipe()) id: number) {
     return this.coverageService.deleteCoverage(id);
   }
 }

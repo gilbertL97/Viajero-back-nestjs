@@ -77,7 +77,9 @@ export class CountryController {
     UserRole.CONSULTAGENT,
   )
   @Get(':id')
-  async getCountry(@Param('id') id: string): Promise<CountryEntity> {
+  async getCountry(
+    @Param('id', new ParseIntPipe()) id: string,
+  ): Promise<CountryEntity> {
     const iso = id.toLocaleUpperCase();
     const data = await this.countryService.findOne(iso);
     return data;
@@ -87,7 +89,7 @@ export class CountryController {
   @Roles(UserRole.ADMIN)
   @Patch(':id')
   async updateCountry(
-    @Param('id') id: string,
+    @Param('id', new ParseIntPipe()) id: string,
     @Body() updateCountryDto: UpdateCountryDto,
   ): Promise<CountryEntity> {
     const iso = id.toLocaleUpperCase();
@@ -98,7 +100,9 @@ export class CountryController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async deleteCountry(@Param('id') id: string): Promise<CountryEntity> {
+  async deleteCountry(
+    @Param('id', new ParseIntPipe()) id: string,
+  ): Promise<CountryEntity> {
     const iso = id.toLocaleUpperCase();
     const data = await this.countryService.remove(iso);
     return data;

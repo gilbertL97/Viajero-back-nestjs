@@ -32,7 +32,7 @@ export class UserController {
   }
 
   @Get(':id')
-  getUser(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
+  getUser(@Param('id', new ParseIntPipe()) id: number): Promise<UserEntity> {
     const data = this.userService.getUser(id);
     return data;
   }
@@ -65,7 +65,7 @@ export class UserController {
 
   @Patch(':id')
   updateUser(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', new ParseIntPipe()) id: number,
     @Body(RoleValidationPipes) updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
     console.log(updateUserDto);
@@ -74,7 +74,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
+  deleteUser(@Param('id', new ParseIntPipe()) id: number): Promise<UserEntity> {
     const data = this.userService.deleteUser(id);
     return data;
   }

@@ -8,6 +8,7 @@ import {
   Res,
   Post,
   HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
@@ -115,7 +116,10 @@ export class FileController {
     UserRole.CONSULTAGENT,
   )
   @Get(':id')
-  async findOneFile(@Param('id') id: string, @GetUser() user: UserEntity) {
+  async findOneFile(
+    @Param('id', new ParseIntPipe()) id: string,
+    @GetUser() user: UserEntity,
+  ) {
     return await this.fileService.findOneFile(+id, user);
   }
   @UseGuards(RolesGuard)
@@ -134,7 +138,7 @@ export class FileController {
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Delete(':id')
-  async removeFile(@Param('id') id: string) {
+  async removeFile(@Param('id', new ParseIntPipe()) id: string) {
     return await this.fileService.remove(+id);
   }
   @UseGuards(RolesGuard)

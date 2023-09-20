@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   HttpStatus,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { TravelerService } from './service/traveler.service';
@@ -110,7 +111,7 @@ export class TravelerController {
   async uploadTravelers(
     @GetUser() user: UserEntity,
     @UploadedFile() file: Express.Multer.File,
-    @Param('id') id: number,
+    @Param('id', new ParseIntPipe()) id: number,
     @Res() response: Response,
   ): Promise<Response<ResponseErrorOrWarningDto | void>> {
     const resp = await this.travelerUploadService.processFile(file, id, user);
@@ -305,7 +306,7 @@ export class TravelerController {
   @Get(':id')
   async getTraveler(
     //@GetUser() user: UserEntity,
-    @Param('id') id: string,
+    @Param('id', new ParseIntPipe()) id: string,
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.findOne(id);
     return data;
@@ -315,7 +316,7 @@ export class TravelerController {
   @Patch(':id')
   async updateTraveler(
     //@GetUser() user: UserEntity,
-    @Param('id') id: string,
+    @Param('id', new ParseIntPipe()) id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.update(id, updateTravelerDto);
@@ -326,7 +327,7 @@ export class TravelerController {
   @Delete(':id')
   async deleteTraveler(
     //@GetUser() user: UserEntity,
-    @Param('id') id: string,
+    @Param('id', new ParseIntPipe()) id: string,
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.remove(id);
     return data;

@@ -66,7 +66,7 @@ export class FileHelper {
     return extname(path) === '.xlsx' || extname(path) === '.xls';
   }
   public static getFileName(path: string) {
-    return parse(path).name;
+    return parse(path).base;
   }
   public static joinPath(path1: string, path2: string) {
     return join(path1, path2);

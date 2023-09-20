@@ -71,7 +71,16 @@ export class ExportToTxt {
     const isOnlyWarn = logs.containErrors
       ? 'Contiene errores Y Advertencias'
       : 'Solo Contiene Advertencias';
-    FileHelper.writeIntxt(table(tableData) + isOnlyWarn, filename, path);
+    const logName = logs.containErrors
+      ? 'LOG_ERROR'
+      : logs.errorAndWarning.length > 0
+      ? 'LOG_ADVERTENCIA'
+      : 'LOG_OK';
+    FileHelper.writeIntxt(
+      table(tableData) + isOnlyWarn,
+      logName + filename,
+      path,
+    );
   }
 
   private objectValuesInOrder(
