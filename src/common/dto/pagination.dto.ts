@@ -15,6 +15,7 @@ export class PaginationDto {
     description: 'Limite',
     example: 10,
   })
+  @IsNumber()
   @IsOptional()
   @IsPositive()
   @Min(1)
