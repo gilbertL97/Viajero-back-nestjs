@@ -47,9 +47,8 @@ export class AutoImportFileService {
       //direcciones de cada carpeta de los contratantes
       const unproceced = FileHelper.joinPath(pathUnprocess, contractor.file);
       const pathLogs = FileHelper.joinPath(pathToLogs, contractor.file);
-      //obtengo todos los archivos de ese contratante
+      //obtengo todos los archivos de ese contratante}
       const files = FileHelper.getAllFilesInFolder(unproceced);
-
       for (const file of files) {
         //uno las direcciones de cada archivo con las direcciones de cada contratante
         const pathFile = FileHelper.joinPath(unproceced, file);
@@ -59,6 +58,7 @@ export class AutoImportFileService {
           contractor,
           user,
         );
+        console.log(log);
         this.writeLogs(pathLogs, file, log);
       }
     }
@@ -71,10 +71,8 @@ export class AutoImportFileService {
   private writeLogs(
     path: string,
     filename: string,
-    logs?: ResponseErrorOrWarningDto | void,
+    logs: ResponseErrorOrWarningDto | void,
   ) {
-    if (logs) {
-      this.exportToTxt.insertTableInTxt(logs, path, filename);
-    }
+    this.exportToTxt.insertTableInTxt(logs, path, filename);
   }
 }

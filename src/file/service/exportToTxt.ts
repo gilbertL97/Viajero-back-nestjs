@@ -8,79 +8,82 @@ import { FileHelper } from 'src/common/file/file.helper';
 @Injectable()
 export class ExportToTxt {
   insertTableInTxt(
-    logs: ResponseErrorOrWarningDto,
+    logs: ResponseErrorOrWarningDto | void,
     path: string,
     filename: string,
   ) {
-    const columns = [
-      { key: 'row', header: 'Fila' },
-      { key: 'name', header: 'Nombre' },
-      {
-        key: 'contractor',
-        header: 'Cliente',
-      },
-      { key: 'sex', header: 'Sexo' },
-      { key: 'born_date', header: 'Fecha de Nacimiento' },
-      { key: 'email', header: 'Correo' },
+    if (logs) {
+      const columns = [
+        { key: 'row', header: 'Fila' },
+        { key: 'name', header: 'Nombre' },
+        {
+          key: 'contractor',
+          header: 'Cliente',
+        },
+        { key: 'sex', header: 'Sexo' },
+        { key: 'born_date', header: 'Fecha de Nacimiento' },
+        { key: 'email', header: 'Correo' },
 
-      { key: 'passport', header: 'Pasaporte' },
+        { key: 'passport', header: 'Pasaporte' },
 
-      { key: 'flight', header: 'Vuelo' },
-      { key: 'sale_date', header: 'Fecha de Venta' },
+        { key: 'flight', header: 'Vuelo' },
+        { key: 'sale_date', header: 'Fecha de Venta' },
 
-      { key: 'start_date', header: 'Fecha de Inicio' },
+        { key: 'start_date', header: 'Fecha de Inicio' },
 
-      { key: 'end_date_policy', header: 'Fecha de Fin de Viaje' },
+        { key: 'end_date_policy', header: 'Fecha de Fin de Viaje' },
 
-      {
-        key: 'number_high_risk_days',
-        header: 'Numero de dias Alto Riesgo',
-      },
+        {
+          key: 'number_high_risk_days',
+          header: 'Numero de dias Alto Riesgo',
+        },
 
-      { key: 'number_days', header: 'Cantidad de Dias', type: 'number' },
+        { key: 'number_days', header: 'Cantidad de Dias', type: 'number' },
 
-      {
-        key: 'amount_days_high_risk',
-        header: 'Monto de dias de alto riesgo',
-      },
+        {
+          key: 'amount_days_high_risk',
+          header: 'Monto de dias de alto riesgo',
+        },
 
-      {
-        key: 'amount_days_covered',
-        header: 'Monto de dias cubiertos',
-      },
+        {
+          key: 'amount_days_covered',
+          header: 'Monto de dias cubiertos',
+        },
 
-      { key: 'total_amount', header: 'Monto total' },
+        { key: 'total_amount', header: 'Monto total' },
 
-      { key: 'state', header: 'Estado' },
+        { key: 'state', header: 'Estado' },
 
-      { key: 'contractor', header: 'Cliente' },
+        { key: 'contractor', header: 'Cliente' },
 
-      { key: 'origin_country', header: 'Pais origen' },
+        { key: 'origin_country', header: 'Pais origen' },
 
-      { key: 'file', header: 'Fichero' },
+        { key: 'file', header: 'Fichero' },
 
-      { key: 'nationality', header: 'Nacionalidad' },
+        { key: 'nationality', header: 'Nacionalidad' },
 
-      { key: 'coverage', header: 'Cobertura' },
-    ];
-    const dataArray = logs.errorAndWarning.map((item) =>
-      this.objectValuesInOrder(item, columns),
-    );
-    const headeer = this.headers(columns);
-    const tableData = [headeer, ...dataArray];
-    const isOnlyWarn = logs.containErrors
-      ? 'Contiene errores Y Advertencias'
-      : 'Solo Contiene Advertencias';
-    const logName = logs.containErrors
-      ? 'LOG_ERROR'
-      : logs.errorAndWarning.length > 0
-      ? 'LOG_ADVERTENCIA'
-      : 'LOG_OK';
-    FileHelper.writeIntxt(
-      table(tableData) + isOnlyWarn,
-      logName + filename,
-      path,
-    );
+        { key: 'coverage', header: 'Cobertura' },
+      ];
+      const dataArray = logs.errorAndWarning.map((item) =>
+        this.objectValuesInOrder(item, columns),
+      );
+      const headeer = this.headers(columns);
+      const tableData = [headeer, ...dataArray];
+      const isOnlyWarn = logs.containErrors
+        ? 'Contiene errores Y Advertencias'
+        : 'Solo Contiene Advertencias';
+      const logName = logs.containErrors ? 'LOG_ERROR_' : 'LOG_ADVERTENCIA_';
+
+      FileHelper.writeIntxt(
+        table(tableData) + isOnlyWarn,
+        logName + filename,
+        path,
+      );
+    } else {
+      const log = 'LOG_OK_';
+      const descrp = 'Fichero Importado sin Advertencias ni Errores';
+      FileHelper.writeIntxt(descrp, log + filename, path);
+    }
   }
 
   private objectValuesInOrder(
