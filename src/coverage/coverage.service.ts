@@ -96,7 +96,6 @@ export class CoverageService {
         join(FileHelper.uploadsPath, file.filename),
       );
     }
-    // console.log(coverageSaved);
     return coverageSaved;
   }
 

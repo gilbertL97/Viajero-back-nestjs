@@ -20,7 +20,6 @@ const uploadFilterPdf = (req, file, cb) => {
   }
 };
 const uploadFilterCsvExcel = (req, file, cb) => {
-  console.log(file.mimetype);
   if (ValidateFile.isCSV(file) || ValidateFile.isExcel(file)) {
     // Allow storage of file
     cb(null, true);

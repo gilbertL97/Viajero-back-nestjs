@@ -10,15 +10,6 @@ import { CoverageModule } from './coverage/coverage.module';
 import { FileModule } from './file/file.module';
 import { TravelerModule } from './traveler/traveler.module';
 
-/*const corsConfig: CorsOptions = {
-  origin: 'http://localhost:3000', //http://localhost:3000/
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  /* credentials: true 
-  origin: ['http://localhost:3001'],
-  credentials: true,
-};*/
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,

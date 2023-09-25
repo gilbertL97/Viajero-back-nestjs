@@ -11,7 +11,6 @@ export async function exportExcel(
   const worksheet = workbook.addWorksheet(title);
   worksheet.columns = columns;
   const dat = data.map((elem: any) => flater(elem));
-  //console.log(title, data.value);
   worksheet.addRows(dat);
 
   const buffer = await workbook.xlsx.writeBuffer();

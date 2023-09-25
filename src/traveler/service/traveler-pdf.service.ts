@@ -167,8 +167,6 @@ export class TravelerPdfService {
         traveler.coverage.benefitTable,
       );
       const pdfB = await PDFDocument.load(fs.readFileSync(coveragePath));
-      //const table = await pdfB.copyPages(pdfB, [0]);
-      //console.log(pdfB.getPages);
       const pagesCopy = pdfB.getPageIndices();
       const pages = await pdfDoc.copyPages(pdfB, pagesCopy);
       pages.map((page) => {

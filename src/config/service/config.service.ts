@@ -29,7 +29,6 @@ export class CustomConfigService {
     const conifgFind = await this.findOne(id);
     const configEdited = Object.assign(conifgFind, updateConfigDto);
     configEdited.value.replace(/\\/g, '/');
-    console.log(configEdited);
     return await this.configRepository.save(configEdited);
   }
 

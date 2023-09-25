@@ -120,7 +120,6 @@ export class ContractorController {
     @Res() res,
   ): Promise<any> {
     const { dateInvoicing } = filter;
-    console.log(filter);
     const buffer = await this.contractService.exportInvoicingExcel(
       dateInvoicing,
       user,
@@ -173,7 +172,6 @@ export class ContractorController {
     @Query() filter: FilterContractorDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
-    console.log(filter);
     return await this.contractService.getDetailedContract(filter, user);
   }
   @UseGuards(RolesGuard)

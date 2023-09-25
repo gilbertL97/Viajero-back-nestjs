@@ -10,19 +10,15 @@ export class FileHelper {
     name: string,
   ): Promise<void> {
     const folderContract = join(this.uploadsPath, entities, name);
-    //console.log(folderContract);
+
     fs.mkdir(folderContract, { recursive: true }, (error) => {
       if (error) console.log(error);
     });
-    //console.log(folderContract);
   }
   public static async createFolderPath(path: string): Promise<void> {
-    //console.log(folderContract);
     fs.mkdir(path, { recursive: true }, (error) => {
       if (error) console.log(error);
     });
-
-    //console.log(folderContract);
   }
   public static async updateFolder(
     entities: string,
@@ -55,7 +51,6 @@ export class FileHelper {
       const files = fs.readdirSync(path);
       return files;
     } catch (err) {
-      //if ((err.errno = -4058)) console.log(err.path + '  folder not found ');
       return [];
     }
   }
