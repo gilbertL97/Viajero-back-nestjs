@@ -68,7 +68,6 @@ export class UserController {
     @Param('id', new ParseIntPipe()) id: number,
     @Body(RoleValidationPipes) updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
-    console.log(updateUserDto);
     const data = this.userService.updateUser(id, updateUserDto);
     return data;
   }

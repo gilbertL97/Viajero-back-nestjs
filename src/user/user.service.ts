@@ -54,8 +54,6 @@ export class UserService {
       userDto.role == UserRole.CLIENT ||
       userDto.role == UserRole.CONSULTAGENT
     ) {
-      // aqui verifico que el rol sea de cliente para asignarle un tomador de seguro
-      //console.log(userDto.role);
       if (userDto.contractor) {
         const contrator = await this.contractorService.getContractor(
           userDto.contractor,
@@ -64,7 +62,6 @@ export class UserService {
       }
     } else delete userDto.contractor;
     const newUser = await this.userRepository.save(user).catch((e) => {
-      console.log(e);
       throw new BadRequestException('duplicate name or email');
     });
     delete newUser.password; // para no devolver en la res el atributo password en user
@@ -95,14 +92,12 @@ export class UserService {
     id: number,
     updateProfile: EditProfileUserDto,
   ): Promise<UserEntity> {
-    //console.log(updateProfile);
     const user = await this.getUserWithPass(id);
     if (!(await compare(updateProfile.passwordBefore, user.password)))
       throw new UnauthorizedException('The old password is wrong');
     if (updateProfile.passwordNew1 !== updateProfile.passwordNew2)
       throw new UnauthorizedException('The passwords do not match');
     user.password = updateProfile.passwordNew1;
-    //console.log(user); //aqui
     const profiel = await this.userRepository.save(user);
     delete profiel.password;
     return profiel;
@@ -128,7 +123,6 @@ export class UserService {
       parseInt(idContract),
     );
     user.contractors = [contractor];
-    //console.log(user);
     const newUser = await this.userRepository.save(user).catch(() => {
       throw new BadRequestException('Fail save contractor');
     });
