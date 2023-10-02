@@ -58,7 +58,6 @@ export class AutoImportFileService {
           contractor,
           user,
         );
-        console.log(log);
         this.writeLogs(pathLogs, file, log);
       }
     }
