@@ -306,7 +306,7 @@ export class TravelerController {
   @Get(':id')
   async getTraveler(
     //@GetUser() user: UserEntity,
-    @Param('id', new ParseIntPipe()) id: string,
+    @Param('id') id: string,
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.findOne(id);
     return data;
@@ -316,7 +316,7 @@ export class TravelerController {
   @Patch(':id')
   async updateTraveler(
     //@GetUser() user: UserEntity,
-    @Param('id', new ParseIntPipe()) id: string,
+    @Param('id') id: string,
     @Body() updateTravelerDto: UpdateTravelerDto,
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.update(id, updateTravelerDto);
@@ -327,7 +327,7 @@ export class TravelerController {
   @Delete(':id')
   async deleteTraveler(
     //@GetUser() user: UserEntity,
-    @Param('id', new ParseIntPipe()) id: string,
+    @Param('id') id: string,
   ): Promise<TravelerEntity> {
     const data = await this.travelerService.remove(id);
     return data;
