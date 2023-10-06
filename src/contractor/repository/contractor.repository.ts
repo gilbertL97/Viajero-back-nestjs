@@ -2,6 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { ContratorEntity } from '../entity/contrator.entity';
 import * as dayjs from 'dayjs';
 import { ContractorResponseDto } from '../dto/contractor-response.dto';
+import { FilterContractorDto } from '../dto/filter-contractor.dto';
 @EntityRepository(ContratorEntity)
 export class ContractorRepository extends Repository<ContratorEntity> {
   async getInvoicingOfMonth(dateInvoicing: Date, id: number): Promise<any> {
@@ -28,9 +29,10 @@ export class ContractorRepository extends Repository<ContratorEntity> {
     );
   }
   async getDetailedTravelers(
-    dateInvoicing: Date,
+    filter: FilterContractorDto,
     id: number,
   ): Promise<ContratorEntity[]> {
+    const { dateInvoicing, ids } = filter;
     const initMonth = dayjs(dateInvoicing).set('date', 1); //cambio la fecha a inicio del mes
     //le sumo otro mes a la fecha fin para que esete en el rango de ese mes
     const endDate = initMonth.add(1, 'month').format('YYYY-MM-DD');
@@ -50,6 +52,9 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       .leftJoinAndSelect('travelerEntity.file', 'file');
     if (id) {
       query.andWhere('contractor.id=:id', { id });
+    }
+    if (ids && !id) {
+      query.andWhereInIds(ids);
     }
     return (await query.getMany()).filter((c) => c.travelers.length > 0);
   }

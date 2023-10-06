@@ -8,6 +8,8 @@ import {
   IsOptional,
   IsDateString,
   IsNumberString,
+  IsArray,
+  IsInt,
 } from 'class-validator';
 
 export class FilterContractorDto {
@@ -93,4 +95,13 @@ export class FilterContractorDto {
   @IsOptional()
   @IsDateString()
   dateInvoicing: Date;
+  @ApiProperty({
+    description: 'Identificadore de los clientes',
+    example: [3, 6, 7],
+    required: false,
+  })
+  @IsOptional()
+  @IsArray({})
+  @IsInt({ each: true })
+  ids: number[];
 }

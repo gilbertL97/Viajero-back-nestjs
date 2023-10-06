@@ -117,9 +117,8 @@ export class ContractorService {
     let id = undefined;
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
-    else id = filter.id;
     return await this.contractRepository.getDetailedTravelers(
-      filter.dateInvoicing,
+      filter,
       id,
     );
   }
