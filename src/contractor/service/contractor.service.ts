@@ -117,10 +117,7 @@ export class ContractorService {
     let id = undefined;
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
-    return await this.contractRepository.getDetailedTravelers(
-      filter,
-      id,
-    );
+    return await this.contractRepository.getDetailedTravelers(filter, id);
   }
   async exportAllContractorExcel(user: UserEntity) {
     const data = await this.getContrators(user);

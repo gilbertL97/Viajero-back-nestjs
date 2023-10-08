@@ -9,7 +9,6 @@ import {
   IsDateString,
   IsNumberString,
   IsArray,
-  IsInt,
 } from 'class-validator';
 
 export class FilterContractorDto {
@@ -101,7 +100,7 @@ export class FilterContractorDto {
     required: false,
   })
   @IsOptional()
-  @IsArray({})
-  @IsInt({ each: true })
+  @IsArray()
+  @IsNumberString(undefined, { each: true })
   ids: number[];
 }
