@@ -31,7 +31,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { TravelerAndTotal } from './dto/TravelerPag.dto';
 import {
   ApiAcceptedResponse,

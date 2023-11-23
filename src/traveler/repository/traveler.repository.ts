@@ -11,7 +11,7 @@ import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { TravelerAndTotal } from '../dto/TravelerPag.dto';
 
 @EntityRepository(TravelerEntity)

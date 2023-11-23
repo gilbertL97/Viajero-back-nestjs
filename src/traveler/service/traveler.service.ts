@@ -20,7 +20,7 @@ import { UpdateTravelerDto } from '../dto/update-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerRepository } from '../repository/traveler.repository';
 import { exportPdf } from 'src/common/export/exportPdf';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { TravelerAndTotal } from '../dto/TravelerPag.dto';
 
 @Injectable()
