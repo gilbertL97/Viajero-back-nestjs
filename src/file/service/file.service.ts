@@ -6,9 +6,11 @@ import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { FilterFileDto } from '../dto/filter-file.dto';
 import { FileEntity } from '../entities/file.entity';
+import { paginate } from 'src/common/pagination/service/pagination.service';
+import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 
 @Injectable()
 export class FileService {
@@ -79,10 +81,10 @@ export class FileService {
       throw new ConflictException(file.travelers.length);*/
     return this.fileRepository.remove(file);
   }
-  async filterFile(
+  async filterFile2(
     file: FilterFileDto,
     user: UserEntity,
-  ): Promise<FileEntity[]> {
+  ): Promise<SelectQueryBuilder<FileEntity>> {
     let contractor = file.contractor;
 
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
@@ -91,7 +93,7 @@ export class FileService {
     }
 
     const query = this.fileRepository.createQueryBuilder('files');
-    const { end_date_create, start_date_create } = file;
+    const { end_date_create, start_date_create, name } = file;
 
     if (contractor)
       query.where('files.contractor =:contractor', { contractor });
@@ -103,7 +105,45 @@ export class FileService {
       });
     query.leftJoinAndSelect('files.contractor', 'contractor');
     query.leftJoinAndSelect('files.user', 'user');
+    if (name) {
+      query.andWhere('files.name =:name', { name });
+    }
+    return query;
+  }
+  async filterFile(
+    file: FilterFileDto,
+    user: UserEntity,
+  ): Promise<FileEntity[]> {
+    let contractor = file.contractor;
+    const { end_date_create, start_date_create, name } = file;
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
+      const userC = await this.userService.getUser(user.id);
+      contractor = userC.contractors[0].id;
+    }
+
+    const query = this.fileRepository.createQueryBuilder('files');
+
+    if (contractor)
+      query.where('files.contractor =:contractor', { contractor });
+    if (end_date_create)
+      query.andWhere('files.created_at<:end_date_create', { end_date_create });
+    if (start_date_create)
+      query.andWhere('files.created_at>:start_date_create', {
+        start_date_create,
+      });
+    if (name) {
+      query.andWhere('files.name =:name', { name });
+    }
+    query.leftJoinAndSelect('files.contractor', 'contractor');
+    query.leftJoinAndSelect('files.user', 'user');
     return query.getMany();
+  }
+  async getFilePaginatedAndFiltered(
+    file: FilterFileDto,
+    user: UserEntity,
+    pag: PaginationDto,
+  ) {
+    return await paginate(await this.filterFile2(file, user), pag);
   }
   exporToExcel(files: FileEntity[]) {
     const columns = [

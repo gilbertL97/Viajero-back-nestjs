@@ -19,6 +19,7 @@ import { UserRole } from 'src/user/user.role';
 import { FilterFileDto } from './dto/filter-file.dto';
 import { AutoImportFileService } from './service/automaticImportFile';
 import { FileService } from './service/file.service';
+import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('file')
@@ -55,6 +56,18 @@ export class FileController {
     @GetUser() user: UserEntity,
   ) {
     return await this.fileService.filterFile(filter, user);
+  }
+  @Get('/filter/pag')
+  async filterFilePagination(
+    @Query() pag: PaginationDto,
+    @Query() filter: FilterFileDto,
+    @GetUser() user: UserEntity,
+  ) {
+    return await this.fileService.getFilePaginatedAndFiltered(
+      filter,
+      user,
+      pag,
+    );
   }
   @UseGuards(RolesGuard)
   @Roles(
