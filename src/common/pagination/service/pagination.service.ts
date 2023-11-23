@@ -4,10 +4,12 @@ import { PaginationDto } from '../dto/pagination.dto';
 
 export async function paginate<T>(
   qb: SelectQueryBuilder<T>,
-  options: PaginationDto,
+  pag: PaginationDto,
 ): Promise<PaginationResult<T>> {
-  const offset = (options.page - 1) * options.limit;
-  const data = await qb.limit(options.limit).offset(offset).getMany();
+  const data = await qb
+    .skip((pag.page - 1) * pag.limit)
+    .take(pag.limit)
+    .getMany();
 
   return new PaginationResult({
     total: await qb.getCount(),
