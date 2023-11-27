@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsString,
   MinLength,
@@ -39,6 +40,7 @@ export class FilterTravelerDto {
 
   @IsOptional()
   @IsNumber()
+  @Transform(() => Number)
   contractor: number;
 
   @IsOptional()
@@ -53,6 +55,7 @@ export class FilterTravelerDto {
   @MaxLength(3)
   nationality: string;
 
+  @Transform(({ value }) => parseInt(value)) // ver xq esto
   @IsOptional()
   @IsNumber()
   coverage: number;
