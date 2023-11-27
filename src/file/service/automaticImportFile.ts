@@ -21,7 +21,7 @@ export class AutoImportFileService {
     private readonly configService: ConfigService,
   ) {}
 
-  @Cron('45 * * * * *')
+  @Cron('* 1 * * * *')
   async autoImportFiles() {
     console.log('Called when the current second is 45');
     const userSystem = await this.userService.findUserByName('system'); //usuario del sistema}
