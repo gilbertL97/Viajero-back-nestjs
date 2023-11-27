@@ -32,7 +32,7 @@ import { TravelersStorage } from 'src/common/file/storage';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { ResponseErrorOrWarningDto } from './dto/responseErrorOrWarning.dto';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
-import { TravelerAndTotal } from './dto/TravelerPag.dto';
+
 import {
   ApiAcceptedResponse,
   ApiBearerAuth,
@@ -40,13 +40,13 @@ import {
   ApiConflictResponse,
   ApiConsumes,
   ApiCreatedResponse,
-  ApiExcludeEndpoint,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { FileErrorsTravelerDto } from './dto/fileErrorsTravelers.dto';
+import { PaginationResult } from 'src/common/pagination/interface/pagination.type';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('access-token')
@@ -123,7 +123,22 @@ export class TravelerController {
     return response.status(HttpStatus.ACCEPTED).send(resp.errorAndWarning);
   }
 
-  @ApiExcludeEndpoint()
+  // @ApiExcludeEndpoint()
+  // @UseGuards(RolesGuard)
+  // @Roles(
+  //   UserRole.ADMIN,
+  //   UserRole.MARKAGENT,
+  //   UserRole.COMAGENT,
+  //   UserRole.CLIENT,
+  //   UserRole.CONSULT,
+  //   UserRole.CONSULTAGENT,
+  // )
+  // @Get()
+  // async getTravelers(@GetUser() user: UserEntity): Promise<TravelerEntity[]> {
+  //   const data = await this.travelerService.findAll(user);
+  //   return data;
+  // }
+
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -134,56 +149,11 @@ export class TravelerController {
     UserRole.CONSULTAGENT,
   )
   @Get()
-  async getTravelers(@GetUser() user: UserEntity): Promise<TravelerEntity[]> {
-    const data = await this.travelerService.findAll(user);
-    return data;
-  }
-
-  @UseGuards(RolesGuard)
-  @Roles(
-    UserRole.ADMIN,
-    UserRole.MARKAGENT,
-    UserRole.COMAGENT,
-    UserRole.CLIENT,
-    UserRole.CONSULT,
-    UserRole.CONSULTAGENT,
-  )
-  @Get('/pagination')
   async getTravelersPagination(
     @GetUser() user: UserEntity,
     @Query() pag: PaginationDto,
-  ): Promise<TravelerAndTotal> {
-    const data = await this.travelerService.findAllPagination(user, pag);
-    return data;
-  }
-
-  @ApiExcludeEndpoint()
-  @UseGuards(RolesGuard)
-  @Roles(
-    UserRole.ADMIN,
-    UserRole.MARKAGENT,
-    UserRole.COMAGENT,
-    UserRole.CLIENT,
-    UserRole.CONSULT,
-    UserRole.CONSULTAGENT,
-  )
-  @Get('/filter')
-  async advanceSearchTraveler(
-    @GetUser() user: UserEntity,
     @Query() travelerFilter: FilterTravelerDto,
-  ): Promise<TravelerEntity[]> {
-    const data = await this.travelerService.advancedSearch(
-      travelerFilter,
-      user,
-    );
-    return data;
-  }
-  @Post('/filter/pag')
-  async advanceSearchTravelerPag(
-    @GetUser() user: UserEntity,
-    @Body() travelerFilter: FilterTravelerDto,
-    @Query() pag: PaginationDto,
-  ): Promise<TravelerAndTotal> {
+  ): Promise<PaginationResult<TravelerEntity>> {
     const data = await this.travelerService.advancedSearchPag(
       travelerFilter,
       user,
@@ -191,6 +161,41 @@ export class TravelerController {
     );
     return data;
   }
+
+  // @ApiExcludeEndpoint()
+  // @UseGuards(RolesGuard)
+  // @Roles(
+  //   UserRole.ADMIN,
+  //   UserRole.MARKAGENT,
+  //   UserRole.COMAGENT,
+  //   UserRole.CLIENT,
+  //   UserRole.CONSULT,
+  //   UserRole.CONSULTAGENT,
+  // )
+  // @Get('/filter')
+  // async advanceSearchTraveler(
+  //   @GetUser() user: UserEntity,
+  //   @Query() travelerFilter: FilterTravelerDto,
+  // ): Promise<TravelerEntity[]> {
+  //   const data = await this.travelerService.advancedSearch(
+  //     travelerFilter,
+  //     user,
+  //   );
+  //   return data;
+  // }
+  // @Post('/filter/pag')
+  // async advanceSearchTravelerPag(
+  //   @GetUser() user: UserEntity,
+  //   @Body() travelerFilter: FilterTravelerDto,
+  //   @Query() pag: PaginationDto,
+  // ): Promise<PaginationResult<TravelerEntity>> {
+  //   const data = await this.travelerService.advancedSearchPag(
+  //     travelerFilter,
+  //     user,
+  //     pag,
+  //   );
+  //   return data;
+  // }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -244,22 +249,22 @@ export class TravelerController {
     });
     res.end(buffer);
   }
-  @UseGuards(RolesGuard)
-  @Roles(
-    UserRole.ADMIN,
-    UserRole.MARKAGENT,
-    UserRole.COMAGENT,
-    UserRole.CLIENT,
-    UserRole.CONSULT,
-    UserRole.CONSULTAGENT,
-  )
-  @Get('/current')
-  async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
-    const data = await this.travelerService.getCurrrentTravelers(
-      travelerFilter,
-    );
-    return data;
-  }
+  // @UseGuards(RolesGuard)
+  // @Roles(
+  //   UserRole.ADMIN,
+  //   UserRole.MARKAGENT,
+  //   UserRole.COMAGENT,
+  //   UserRole.CLIENT,
+  //   UserRole.CONSULT,
+  //   UserRole.CONSULTAGENT,
+  // )
+  // @Get('/current')
+  // async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
+  //   const data = await this.travelerService.getCurrrentTravelers(
+  //     travelerFilter,
+  //   );
+  //   return data;
+  // }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,

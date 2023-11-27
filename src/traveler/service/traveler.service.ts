@@ -21,7 +21,7 @@ import { TravelerEntity } from '../entity/traveler.entity';
 import { TravelerRepository } from '../repository/traveler.repository';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
-import { TravelerAndTotal } from '../dto/TravelerPag.dto';
+import { PaginationResult } from 'src/common/pagination/interface/pagination.type';
 
 @Injectable()
 export class TravelerService {
@@ -82,13 +82,6 @@ export class TravelerService {
     });
   }
 
-  async findAllPagination(
-    user: UserEntity,
-    pag: PaginationDto,
-  ): Promise<TravelerAndTotal> {
-    const userC = await this.userService.getUser(user.id);
-    return await this.travelerRepository.getTravelersPagination(pag, userC);
-  }
   async findOne(id: string): Promise<TravelerEntity> {
     const traveler = await this.travelerRepository.findOne({
       where: { id: id },
@@ -155,14 +148,16 @@ export class TravelerService {
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       userC = await this.userService.getUser(user.id);
 
-    return this.travelerRepository.finAdllWithFilters(filter, userC);
+    return this.travelerRepository.findAllWithFiltersWithoutPagination(
+      filter,
+      userC,
+    );
   }
-
   async advancedSearchPag(
     filter: FilterTravelerDto,
     user: UserEntity,
     pag: PaginationDto,
-  ): Promise<TravelerAndTotal> {
+  ): Promise<PaginationResult<TravelerEntity>> {
     const userC: UserEntity = await this.userService.getUser(user.id);
     return this.travelerRepository.findAllWithFiltersPagination(
       filter,

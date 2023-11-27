@@ -1,3 +1,4 @@
+import { PaginationResult } from './../../common/pagination/interface/pagination.type';
 import { BadRequestException } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
@@ -5,7 +6,7 @@ import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileEntity } from 'src/file/entities/file.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
@@ -13,6 +14,7 @@ import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { TravelerAndTotal } from '../dto/TravelerPag.dto';
+import { paginate } from 'src/common/pagination/service/pagination.service';
 
 @EntityRepository(TravelerEntity)
 export class TravelerRepository extends Repository<TravelerEntity> {
@@ -201,35 +203,10 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       .getManyAndCount();
     return query;
   }
-  async getTravelersPagination(
-    pag: PaginationDto,
-    user: UserEntity,
-  ): Promise<TravelerAndTotal> {
-    let query = this.createQueryBuilder('traveler')
-      .leftJoinAndSelect('traveler.coverage', 'coverage')
-      .leftJoinAndSelect('traveler.contractor', 'contractor')
-      .leftJoinAndSelect('traveler.origin_country', 'origin_country')
-      .leftJoinAndSelect('traveler.nationality', 'nationality')
-      .skip((pag.page - 1) * pag.limit)
-      .take(pag.limit)
-      .orderBy('traveler.start_date', 'DESC')
-      .addOrderBy('traveler.name', pag.order);
-
-    if (user.contractors && user.contractors[0]) {
-      console.log(user);
-      query = query.andWhere('traveler.contractor = :contractor', {
-        contractor: user.contractors[0].id,
-      });
-    }
-
-    const [traveler, total] = await query.getManyAndCount();
-    return new TravelerAndTotal(traveler, total);
-  }
-  async findAllWithFiltersPagination(
+  async finAdllWithFiltersQuery(
     filter: FilterTravelerDto,
-    user: UserEntity,
-    pag: PaginationDto,
-  ): Promise<TravelerAndTotal> {
+    user?: UserEntity,
+  ): Promise<SelectQueryBuilder<TravelerEntity>> {
     let contractor = filter.contractor;
     const {
       name,
@@ -244,8 +221,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       state,
     } = filter;
 
-    if (user.contractors && user.contractors[0])
-      contractor = user.contractors[0].id;
+    if (user && user.contractors[0]) contractor = user.contractors[0].id;
     const query = this.createQueryBuilder('viajeros');
     if (name) query.where('viajeros.name LIKE :name', { name });
     if (passport)
@@ -278,26 +254,33 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     if (state) {
       const now = dayjs(new Date()).format('YYYY-MM-DD');
       query.andWhere('viajeros.end_date_policy >=:now', { now }); //para q sea vigente debe ser mayor la fecha fin a hoy
-      query.andWhere('viajeros.start_date<=:now', { now }); // y la fecha fin mayor a la de hoy
-      //para q sea vigente debe ser mayor la fecha fin a hoy // y la fecha fin mayor a la de hoy
+      query.andWhere('viajeros.start_date<=:now', { now }); // y la fecha fin mayor a la de hoy //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
 
       //query.andWhere('viajeros.state  =:state ', { state });
     }
-    query
-      .skip((pag.page - 1) * pag.limit)
-      .take(pag.limit)
-      .orderBy('viajeros.start_date', 'DESC')
-      .addOrderBy('viajeros.name', pag.order);
 
-    const [traveler, total] = await query
+    return query
       .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
       .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
       .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
-      .leftJoinAndSelect('viajeros.file', 'FileEntity')
-      //.orderBy('viajeros.name')
-      .getManyAndCount();
-
-    return new TravelerAndTotal(traveler, total);
+      .leftJoinAndSelect('viajeros.file', 'FileEntity');
+    //.orderBy('viajeros.name')
+  }
+  async findAllWithFiltersPagination(
+    filter: FilterTravelerDto,
+    user: UserEntity,
+    pag: PaginationDto,
+  ): Promise<PaginationResult<TravelerEntity>> {
+    return await paginate(
+      await this.finAdllWithFiltersQuery(filter, user),
+      pag,
+    );
+  }
+  async findAllWithFiltersWithoutPagination(
+    filter: FilterTravelerDto,
+    user: UserEntity,
+  ): Promise<TravelerEntity[]> {
+    return await (await this.finAdllWithFiltersQuery(filter, user)).getMany();
   }
 }
