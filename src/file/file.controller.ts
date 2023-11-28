@@ -28,36 +28,36 @@ export class FileController {
     private readonly fileService: FileService,
     private readonly autoImportService: AutoImportFileService,
   ) {}
-  @UseGuards(RolesGuard)
-  @Roles(
-    UserRole.ADMIN,
-    UserRole.MARKAGENT,
-    UserRole.COMAGENT,
-    UserRole.CLIENT,
-    UserRole.CONSULT,
-    UserRole.CONSULTAGENT,
-  )
+  // @UseGuards(RolesGuard)
+  // @Roles(
+  //   UserRole.ADMIN,
+  //   UserRole.MARKAGENT,
+  //   UserRole.COMAGENT,
+  //   UserRole.CLIENT,
+  //   UserRole.CONSULT,
+  //   UserRole.CONSULTAGENT,
+  // )
+  // @Get()
+  // async findAllFile(@GetUser() user: UserEntity) {
+  //   return await this.fileService.findAll(user);
+  // }
+  // @UseGuards(RolesGuard)
+  // @Roles(
+  //   UserRole.ADMIN,
+  //   UserRole.MARKAGENT,
+  //   UserRole.COMAGENT,
+  //   UserRole.CLIENT,
+  //   UserRole.CONSULT,
+  //   UserRole.CONSULTAGENT,
+  // )
+  // @Get('/filter')
+  // async filterFile(
+  //   @Query() filter: FilterFileDto,
+  //   @GetUser() user: UserEntity,
+  // ) {
+  //   return await this.fileService.filterFile(filter, user);
+  // }
   @Get()
-  async findAllFile(@GetUser() user: UserEntity) {
-    return await this.fileService.findAll(user);
-  }
-  @UseGuards(RolesGuard)
-  @Roles(
-    UserRole.ADMIN,
-    UserRole.MARKAGENT,
-    UserRole.COMAGENT,
-    UserRole.CLIENT,
-    UserRole.CONSULT,
-    UserRole.CONSULTAGENT,
-  )
-  @Get('/filter')
-  async filterFile(
-    @Query() filter: FilterFileDto,
-    @GetUser() user: UserEntity,
-  ) {
-    return await this.fileService.filterFile(filter, user);
-  }
-  @Get('/filter/pag')
   async filterFilePagination(
     @Query() pag: PaginationDto,
     @Query() filter: FilterFileDto,
@@ -84,7 +84,7 @@ export class FileController {
     @GetUser() user: UserEntity,
     @Res() res,
   ) {
-    const files = await this.fileService.filterFile(filter, user);
+    const files = await this.fileService.getFileFiltered(filter, user);
     const buffer = await this.fileService.exporToExcel(files);
     res.set({
       'Content-Type':
@@ -110,7 +110,7 @@ export class FileController {
     @GetUser() user: UserEntity,
     @Res() res,
   ) {
-    const files = await this.fileService.filterFile(filter, user);
+    const files = await this.fileService.getFileFiltered(filter, user);
     const buffer = await this.fileService.exporToPdf(files);
     res.set({
       'Content-Type': 'application/pdf',

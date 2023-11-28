@@ -81,7 +81,7 @@ export class FileService {
       throw new ConflictException(file.travelers.length);*/
     return this.fileRepository.remove(file);
   }
-  async filterFile2(
+  async filterFileQuery(
     file: FilterFileDto,
     user: UserEntity,
   ): Promise<SelectQueryBuilder<FileEntity>> {
@@ -98,9 +98,9 @@ export class FileService {
     if (contractor)
       query.where('files.contractor =:contractor', { contractor });
     if (end_date_create)
-      query.andWhere('files.created_at<:end_date_create', { end_date_create });
+      query.andWhere('files.created_at<=:end_date_create', { end_date_create });
     if (start_date_create)
-      query.andWhere('files.created_at>:start_date_create', {
+      query.andWhere('files.created_at>=:start_date_create', {
         start_date_create,
       });
     query.leftJoinAndSelect('files.contractor', 'contractor');
@@ -110,40 +110,15 @@ export class FileService {
     }
     return query;
   }
-  async filterFile(
-    file: FilterFileDto,
-    user: UserEntity,
-  ): Promise<FileEntity[]> {
-    let contractor = file.contractor;
-    const { end_date_create, start_date_create, name } = file;
-    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
-      const userC = await this.userService.getUser(user.id);
-      contractor = userC.contractors[0].id;
-    }
-
-    const query = this.fileRepository.createQueryBuilder('files');
-
-    if (contractor)
-      query.where('files.contractor =:contractor', { contractor });
-    if (end_date_create)
-      query.andWhere('files.created_at<:end_date_create', { end_date_create });
-    if (start_date_create)
-      query.andWhere('files.created_at>:start_date_create', {
-        start_date_create,
-      });
-    if (name) {
-      query.andWhere('files.name =:name', { name });
-    }
-    query.leftJoinAndSelect('files.contractor', 'contractor');
-    query.leftJoinAndSelect('files.user', 'user');
-    return query.getMany();
-  }
   async getFilePaginatedAndFiltered(
     file: FilterFileDto,
     user: UserEntity,
     pag: PaginationDto,
   ) {
-    return await paginate(await this.filterFile2(file, user), pag);
+    return await paginate(await this.filterFileQuery(file, user), pag);
+  }
+  async getFileFiltered(file: FilterFileDto, user: UserEntity) {
+    return await (await this.filterFileQuery(file, user)).getMany();
   }
   exporToExcel(files: FileEntity[]) {
     const columns = [
