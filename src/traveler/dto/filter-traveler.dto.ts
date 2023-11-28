@@ -40,7 +40,7 @@ export class FilterTravelerDto {
 
   @IsOptional()
   @IsNumber()
-  @Transform(() => Number)
+  @Transform(({ value }) => parseInt(value))
   contractor: number;
 
   @IsOptional()
