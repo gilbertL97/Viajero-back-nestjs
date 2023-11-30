@@ -173,10 +173,11 @@ export class TravelerService {
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       userC = await this.userService.getUser(user.id);
 
-    const travelers = await this.travelerRepository.finAdllWithFilters(
-      filter,
-      userC,
-    );
+    const travelers =
+      await this.travelerRepository.findAllWithFiltersWithoutPagination(
+        filter,
+        userC,
+      );
     const columns = [
       { key: 'name', header: 'Nombre' },
       {
@@ -234,10 +235,11 @@ export class TravelerService {
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       userC = await this.userService.getUser(user.id);
 
-    const travelers = await this.travelerRepository.finAdllWithFilters(
-      filter,
-      userC,
-    );
+    const travelers =
+      await this.travelerRepository.findAllWithFiltersWithoutPagination(
+        filter,
+        userC,
+      );
     const columns = [
       { property: 'name', label: 'Nombre', width: 100 },
 
