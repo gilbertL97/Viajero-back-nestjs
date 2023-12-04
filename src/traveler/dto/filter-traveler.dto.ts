@@ -63,6 +63,7 @@ export class FilterTravelerDto {
   coverage: number;
 
   @IsOptional()
+  @Transform(({ value }) => Boolean(value)) // ver xq esto
   @IsBoolean()
   state: boolean;
 
