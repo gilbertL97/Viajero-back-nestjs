@@ -41,7 +41,6 @@ export const getSecretKeyConfig: JwtModuleAsyncOptions = {
   useFactory: async (configService: ConfigService) => {
     return {
       secret: configService.get<string>(Configuration.SECRET_KEY),
-      signOptions: { expiresIn: '60m' },
     };
   },
 };
