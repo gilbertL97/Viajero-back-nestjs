@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -26,5 +26,12 @@ export class AuthController {
   @Post('/login')
   async login(@GetUser() user: UserEntity) {
     return this.authService.login(user);
+  }
+  @Post('/refresh')
+  async refresh(
+    @Body('refresh_token') refreshToken: string,
+    @GetUser() user: UserEntity,
+  ) {
+    return this.authService.refreshTokens(refreshToken, user);
   }
 }
