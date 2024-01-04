@@ -134,7 +134,9 @@ export class UserService {
     return (await this.userRepository.save(user)).refresh_token;
   }
   async getToken(id: number) {
-    return await this.userRepository.findOne(id, { select: ['refresh_token'] });
+    return await this.userRepository.findOne(id, {
+      select: ['refresh_token', 'name', 'role', 'id'],
+    });
   }
   /*async deleteMultiple(id: number[]): Promise<void> {
   

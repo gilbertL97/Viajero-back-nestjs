@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { compare } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -29,8 +33,8 @@ export class AuthService {
       id: user.id,
       role: user.role,
     };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '30m' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '30s' });
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '10s' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '30m' });
     await this.userService.updateRefreshToken(user.id, refreshToken);
     return {
       access_token: accessToken,
@@ -39,14 +43,17 @@ export class AuthService {
   }
   async verifyRefreshToken(token: string) {
     try {
-      const payload = this.jwtService.verify(token);
-      return payload;
+      const payload = await this.jwtService.verify(token);
+      const user = await this.userService.getToken(payload.id);
+      if (user.refresh_token !== token)
+        throw new ForbiddenException('Invalid refresh token');
+      return user;
     } catch (error) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new ForbiddenException('Invalid refresh token');
     }
   }
-  async refreshTokens(token: string, user: UserEntity) {
-    await this.verifyRefreshToken(token);
+  async refreshTokens(token: string) {
+    const user = await this.verifyRefreshToken(token);
     return await this.createTokens(user);
   }
 }
