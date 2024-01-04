@@ -1,6 +1,7 @@
 import {
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
@@ -33,8 +34,8 @@ export class AuthService {
       id: user.id,
       role: user.role,
     };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '10s' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '30m' });
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '45m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '1h' });
     await this.userService.updateRefreshToken(user.id, refreshToken);
     return {
       access_token: accessToken,
@@ -55,5 +56,13 @@ export class AuthService {
   async refreshTokens(token: string) {
     const user = await this.verifyRefreshToken(token);
     return await this.createTokens(user);
+  }
+  async logout(token: string) {
+    const user = await this.verifyRefreshToken(token);
+    delete user.refresh_token;
+    console.log(user);
+    return await this.userService.updateRefreshToken(user.id, '').catch(() => {
+      return new NotFoundException('Oops ha ocurrido un problema');
+    }); //borrando el token
   }
 }

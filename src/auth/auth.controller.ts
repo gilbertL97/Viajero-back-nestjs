@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import {
   ApiBody,
   ApiCreatedResponse,
@@ -30,5 +30,10 @@ export class AuthController {
   @Post('/refresh')
   async refresh(@Body('refresh_token') refreshToken: string) {
     return this.authService.refreshTokens(refreshToken);
+  }
+  @Post('/logout')
+  async logout(@Body('refresh_token') refreshToken: string) {
+    const token = await this.authService.logout(refreshToken);
+    if (token) return HttpStatus.OK;
   }
 }
