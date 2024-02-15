@@ -122,23 +122,6 @@ export class TravelerController {
       return response.status(HttpStatus.CONFLICT).send(resp.errorAndWarning);
     return response.status(HttpStatus.ACCEPTED).send(resp.errorAndWarning);
   }
-
-  // @ApiExcludeEndpoint()
-  // @UseGuards(RolesGuard)
-  // @Roles(
-  //   UserRole.ADMIN,
-  //   UserRole.MARKAGENT,
-  //   UserRole.COMAGENT,
-  //   UserRole.CLIENT,
-  //   UserRole.CONSULT,
-  //   UserRole.CONSULTAGENT,
-  // )
-  // @Get()
-  // async getTravelers(@GetUser() user: UserEntity): Promise<TravelerEntity[]> {
-  //   const data = await this.travelerService.findAll(user);
-  //   return data;
-  // }
-
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -162,40 +145,6 @@ export class TravelerController {
     return data;
   }
 
-  // @ApiExcludeEndpoint()
-  // @UseGuards(RolesGuard)
-  // @Roles(
-  //   UserRole.ADMIN,
-  //   UserRole.MARKAGENT,
-  //   UserRole.COMAGENT,
-  //   UserRole.CLIENT,
-  //   UserRole.CONSULT,
-  //   UserRole.CONSULTAGENT,
-  // )
-  // @Get('/filter')
-  // async advanceSearchTraveler(
-  //   @GetUser() user: UserEntity,
-  //   @Query() travelerFilter: FilterTravelerDto,
-  // ): Promise<TravelerEntity[]> {
-  //   const data = await this.travelerService.advancedSearch(
-  //     travelerFilter,
-  //     user,
-  //   );
-  //   return data;
-  // }
-  // @Post('/filter/pag')
-  // async advanceSearchTravelerPag(
-  //   @GetUser() user: UserEntity,
-  //   @Body() travelerFilter: FilterTravelerDto,
-  //   @Query() pag: PaginationDto,
-  // ): Promise<PaginationResult<TravelerEntity>> {
-  //   const data = await this.travelerService.advancedSearchPag(
-  //     travelerFilter,
-  //     user,
-  //     pag,
-  //   );
-  //   return data;
-  // }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,
@@ -249,22 +198,6 @@ export class TravelerController {
     });
     res.end(buffer);
   }
-  // @UseGuards(RolesGuard)
-  // @Roles(
-  //   UserRole.ADMIN,
-  //   UserRole.MARKAGENT,
-  //   UserRole.COMAGENT,
-  //   UserRole.CLIENT,
-  //   UserRole.CONSULT,
-  //   UserRole.CONSULTAGENT,
-  // )
-  // @Get('/current')
-  // async currentTravelers(@Query() travelerFilter: FilterTravelerDto) {
-  //   const data = await this.travelerService.getCurrrentTravelers(
-  //     travelerFilter,
-  //   );
-  //   return data;
-  // }
   @UseGuards(RolesGuard)
   @Roles(
     UserRole.ADMIN,

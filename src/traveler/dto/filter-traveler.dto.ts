@@ -7,6 +7,8 @@ import {
   IsDateString,
   IsNumber,
   IsBoolean,
+  IsArray,
+  IsNumberString,
 } from 'class-validator';
 
 export class FilterTravelerDto {
@@ -61,6 +63,12 @@ export class FilterTravelerDto {
   coverage: number;
 
   @IsOptional()
+  @Transform(({ value }) => Boolean(value)) // ver xq esto
   @IsBoolean()
   state: boolean;
+
+  @IsOptional()
+  @IsArray()
+  @IsNumberString(undefined, { each: true })
+  idContractors: number[];
 }

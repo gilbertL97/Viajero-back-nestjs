@@ -61,7 +61,7 @@ export class UserService {
         user.contractors = [contrator];
       }
     } else delete userDto.contractor;
-    const newUser = await this.userRepository.save(user).catch((e) => {
+    const newUser = await this.userRepository.save(user).catch(() => {
       throw new BadRequestException('duplicate name or email');
     });
     delete newUser.password; // para no devolver en la res el atributo password en user
@@ -128,7 +128,16 @@ export class UserService {
     });
     return newUser;
   }
-
+  async updateRefreshToken(id: number, token: string) {
+    const user = await this.getUser(id);
+    user.refresh_token = token;
+    return (await this.userRepository.save(user)).refresh_token;
+  }
+  async getToken(id: number) {
+    return await this.userRepository.findOne(id, {
+      select: ['refresh_token', 'name', 'role', 'id'],
+    });
+  }
   /*async deleteMultiple(id: number[]): Promise<void> {
   
     const users: UserEntity[]= id.filter(await this.getUser)

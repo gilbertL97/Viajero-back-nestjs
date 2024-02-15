@@ -24,6 +24,8 @@ export class UserEntity extends BaseEntity {
   email: string;
   @Column({ type: 'varchar', length: 300, nullable: false, select: false }) //esto es para no retornar el dato
   password: string;
+  @Column({ type: 'varchar', length: 400, nullable: true, select: false }) //esto es para no retornar el dato
+  refresh_token: string;
   @Column({ type: 'boolean', nullable: false, default: true })
   active: boolean;
   @Column({
