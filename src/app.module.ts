@@ -15,6 +15,7 @@ import { join } from 'path';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { CustomConfigModule } from './config/config.module';
+import { LogginModule } from './loggin/loggin.module';
 
 @Module({
   imports: [
