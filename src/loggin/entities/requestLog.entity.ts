@@ -9,16 +9,16 @@ export class RequestEntityLog {
   @Column({ type: 'integer', nullable: false })
   user: string;
 
-  @Column({ type: 'text', nullable: false, length: 200 })
+  @Column({ type: 'varchar', nullable: false, length: 200 })
   url: string;
 
-  @Column({ type: 'text', nullable: false, length: 200 })
+  @Column({ type: 'varchar', nullable: false, length: 200 })
   method: string;
 
-  @Column({ type: 'text', nullable: false, length: 100 })
+  @Column({ type: 'varchar', nullable: false, length: 100 })
   userAgent: string;
 
-  @Column({ type: 'text', nullable: false, length: 30 })
+  @Column({ type: 'varchar', nullable: false, length: 30 })
   ipAddress: string;
 
   @OneToMany(() => LogEntity, (log) => log.request)

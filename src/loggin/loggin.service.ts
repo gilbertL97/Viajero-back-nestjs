@@ -1,9 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLogginDto } from './dto/create-loggin.dto';
 import { UpdateLogginDto } from './dto/update-loggin.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { LogEntity } from './entities/loggin.entity';
+import { Repository } from 'typeorm';
+import { RequestEntityLog } from './entities/requestLog.entity';
 
 @Injectable()
 export class LogginService {
+  constructor(
+    @InjectRepository(LogEntity)
+    private readonly logginRepository: Repository<LogEntity>,
+    private readonly requestLoggingRepository: Repository<RequestEntityLog>,
+  ) {}
+
+  // addLog(log: any): void {
+  //   this.logs.push(log);
+  // }
+
+  // getLogs(): any[] {
+  //   return this.logs;
+  // }
+
   create(createLogginDto: CreateLogginDto) {
     return 'This action adds a new loggin';
   }
@@ -23,4 +41,5 @@ export class LogginService {
   remove(id: number) {
     return `This action removes a #${id} loggin`;
   }
+  saveRequest(requestLog: RequestEntityLog) {}
 }

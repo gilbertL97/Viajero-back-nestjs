@@ -12,13 +12,13 @@ export class LogEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text', nullable: false, length: 300 })
+  @Column({ type: 'varchar', nullable: false, length: 300 })
   message: string;
 
-  @Column({ type: 'text', nullable: false, length: 100 })
+  @Column({ type: 'varchar', nullable: false, length: 100 })
   context: string;
 
-  @Column({ type: 'text', nullable: false, length: 50 })
+  @Column({ type: 'varchar', nullable: false, length: 50 })
   level: string;
 
   @CreateDateColumn({ type: 'timestamp' })
