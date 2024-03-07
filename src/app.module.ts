@@ -15,8 +15,8 @@ import { join } from 'path';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { CustomConfigModule } from './config/config.module';
+import { storeData } from './common/store/middleware/store.middleware';
 import { LogginModule } from './loggin/loggin.module';
-import { RequestIdMiddleware } from './common/middleware/requestId.middleware';
 
 @Module({
   imports: [
@@ -37,6 +37,7 @@ import { RequestIdMiddleware } from './common/middleware/requestId.middleware';
       limit: 25, // number of requests allowed within the TTL 25 request por minuto
     }),
     CustomConfigModule,
+    LogginModule,
   ],
   controllers: [AppController],
   providers: [
@@ -48,6 +49,6 @@ import { RequestIdMiddleware } from './common/middleware/requestId.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RequestIdMiddleware).forRoutes('*');
+    consumer.apply(storeData).forRoutes('*');
   }
 }

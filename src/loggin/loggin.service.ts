@@ -11,7 +11,6 @@ export class LogginService {
   constructor(
     @InjectRepository(LogEntity)
     private readonly logginRepository: Repository<LogEntity>,
-    private readonly requestLoggingRepository: Repository<RequestEntityLog>,
   ) {}
 
   // addLog(log: any): void {
@@ -41,5 +40,4 @@ export class LogginService {
   remove(id: number) {
     return `This action removes a #${id} loggin`;
   }
-  saveRequest(requestLog: RequestEntityLog) {}
 }
