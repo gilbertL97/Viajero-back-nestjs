@@ -208,7 +208,7 @@ export class TravelerController {
     UserRole.CONSULTAGENT,
   )
   @Get('/file/:id')
-  async getTravelersBfile(@Param() id: number) {
+  async getTravelersBfile(@Param('id') id: number) {
     const data = await this.travelerService.findByFile(id);
     return data;
   }
