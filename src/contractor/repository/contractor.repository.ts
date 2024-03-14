@@ -1,10 +1,18 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ContratorEntity } from '../entity/contrator.entity';
 import * as dayjs from 'dayjs';
 import { ContractorResponseDto } from '../dto/contractor-response.dto';
 import { FilterContractorDto } from '../dto/filter-contractor.dto';
-@EntityRepository(ContratorEntity)
+import { InjectRepository } from '@nestjs/typeorm';
+
 export class ContractorRepository extends Repository<ContratorEntity> {
+  constructor(
+    @InjectRepository(ContratorEntity)
+    repository: Repository<ContratorEntity>,
+  ) {
+    super(repository.target, repository.manager, repository.queryRunner);
+  }
+
   async getInvoicingOfMonth(dateInvoicing: Date, id: number): Promise<any> {
     const initMonth = dayjs(dateInvoicing).set('date', 1); //cambio la fecha a inicio del mes
     //le sumo otro mes a la fecha fin para que esete en el rango de ese mes

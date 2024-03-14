@@ -6,15 +6,16 @@ import { ContractorController } from './contractor.controller';
 import { ContractorService } from './service/contractor.service';
 import { ContractorRepository } from './repository/contractor.repository';
 import { ContractorExportService } from './service/contractorExport.service';
+import { ContratorEntity } from './entity/contrator.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ContractorRepository]),
+    TypeOrmModule.forFeature([ContratorEntity]),
     forwardRef(() => TravelerModule),
     forwardRef(() => UserModule),
   ],
   controllers: [ContractorController],
-  providers: [ContractorService, ContractorExportService],
+  providers: [ContractorService, ContractorExportService, ContractorRepository],
   exports: [ContractorService],
 })
 export class ContractorModule {}

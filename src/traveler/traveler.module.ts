@@ -10,10 +10,11 @@ import { UserModule } from 'src/user/user.module';
 import { TravelerPdfService } from './service/traveler-pdf.service';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { FileModule } from 'src/file/file.module';
+import { TravelerEntity } from './entity/traveler.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TravelerRepository]),
+    TypeOrmModule.forFeature([TravelerEntity]),
     forwardRef(() => ContractorModule),
     forwardRef(() => CoverageModule),
     forwardRef(() => CountryModule),
@@ -21,7 +22,12 @@ import { FileModule } from 'src/file/file.module';
     FileModule,
   ],
   controllers: [TravelerController],
-  providers: [TravelerService, TravelerPdfService, TravelerUploadFilesService],
+  providers: [
+    TravelerService,
+    TravelerPdfService,
+    TravelerUploadFilesService,
+    TravelerRepository,
+  ],
   exports: [TravelerService, TravelerUploadFilesService],
 })
 export class TravelerModule {}
