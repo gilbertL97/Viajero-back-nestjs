@@ -4,7 +4,6 @@ import { LogginController } from './loggin.controller';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogEntity } from './entities/loggin.entity';
-
 @Module({
   imports: [TypeOrmModule.forFeature([LogEntity])],
   controllers: [LogginController],

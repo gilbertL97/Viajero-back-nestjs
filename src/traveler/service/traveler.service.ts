@@ -93,7 +93,7 @@ export class TravelerService {
   }
   async findByFile(id: number): Promise<TravelerEntity[]> {
     const travelers = await this.travelerRepository.find({
-      where: { file: id },
+      where: { file: { id: id } },
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
     });
     //await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -164,9 +164,6 @@ export class TravelerService {
       userC,
       pag,
     );
-  }
-  async getCurrrentTravelers(filter: FilterTravelerDto) {
-    return this.travelerRepository.getCurrentTravelers(filter);
   }
   async getTravelerExcel(filter: FilterTravelerDto, user: UserEntity) {
     let userC: UserEntity = undefined;
