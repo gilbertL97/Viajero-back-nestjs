@@ -91,9 +91,8 @@ export class ContractorService {
   }
   async deleteContractor(id: number): Promise<ContratorEntity> {
     const contractor = await this.getContractorWithUsers(id);
-    const traveler = await this.travelerService.findOneTravelerWithContractor(
-      contractor,
-    );
+    const traveler =
+      await this.travelerService.findOneTravelerWithContractor(contractor);
     // console.log(traveler);
     if (!traveler) {
       const deleted = await this.contractRepository.remove(contractor);

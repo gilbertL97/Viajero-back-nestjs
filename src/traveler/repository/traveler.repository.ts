@@ -6,18 +6,23 @@ import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileEntity } from 'src/file/entities/file.entity';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { EntityRepository, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { FilterTravelerDto } from '../dto/filter-traveler.dto';
 import { TravelerEntity } from '../entity/traveler.entity';
 import { CalculateDaysTraveler } from '../helper/calculate-days.traveler';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
-import { TravelerAndTotal } from '../dto/TravelerPag.dto';
 import { paginate } from 'src/common/pagination/service/pagination.service';
+import { InjectRepository } from '@nestjs/typeorm';
 
-@EntityRepository(TravelerEntity)
 export class TravelerRepository extends Repository<TravelerEntity> {
+  constructor(
+    @InjectRepository(TravelerEntity)
+    repository: Repository<TravelerEntity>,
+  ) {
+    super(repository.target, repository.manager, repository.queryRunner);
+  }
   public async findAll(): Promise<TravelerEntity[]> {
     return await this.find();
   }
@@ -121,87 +126,6 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     contractorOption: ContratorEntity,
   ): Promise<TravelerEntity> {
     return this.findOne({ where: { contractor: contractorOption } });
-  }
-  // async finAdllWithFilters(
-  //   filter: FilterTravelerDto,
-  //   user?: UserEntity,
-  // ): Promise<TravelerEntity[]> {
-  //   let contractor = filter.contractor;
-  //   const {
-  //     name,
-  //     passport,
-  //     start_date_init,
-  //     start_date_end,
-  //     end_date_policy_init,
-  //     end_date_policy_end,
-  //     nationality,
-  //     origin_country,
-  //     coverage,
-  //     state,
-  //   } = filter;
-
-  //   if (user) contractor = user.contractors[0].id;
-  //   const query = this.createQueryBuilder('viajeros');
-  //   if (name) query.where('viajeros.name LIKE :name', { name });
-  //   if (passport)
-  //     query.andWhere('viajeros.passport LIKE :passport', { passport });
-  //   if (origin_country)
-  //     query.andWhere('viajeros.origin_country LIKE :origin_country', {
-  //       origin_country,
-  //     });
-  //   if (nationality)
-  //     query.andWhere('viajeros.nationality LIKE :nationality', { nationality });
-  //   if (coverage) query.andWhere('viajeros.coverage =:coverage', { coverage });
-  //   if (contractor)
-  //     query.andWhere('viajeros.contractor =:contractor', { contractor });
-  //   if (end_date_policy_init)
-  //     query.andWhere('viajeros.end_date_policy >=:end_date_policy_init', {
-  //       end_date_policy_init,
-  //     });
-  //   if (end_date_policy_end)
-  //     query.andWhere('viajeros.end_date_policy <:end_date_policy_end', {
-  //       end_date_policy_end,
-  //     });
-  //   if (start_date_init)
-  //     query.andWhere('viajeros.start_date>=:start_date_init', {
-  //       start_date_init,
-  //     });
-  //   if (start_date_end)
-  //     query.andWhere('viajeros.start_date<:start_date_end', {
-  //       start_date_end,
-  //     });
-  //   if (state) {
-  //     const now = dayjs(new Date()).format('YYYY-MM-DD');
-  //     query.andWhere('viajeros.end_date_policy >=:now', { now }); //para q sea vigente debe ser mayor la fecha fin a hoy
-  //     query.andWhere('viajeros.start_date<=:now', { now }); // y la fecha fin mayor a la de hoy //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
-
-  //     //query.andWhere('viajeros.state  =:state ', { state });
-  //   }
-
-  //   return (
-  //     query
-  //       .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
-  //       .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
-  //       .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
-  //       .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
-  //       .leftJoinAndSelect('viajeros.file', 'FileEntity')
-  //       //.orderBy('viajeros.name')
-  //       .getMany()
-  //   );
-  // }
-  async getCurrentTravelers(filter: FilterTravelerDto) {
-    //const now = dayjs(new Date()).add(1, 'day').format('YYYY-MM-DD');
-    const now = dayjs(new Date()).format('YYYY-MM-DD');
-
-    const { state } = filter;
-    const query = await this.createQueryBuilder('viajeros')
-      .where('viajeros.end_date_policy >:now', { now })
-      .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
-      .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')
-      .leftJoinAndSelect('viajeros.contractor', 'ContratorEntity')
-      .leftJoinAndSelect('viajeros.coverage', 'CoverageEntity')
-      .getManyAndCount();
-    return query;
   }
   async finAdllWithFiltersQuery(
     filter: FilterTravelerDto,

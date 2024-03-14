@@ -437,8 +437,10 @@ export class TravelerUploadFilesService {
     traveler: FileTravelerDto,
     coverage: CoverageEntity,
   ) {
-    delete validationErrors.number_days;
-    traveler.end_date_policy = dayjs(traveler.start_date) //creo una instancia de dayjs con el inicio
+    if (validationErrors) {
+      delete validationErrors.number_days;
+    }
+    traveler.end_date_policy = dayjs(traveler.start_date, 'DD/MM/YYYY') //creo una instancia de dayjs con el inicio
       .add(coverage.number_of_days, 'days') //agrego al inicio la cantidad de dias de la cobertura
       .format('DD/MM/YYYY'); //lo llevo al formato y se lo asigno al final
   }
