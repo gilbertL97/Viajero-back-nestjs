@@ -103,7 +103,7 @@ export class TravelerController {
       'De vuelve un objeto con las advertencias y errores sobre la no importacion',
     type: FileErrorsTravelerDto,
   })
-  @Throttle(1, 15) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
+  @Throttle({ default: { limit: 1, ttl: 15000 } }) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post('/file/:id')
