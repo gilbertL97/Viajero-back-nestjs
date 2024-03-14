@@ -62,7 +62,7 @@ export class FileService {
       ).contractors[0].id;
     }
     const file = await this.fileRepository.findOne({
-      where: { id: id, contractor: contractorid },
+      where: { id: id, contractor: { id: contractorid } },
       relations: ['travelers'],
     });
     if (!file) throw new NotFoundException('file does not exist');

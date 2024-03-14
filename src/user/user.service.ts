@@ -134,7 +134,8 @@ export class UserService {
     return (await this.userRepository.save(user)).refresh_token;
   }
   async getToken(id: number) {
-    return await this.userRepository.findOne(id, {
+    return await this.userRepository.findOne({
+      where: { id: id },
       select: ['refresh_token', 'name', 'role', 'id'],
     });
   }
