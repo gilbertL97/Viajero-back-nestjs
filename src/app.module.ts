@@ -3,7 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { typeOrmConfigAsync } from './config/config.connect';
+import {
+  typeOrmConfigAsync,
+  typeOrmSQliteConfigAsync,
+} from './config/config.connect';
 import { AuthModule } from './auth/auth.module';
 import { ContractorModule } from './contractor/contractor.module';
 import { TravelerModule } from './traveler/traveler.module';
@@ -24,6 +27,7 @@ import { LogginModule } from './loggin/loggin.module';
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
+    TypeOrmModule.forRootAsync(typeOrmSQliteConfigAsync),
     TravelerModule,
     ContractorModule,
     CoverageModule,

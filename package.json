@@ -22,9 +22,8 @@
     "copy:assets": "cpx 'src/assets/**' 'dist/assets'"
   },
   "dependencies": {
-    "@nestjs/common": "^10.3.3",
     "@nestjs-modules/mailer": "^1.11.2",
-
+    "@nestjs/common": "^10.3.3",
     "@nestjs/config": "^3.2.0",
     "@nestjs/core": "^10.3.3",
     "@nestjs/jwt": "^10.2.0",
@@ -58,6 +57,7 @@
     "reflect-metadata": "^0.2.1",
     "rimraf": "^5.0.5",
     "rxjs": "^7.8.1",
+    "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.0",
     "table": "^6.8.1",
     "typeorm": "^0.3.00"
