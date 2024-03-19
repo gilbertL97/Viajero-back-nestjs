@@ -18,6 +18,10 @@ export class ContractorExportService {
         header: 'Correo',
       },
       {
+        key: 'addres',
+        header: 'Direccion',
+      },
+      {
         key: 'telf',
         header: 'Telefono',
       },
@@ -180,7 +184,12 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
-    return exportPdf(contractor.contractors, columns, 'Facturacion Mensual');
+    return exportPdf(
+      contractor.contractors,
+      columns,
+      'Reporte Facturación Mensual',
+      // true,
+    );
   }
   exportPdfDetailedContract(data: ContratorEntity[]) {
     let allTravelers = [];
