@@ -7,9 +7,6 @@ export async function exportPdf(
   data: any[],
   columns: ColumnsPdf[],
   title: string,
-  lastBold?: boolean,
-  orientation?: 'portrait' | 'landscape',
-  subtitle?: string,
 ): Promise<Uint8Array> {
   //const pantoneColor = '#1b1462';
   const pdfBuffer: Buffer = await new Promise((resolve) => {
@@ -17,12 +14,9 @@ export async function exportPdf(
       size: 'LETTER',
       bufferPages: true,
       autoFirstPage: false,
-      layout: orientation || 'portrait',
     });
     let pageNumber = 0;
     doc.on('pageAdded', () => {
-      doc.page.margins.left = 20;
-      doc.page.margins.right = 20;
       pageNumber++;
       const bottom = doc.page.margins.bottom;
       doc.page.margins.bottom = 0;
@@ -46,8 +40,7 @@ export async function exportPdf(
       doc.text('', 0, 100);
     });
     const table = {
-      title: title,
-      subtitle: subtitle,
+      title: 'Tabla ' + title,
       headers: columns,
       datas: data.map((elem: any) => flater(elem)),
     };
