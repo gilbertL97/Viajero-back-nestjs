@@ -32,4 +32,23 @@ export class DateHelper {
     const end = dayjs(finalDate, 'DD-MM-YYYY');
     return end.diff(start, 'day'); //el numero de dias es la diferencia mas un dia
   }
+  public static getMonthByDate(date: Date) {
+    // Array con los nombres de los meses en español
+    const meses = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    // Devolver el nombre del mes correspondiente al número ingresado
+    return meses[dayjs(date).month()];
+  }
 }
