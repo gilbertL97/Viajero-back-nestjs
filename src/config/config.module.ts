@@ -15,6 +15,6 @@ import defaultConfig from './service/InitConfig';
 export class CustomConfigModule implements OnModuleInit {
   constructor(private configService: ConfigService) {}
   async onModuleInit() {
-    defaultConfig(this.configService);
+    // defaultConfig(this.configService);
   }
 }

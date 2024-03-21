@@ -3,6 +3,7 @@ import { ContratorEntity } from '../entity/contrator.entity';
 
 import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 
 @Injectable()
 export class ContractorExportService {
@@ -154,7 +155,7 @@ export class ContractorExportService {
     ];
     return exportPdf(contractor, columns, 'Clientes');
   }
-  exportPdfInvoicing(contractor: any) {
+  exportPdfInvoicing(contractor: any, date: Date) {
     //creo un objeto nuevo para q al final se agrege una fila con los totales
     const { total_amount, total_travelers } = contractor;
     const total = {
@@ -169,26 +170,29 @@ export class ContractorExportService {
       {
         property: 'poliza',
         label: 'Poliza',
-        width: 80,
+        width: 100,
       },
       {
         property: 'total_travelers',
         label: 'Total de Viajeros',
-        width: 50,
+        width: 80,
         align: 'center',
       },
       {
         property: 'total_import',
         label: 'Importe',
-        width: 50,
+        width: 70,
         align: 'center',
       },
     ];
+    const month = DateHelper.getMonthByDate(date);
     return exportPdf(
       contractor.contractors,
       columns,
       'Reporte Facturación Mensual',
-      // true,
+      undefined,
+      undefined,
+      `Viajeros: ${total_travelers}    Importe Total: $${total_amount}    Mes: ${month}`,
     );
   }
   exportPdfDetailedContract(data: ContratorEntity[]) {

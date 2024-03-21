@@ -5,7 +5,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogEntity } from './entities/loggin.entity';
 @Module({
-  imports: [TypeOrmModule.forFeature([LogEntity])],
+  imports: [TypeOrmModule.forFeature([LogEntity], 'SqliteConn')],
   controllers: [LogginController],
   providers: [
     LogginService,
