@@ -136,7 +136,7 @@ export class ContractorService {
   }
   async exportInvoicingPdf(date: Date, user: UserEntity) {
     const data = await this.getInvoicing(date, user);
-    return this.contratctorExportService.exportPdfInvoicing(data);
+    return this.contratctorExportService.exportPdfInvoicing(data, date);
   }
   async exportDetailedPdf(filter: FilterContractorDto, user: UserEntity) {
     const data = await this.getDetailedContract(filter, user);

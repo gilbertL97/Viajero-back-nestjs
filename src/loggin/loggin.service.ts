@@ -9,7 +9,7 @@ import { RequestEntityLog } from './entities/requestLog.entity';
 @Injectable()
 export class LogginService {
   constructor(
-    @InjectRepository(LogEntity)
+    @InjectRepository(LogEntity, 'SqliteConn')
     private readonly logginRepository: Repository<LogEntity>,
   ) {}
 

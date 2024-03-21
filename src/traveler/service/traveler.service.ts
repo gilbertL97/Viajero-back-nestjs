@@ -177,10 +177,6 @@ export class TravelerService {
       );
     const columns = [
       { key: 'name', header: 'Nombre' },
-      {
-        key: 'contractor',
-        header: 'Cliente',
-      },
       { key: 'sex', header: 'Sexo' },
       { key: 'born_date', header: 'Fecha de Nacimiento' },
       { key: 'email', header: 'Correo' },
@@ -203,15 +199,15 @@ export class TravelerService {
 
       {
         key: 'amount_days_high_risk',
-        header: 'Monto de dias de alto riesgo',
+        header: 'Importe de dias de alto riesgo',
       },
 
       {
         key: 'amount_days_covered',
-        header: 'Monto de dias cubiertos',
+        header: 'Importe de dias cubiertos',
       },
 
-      { key: 'total_amount', header: 'Monto total' },
+      { key: 'total_amount', header: 'Importe total' },
 
       { key: 'state', header: 'Estado' },
 
@@ -253,29 +249,42 @@ export class TravelerService {
       {
         property: 'number_high_risk_days',
         label: 'Cant dias Alto Riesgo',
-        width: 30,
+        width: 60,
+        align: 'center',
       },
 
-      { property: 'number_days', label: 'Num de Dias', width: 30 },
+      {
+        property: 'number_days',
+        label: 'Num de Dias',
+        width: 60,
+        align: 'center',
+      },
 
       {
         property: 'amount_days_high_risk',
-        label: 'Monto alto riesgo',
-        width: 30,
+        label: 'Importe alto riesgo',
+        width: 60,
+        align: 'center',
       },
 
       {
         property: 'amount_days_covered',
-        label: 'Monto dias cubiertos',
-        width: 30,
+        label: 'Importe dias cubiertos',
+        width: 60,
+        align: 'center',
       },
 
-      { property: 'total_amount', label: 'Monto total', width: 30 },
+      {
+        property: 'total_amount',
+        label: 'Importe total',
+        width: 60,
+        align: 'center',
+      },
 
-      { property: 'contractor', label: 'Cliente', width: 50 },
+      { property: 'contractor', label: 'Cliente', width: 70 },
 
-      { property: 'coverage', label: 'Cobertura', width: 50 },
+      { property: 'coverage', label: 'Cobertura', width: 70 },
     ];
-    return exportPdf(travelers, columns, 'Viajeros');
+    return exportPdf(travelers, columns, 'Viajeros', undefined, 'landscape');
   }
 }
