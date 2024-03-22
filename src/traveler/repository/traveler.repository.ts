@@ -91,10 +91,10 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     coverage: CoverageEntity,
   ): Promise<TravelerEntity> {
     if (
-      updateTraveler.end_date_policy &&
-      updateTraveler.start_date &&
-      updateTraveler.number_high_risk_days &&
-      updateTraveler.coverage
+      updateTraveler.end_date_policy !== undefined && //tuve qhacer este cambio xq cuando number_high_risk_days era 0 no me cogia
+      updateTraveler.start_date !== undefined &&
+      updateTraveler.number_high_risk_days !== undefined &&
+      updateTraveler.coverage !== undefined
     ) {
       updateTraveler.number_days = CalculateDaysTraveler.calculateNumberDays(
         updateTraveler.end_date_policy,
