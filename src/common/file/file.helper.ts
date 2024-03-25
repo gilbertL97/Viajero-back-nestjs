@@ -1,5 +1,6 @@
 import { join, extname, parse } from 'path';
 import * as fs from 'fs';
+import * as fsPromis from 'fs/promises';
 export class FileHelper {
   static uploadsPath = join(__dirname, '..', '..', '..', 'uploads');
   static uploadsCoverage = join(this.uploadsPath, 'coverages');
@@ -46,6 +47,9 @@ export class FileHelper {
   public static async deletFile(path: string): Promise<void> {
     fs.rmSync(path);
   }
+  public static async deleteDir(path: string) {
+    fs.rmSync(path, { recursive: true, force: true });
+  }
   public static getAllFilesInFolder(path: string): string[] {
     try {
       const files = fs.readdirSync(path);
@@ -69,11 +73,11 @@ export class FileHelper {
   public static existFileOrFolder(path: string): boolean {
     return fs.existsSync(path);
   }
-  public static writeIntxt(data: any, fileName: string, path: string) {
+  public static async writeIntxt(data: any, fileName: string, path: string) {
     const dir = join(path, `${fileName}.txt`);
     if (!this.existFileOrFolder(path)) this.createFolderPath(path);
     try {
-      fs.writeFileSync(dir, data);
+      await fsPromis.writeFile(dir, data);
       console.log('Data has been written to' + dir);
     } catch (err) {
       console.error('Error while writing data to txt file:', err);
