@@ -37,6 +37,7 @@ export class TravelerUploadFilesService {
     private readonly fileService: FileService,
     private readonly userService: UserService,
   ) {}
+  //este es el metodo q esllamado para subir el archivo
   async processFile(
     file: Express.Multer.File,
     idClient: number,
@@ -297,7 +298,6 @@ export class TravelerUploadFilesService {
       validationError: { target: false },
     });
     const validationWarnings = this.handleErrors(validatorWarnings);
-
     const validations = this.manualValidationsWarnings(
       traveler,
       countries,
