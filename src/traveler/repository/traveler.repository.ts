@@ -37,6 +37,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
   ): Promise<TravelerEntity> {
     const {
       name,
+      born_date,
       sex,
       email,
       passport,
@@ -48,6 +49,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     const traveler = this.create({
       name,
       sex,
+      born_date,
       email,
       passport,
       sale_date,
