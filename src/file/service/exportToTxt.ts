@@ -10,7 +10,6 @@ export class ExportToTxt {
   deleteAllfolderIntemp(path: string) {
     const routes = FileHelper.getAllFilesInFolder(path);
     routes.map((rou) => {
-      console.log(FileHelper.joinPath(path, rou));
       FileHelper.deleteDir(FileHelper.joinPath(path, rou));
     });
   }

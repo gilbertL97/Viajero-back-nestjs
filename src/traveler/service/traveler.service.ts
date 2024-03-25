@@ -209,7 +209,7 @@ export class TravelerService {
 
       { key: 'total_amount', header: 'Importe total' },
 
-      { key: 'state', header: 'Estado' },
+      { key: 'state', header: 'Vigente' },
 
       { key: 'contractor', header: 'Cliente' },
 
