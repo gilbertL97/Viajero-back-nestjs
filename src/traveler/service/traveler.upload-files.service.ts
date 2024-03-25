@@ -116,14 +116,12 @@ export class TravelerUploadFilesService {
   async processBulkFile(
     file: string,
     client: ContratorEntity,
-    user: UserEntity,
+    countries: CountryEntity[],
+    coverages: CoverageEntity[],
+    userEntity: UserEntity,
   ): Promise<ResponseErrorOrWarningDto | void> {
     //1-pirmero cargo todos los paises clientes y planes en memoria
-    const [countries, coverages, userEntity] = await Promise.all([
-      this.countryService.findAll(),
-      this.coverageService.getCoveragesActives(),
-      this.userService.getUser(user.id),
-    ]);
+
     //2-cargo el archivo dependiendo del tipo de archivo
     const travelers = await ExcelJSCOn.getTravelerByFileBulk(file, coverages);
 
