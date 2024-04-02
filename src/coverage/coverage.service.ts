@@ -17,11 +17,12 @@ import { Repository } from 'typeorm';
 import { CreateCoverageDto } from './dto/create-coverage.dto';
 import { UpdateCoverageDto } from './dto/update-coverage.dto';
 import { CoverageEntity } from './entities/coverage.entity';
+import { Configuration } from 'src/config/config.const';
 
 @Injectable()
 export class CoverageService {
   constructor(
-    @InjectRepository(CoverageEntity)
+    @InjectRepository(CoverageEntity, Configuration.POSTGRESCONNECT)
     private readonly coverageRepository: Repository<CoverageEntity>,
     @Inject(forwardRef(() => TravelerService))
     private readonly travelerService: TravelerService,
@@ -101,9 +102,8 @@ export class CoverageService {
 
   async deleteCoverage(id: number): Promise<CoverageEntity> {
     const coverage = await this.getCoverage(id);
-    const traveler = await this.travelerService.findOneTravelerWithCoverage(
-      coverage,
-    );
+    const traveler =
+      await this.travelerService.findOneTravelerWithCoverage(coverage);
     if (!traveler) {
       const deletedCoverage = await this.coverageRepository.remove(coverage);
       if (deletedCoverage.benefitTable)

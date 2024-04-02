@@ -12,11 +12,12 @@ import { TravelerModule } from 'src/traveler/traveler.module';
 import { ExportToTxt } from './service/exportToTxt';
 import { CountryModule } from 'src/country/country.module';
 import { CoverageModule } from 'src/coverage/coverage.module';
+import { Configuration } from 'src/config/config.const';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([FileEntity]),
+    TypeOrmModule.forFeature([FileEntity], Configuration.POSTGRESCONNECT),
     forwardRef(() => TravelerModule),
     forwardRef(() => UserModule),
     forwardRef(() => ContractorModule),

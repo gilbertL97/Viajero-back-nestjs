@@ -29,6 +29,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { CustomConfigModule } from './config/config.module';
 import { storeData } from './common/store/middleware/store.middleware';
 import { LogginModule } from './loggin/loggin.module';
+import { requestLogginMiddleware } from './loggin/middleware/requestLogginMiddleware';
 
 @Module({
   imports: [
@@ -65,5 +66,8 @@ import { LogginModule } from './loggin/loggin.module';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(storeData).forRoutes('*');
+    consumer
+      .apply(requestLogginMiddleware) // Pasar el string como parámetro
+      .forRoutes('*');
   }
 }

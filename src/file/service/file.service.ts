@@ -11,11 +11,12 @@ import { FilterFileDto } from '../dto/filter-file.dto';
 import { FileEntity } from '../entities/file.entity';
 import { paginate } from 'src/common/pagination/service/pagination.service';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
+import { Configuration } from 'src/config/config.const';
 
 @Injectable()
 export class FileService {
   constructor(
-    @InjectRepository(FileEntity)
+    @InjectRepository(FileEntity, Configuration.POSTGRESCONNECT)
     private readonly fileRepository: Repository<FileEntity>,
     private readonly userService: UserService,
   ) {}
