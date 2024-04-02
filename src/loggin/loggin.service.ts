@@ -4,12 +4,12 @@ import { UpdateLogginDto } from './dto/update-loggin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LogEntity } from './entities/loggin.entity';
 import { Repository } from 'typeorm';
-import { RequestEntityLog } from './entities/requestLog.entity';
+import { Configuration } from 'src/config/config.const';
 
 @Injectable()
 export class LogginService {
   constructor(
-    @InjectRepository(LogEntity, 'SqliteConn')
+    @InjectRepository(LogEntity, Configuration.SQLITECONNECT)
     private readonly logginRepository: Repository<LogEntity>,
   ) {}
 
@@ -21,7 +21,9 @@ export class LogginService {
   //   return this.logs;
   // }
 
-  create(createLogginDto: CreateLogginDto) {
+  async create(createLogginDto: CreateLogginDto) {
+    const createLogEntity = this.logginRepository.create(createLogginDto);
+    await this.logginRepository.save(createLogEntity);
     return 'This action adds a new loggin';
   }
 
