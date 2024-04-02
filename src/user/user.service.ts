@@ -15,11 +15,12 @@ import { EditProfileUserDto } from './dto/edit-profile-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserRole } from './user.role';
+import { Configuration } from 'src/config/config.const';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
+    @InjectRepository(UserEntity, Configuration.POSTGRESCONNECT)
     private readonly userRepository: Repository<UserEntity>,
     @Inject(forwardRef(() => ContractorService))
     private readonly contractorService: ContractorService,

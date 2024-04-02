@@ -19,6 +19,7 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
+Viajero.db
 # IDEs and editors
 /.idea
 .project

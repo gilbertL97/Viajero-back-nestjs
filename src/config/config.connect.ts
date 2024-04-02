@@ -6,6 +6,7 @@ import {
 } from '@nestjs/typeorm';
 import { Configuration } from './config.const';
 import { DataSource } from 'typeorm';
+import { LogEntity } from 'src/loggin/entities/loggin.entity';
 
 const config: ConfigService = new ConfigService();
 const dbConfig = {
@@ -70,8 +71,10 @@ export class ConfigTypeorm {
     return {
       type: 'sqlite',
       database: configService.get('SQLITE_DB'),
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      // entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      logging: true,
+      entities: [LogEntity],
     };
   }
   // } //make conection to redis
@@ -93,6 +96,7 @@ export class ConfigTypeorm {
 }
 export const typeOrmConfigAsync: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
+  name: Configuration.POSTGRESCONNECT,
   useFactory: async (
     configService: ConfigService,
   ): Promise<TypeOrmModuleOptions> =>
@@ -102,7 +106,7 @@ export const typeOrmConfigAsync: TypeOrmModuleAsyncOptions = {
 
 export const typeOrmSQliteConfigAsync: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
-  name: 'SqliteConn',
+  name: Configuration.SQLITECONNECT,
   useFactory: async (
     configService: ConfigService,
   ): Promise<TypeOrmModuleOptions> =>

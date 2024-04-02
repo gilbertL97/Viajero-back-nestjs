@@ -4,11 +4,12 @@ import { Repository } from 'typeorm';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { CountryEntity } from './entities/country.entity';
+import { Configuration } from 'src/config/config.const';
 
 @Injectable()
 export class CountryService {
   constructor(
-    @InjectRepository(CountryEntity)
+    @InjectRepository(CountryEntity, Configuration.POSTGRESCONNECT)
     private readonly countryRepository: Repository<CountryEntity>,
   ) {}
 

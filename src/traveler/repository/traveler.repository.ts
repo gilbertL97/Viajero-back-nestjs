@@ -15,10 +15,11 @@ import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { paginate } from 'src/common/pagination/service/pagination.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Configuration } from 'src/config/config.const';
 
 export class TravelerRepository extends Repository<TravelerEntity> {
   constructor(
-    @InjectRepository(TravelerEntity)
+    @InjectRepository(TravelerEntity, Configuration.POSTGRESCONNECT)
     repository: Repository<TravelerEntity>,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);

@@ -5,13 +5,14 @@ import { UserModule } from 'src/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigEntity } from './entities/config.entity';
 import { ConfigService } from '@nestjs/config';
+import { Configuration } from './config.const';
 //import defaultConfig from './service/InitConfig';
 @Module({
   controllers: [ConfigController],
   providers: [CustomConfigService],
   imports: [
     forwardRef(() => UserModule),
-    TypeOrmModule.forFeature([ConfigEntity]),
+    TypeOrmModule.forFeature([ConfigEntity], Configuration.POSTGRESCONNECT),
   ],
   exports: [CustomConfigService],
 })

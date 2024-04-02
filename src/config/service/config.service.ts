@@ -1,16 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { UpdateConfigDto } from '../dto/update-config.dto';
 import { ConfigEntity } from '../entities/config.entity';
+import { Configuration } from '../config.const';
 @Injectable()
 export class CustomConfigService {
   constructor(
-    @InjectRepository(ConfigEntity)
+    @InjectRepository(ConfigEntity, Configuration.POSTGRESCONNECT)
     private readonly configRepository: Repository<ConfigEntity>,
-    private readonly userService: UserService,
   ) {}
 
   async findAll(): Promise<ConfigEntity[]> {

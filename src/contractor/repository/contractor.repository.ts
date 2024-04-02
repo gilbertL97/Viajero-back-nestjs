@@ -4,10 +4,11 @@ import * as dayjs from 'dayjs';
 import { ContractorResponseDto } from '../dto/contractor-response.dto';
 import { FilterContractorDto } from '../dto/filter-contractor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Configuration } from 'src/config/config.const';
 
 export class ContractorRepository extends Repository<ContratorEntity> {
   constructor(
-    @InjectRepository(ContratorEntity)
+    @InjectRepository(ContratorEntity, Configuration.POSTGRESCONNECT)
     repository: Repository<ContratorEntity>,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);

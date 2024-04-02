@@ -11,10 +11,11 @@ import { TravelerPdfService } from './service/traveler-pdf.service';
 import { TravelerUploadFilesService } from './service/traveler.upload-files.service';
 import { FileModule } from 'src/file/file.module';
 import { TravelerEntity } from './entity/traveler.entity';
+import { Configuration } from 'src/config/config.const';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TravelerEntity]),
+    TypeOrmModule.forFeature([TravelerEntity], Configuration.POSTGRESCONNECT),
     forwardRef(() => ContractorModule),
     forwardRef(() => CoverageModule),
     forwardRef(() => CountryModule),
