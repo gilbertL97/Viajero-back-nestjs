@@ -5,6 +5,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogEntity } from './entities/loggin.entity';
 import { Configuration } from 'src/config/config.const';
+import { LogginRepository } from './repository/loggin.repository';
 
 @Global()
 @Module({
@@ -12,6 +13,7 @@ import { Configuration } from 'src/config/config.const';
   controllers: [LogginController],
   providers: [
     LogginService,
+    LogginRepository,
     {
       provide: AsyncLocalStorage,
       useValue: new AsyncLocalStorage(),
