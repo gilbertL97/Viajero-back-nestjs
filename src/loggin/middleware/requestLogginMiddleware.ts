@@ -1,4 +1,4 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
+import { Inject, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { LogginService } from '../loggin.service';
 

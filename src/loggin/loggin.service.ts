@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLogginDto } from './dto/create-loggin.dto';
-import { UpdateLogginDto } from './dto/update-loggin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LogEntity } from './entities/loggin.entity';
-import { Repository } from 'typeorm';
-import { Configuration } from 'src/config/config.const';
+import { LogginModel } from './dto/logginModel.dto';
+import { LogginRepository } from './repository/loggin.repository';
+import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
+import { FilterLogginDto } from './dto/filter-loggin.dto';
 
 @Injectable()
 export class LogginService {
   constructor(
-    @InjectRepository(LogEntity, Configuration.SQLITECONNECT)
-    private readonly logginRepository: Repository<LogEntity>,
+    @InjectRepository(LogginRepository)
+    private readonly logginRepository: LogginRepository,
   ) {}
 
   // addLog(log: any): void {
@@ -21,21 +20,21 @@ export class LogginService {
   //   return this.logs;
   // }
 
-  async create(createLogginDto: CreateLogginDto) {
+  async create(createLogginDto: LogginModel) {
     const createLogEntity = this.logginRepository.create(createLogginDto);
     await this.logginRepository.save(createLogEntity);
     return 'This action adds a new loggin';
   }
 
-  findAll() {
-    return `This action returns all loggin`;
+  findAll(pag: PaginationDto, logginFilter: FilterLogginDto) {
+    return this.logginRepository.getLogs(logginFilter, pag);
   }
 
   findOne(id: number) {
     return `This action returns a #${id} loggin`;
   }
 
-  update(id: number, updateLogginDto: UpdateLogginDto) {
+  update(id: number) {
     return `This action updates a #${id} loggin`;
   }
 

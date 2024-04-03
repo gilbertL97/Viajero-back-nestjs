@@ -1,4 +1,4 @@
-export class CreateLogginDto {
+export class LogginModel {
   message: string;
   context: string;
   level: string;
