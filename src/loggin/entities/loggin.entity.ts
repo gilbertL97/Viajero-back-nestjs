@@ -33,4 +33,6 @@ export class LogEntity {
   url: string;
   @Column({ type: 'integer', nullable: true })
   userId?: number;
+  @Column({ type: 'varchar', nullable: true, length: 500 })
+  errorStack?: string;
 }
