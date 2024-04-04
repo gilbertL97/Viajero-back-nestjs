@@ -2,7 +2,7 @@ import { Inject, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { LogginService } from '../loggin.service';
 
-export class requestLogginMiddleware implements NestMiddleware {
+export class RequestLogginMiddleware implements NestMiddleware {
   constructor(
     @Inject(LogginService) private readonly logginService: LogginService,
   ) {}

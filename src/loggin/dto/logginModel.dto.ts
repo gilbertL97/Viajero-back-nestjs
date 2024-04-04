@@ -9,4 +9,5 @@ export class LogginModel {
   url: string;
   userId?: number;
   createdAt: string;
+  errorStack?: string;
 }
