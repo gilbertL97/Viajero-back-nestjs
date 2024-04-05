@@ -1,5 +1,4 @@
 import {
-  BadGatewayException,
   CallHandler,
   ExecutionContext,
   Inject,
@@ -10,13 +9,16 @@ import { LogginService } from '../loggin.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 @Injectable()
-export class ResponseInterceptor implements NestInterceptor {
+export class LogginResponseInterceptor implements NestInterceptor {
   constructor(
     @Inject(LogginService) private readonly logginService: LogginService,
   ) {} //...
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next
-      .handle()
-      .pipe(catchError((err) => throwError(() => new BadGatewayException())));
+    return next.handle().pipe(
+      catchError((err) => {
+        console.log(err.stack);
+        return throwError(err);
+      }),
+    );
   }
 }
