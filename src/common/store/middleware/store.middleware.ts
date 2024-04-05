@@ -8,9 +8,9 @@ import { StoreModel } from '../model/Store.model';
 export class storeData implements NestMiddleware {
   constructor(private readonly als: AsyncLocalStorage<StoreModel>) {}
   use(req: Request, res: Response, next: NextFunction): void {
+    req.requestId = Date.now().toString();
     const { requestId, ip, protocol, originalUrl, method } = req;
     const userAgent = req.get('user-agent');
-    req.requestId = Date.now().toString();
     const url = `${protocol}://${req.get('Host')}${originalUrl}`;
     const store: StoreModel = {
       userAgent,

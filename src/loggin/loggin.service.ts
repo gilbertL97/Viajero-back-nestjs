@@ -4,12 +4,15 @@ import { LogginModel } from './dto/logginModel.dto';
 import { LogginRepository } from './repository/loggin.repository';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { FilterLogginDto } from './dto/filter-loggin.dto';
+import { AsyncLocalStorage } from 'async_hooks';
+import { StoreModel } from 'src/common/store/model/Store.model';
 
 @Injectable()
 export class LogginService {
   constructor(
     @InjectRepository(LogginRepository)
     private readonly logginRepository: LogginRepository,
+    private readonly als: AsyncLocalStorage<StoreModel>,
   ) {}
 
   // addLog(log: any): void {
@@ -21,8 +24,25 @@ export class LogginService {
   // }
 
   async create(createLogginDto: LogginModel) {
-    const createLogEntity = this.logginRepository.create(createLogginDto);
-    await this.logginRepository.save(createLogEntity);
+    const { message, context, level, userId, createdAt, errorStack } =
+      createLogginDto;
+    const { userAgent, requestId, ip, method, url } = this.als.getStore();
+    const createLogEntity = this.logginRepository.create({
+      message,
+      context,
+      level,
+      userId,
+      createdAt,
+      errorStack,
+      userAgent,
+      requestId,
+      ip,
+      method,
+      url,
+    });
+
+    console.log(createLogEntity);
+    // await this.logginRepository.save(createLogEntity);
     return 'This action adds a new loggin';
   }
 
