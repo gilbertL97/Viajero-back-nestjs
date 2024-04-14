@@ -24,9 +24,9 @@ export class LogginService {
   // }
 
   async create(createLogginDto: LogginModel) {
-    const { message, context, level, userId, createdAt, errorStack } =
-      createLogginDto;
-    const { userAgent, requestId, ip, method, url } = this.als.getStore();
+    const { message, context, level, createdAt, errorStack } = createLogginDto;
+    const { userAgent, requestId, ip, method, url, userId } =
+      this.als.getStore();
     const createLogEntity = this.logginRepository.create({
       message,
       context,
