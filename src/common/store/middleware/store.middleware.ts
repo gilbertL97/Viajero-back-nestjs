@@ -3,8 +3,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common';
 import { AsyncLocalStorage } from 'async_hooks';
 import { Request, Response, NextFunction } from 'express';
 import { StoreModel } from '../model/Store.model';
-import { extract_user_data, jwtDecode } from 'src/common/utils/jwt/util.jwt';
-
+import { jwtDecode } from 'src/common/utils/jwt/util.jwt';
 @Injectable()
 export class storeData implements NestMiddleware {
   constructor(private readonly als: AsyncLocalStorage<StoreModel>) {}
@@ -14,13 +13,15 @@ export class storeData implements NestMiddleware {
     const userAgent = req.get('user-agent');
     const url = `${protocol}://${req.get('Host')}${originalUrl}`;
     const token = req.get('Authorization')?.replace('Bearer ', '');
-    if (token) console.log(jwtDecode(token));
+    let idUser = undefined;
+    if (token) idUser = jwtDecode(token);
     const store: StoreModel = {
       userAgent,
       requestId,
       ip,
       method,
       url,
+      userId: idUser.id,
     };
     this.als.run(store, () => {
       next();
