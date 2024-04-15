@@ -21,7 +21,7 @@ export class storeData implements NestMiddleware {
       ip,
       method,
       url,
-      userId: idUser.id,
+      userId: idUser?.id,
     };
     this.als.run(store, () => {
       next();
