@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LogginModel } from './dto/logginModel.dto';
 import { LogginRepository } from './repository/loggin.repository';
@@ -7,7 +7,7 @@ import { FilterLogginDto } from './dto/filter-loggin.dto';
 import { AsyncLocalStorage } from 'async_hooks';
 import { StoreModel } from 'src/common/store/model/Store.model';
 
-@Injectable()
+@Injectable({ scope: Scope.TRANSIENT })
 export class LogginService {
   constructor(
     @InjectRepository(LogginRepository)
