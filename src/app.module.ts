@@ -25,13 +25,14 @@ import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomConfigModule } from './config/config.module';
 import { storeData } from './common/store/middleware/store.middleware';
 import { LogginModule } from './loggin/loggin.module';
 import { RequestLogginMiddleware } from './loggin/middleware/requestLogginMiddleware';
 
 import { LogginResponseInterceptor } from './loggin/interceptor/responseLoggin.interceptor';
+import { HttpExceptionFilterLog } from './loggin/filter/ExceptionFilterLog';
 
 @Module({
   imports: [
@@ -66,6 +67,10 @@ import { LogginResponseInterceptor } from './loggin/interceptor/responseLoggin.i
     {
       provide: APP_INTERCEPTOR,
       useClass: LogginResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilterLog,
     },
   ],
 })
