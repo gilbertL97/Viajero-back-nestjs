@@ -10,6 +10,7 @@ import {
   IsNumberString,
   IsArray,
 } from 'class-validator';
+import { IsCustomDateBefore } from 'src/common/validation/decorator/customDateBefore.decorator';
 
 export class FilterContractorDto {
   @ApiProperty({
@@ -103,4 +104,24 @@ export class FilterContractorDto {
   @IsArray()
   @IsNumberString(undefined, { each: true })
   ids: number[];
+
+  @ApiProperty({
+    description: 'Rango de Fecha de Facturacion Inicial',
+    example: '2023-08-13',
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  dateInitFactRange: string;
+  @ApiProperty({
+    description: 'Rango de Fecha de Facturacion Final',
+    example: '2023-08-11',
+    required: false,
+  })
+  @IsCustomDateBefore('dateInitFactRange', {
+    message: 'Fecha inicio posterior a fecha de fin ',
+  })
+  @IsOptional()
+  @IsDateString()
+  dateEndFactRange: string;
 }

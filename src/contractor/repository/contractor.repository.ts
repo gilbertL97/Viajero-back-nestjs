@@ -5,6 +5,7 @@ import { ContractorResponseDto } from '../dto/contractor-response.dto';
 import { FilterContractorDto } from '../dto/filter-contractor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Configuration } from 'src/config/config.const';
+import { ContractorPolicyResDto } from '../dto/contractor-PolicyResume.dto';
 
 export class ContractorRepository extends Repository<ContratorEntity> {
   constructor(
@@ -20,7 +21,7 @@ export class ContractorRepository extends Repository<ContratorEntity> {
     const endDate = initMonth.add(1, 'month').format('YYYY-MM-DD');
     //convierto a string para trabajar con el a nivel de dbc
     const startDate = initMonth.format('YYYY-MM-DD');
-    const query = await this.createQueryBuilder('contractor')
+    const query = this.createQueryBuilder('contractor')
       .leftJoin(
         'contractor.travelers',
         'travelerEntity',
@@ -67,6 +68,46 @@ export class ContractorRepository extends Repository<ContratorEntity> {
     }
     return (await query.getMany()).filter((c) => c.travelers.length > 0);
   }
+  async policyOverview(filter: FilterContractorDto, id: number): Promise<any> {
+    // eslint-disable-next-line prefer-const
+    let { dateInitFactRange, dateEndFactRange, ids } = filter; //cambio la fecha a inicio del mes
+    console.log(ids);
+    if (!dateInitFactRange)
+      dateInitFactRange = dayjs(new Date())
+        .set('month', 0)
+        .set('date', 1)
+        .format('YYYY-MM-DD');
+    if (!dateEndFactRange)
+      dateEndFactRange = dayjs(new Date())
+        .set('month', 11)
+        .set('date', 31)
+        .format('YYYY-MM-DD');
+    const query = this.createQueryBuilder('contractor')
+      .select(['contractor.client', 'traveler.start_date'])
+      .addSelect('SUM(traveler.total_amount)', 'total_import')
+      .addSelect('COUNT(traveler.id)', 'total_travelers');
+
+    query.leftJoin('contractor.travelers', 'traveler');
+
+    query
+      .where('traveler.end_date_policy > :dateInit', {
+        dateInit: '2023-01-01',
+      })
+      .andWhere('traveler.start_date < :dateEnd', { dateEnd: '2024-01-01' });
+
+    query.groupBy('traveler.start_date').addGroupBy('contractor.client');
+    if (id) {
+      query.andWhere('contractor.id=:id', { id });
+    }
+    if (ids && !id) {
+      console.log(ids);
+      query.andWhereInIds(ids);
+    }
+    // return this.getTotal(
+    //   this.convertInObjectCOntractor(await query.getRawMany()),
+    // );
+    return this.returnContractorPolicyAndTotal(await query.getRawMany());
+  }
   convertInObjectCOntractor(list: any[]): ContractorResponseDto[] {
     return list
       .map((l) => {
@@ -94,5 +135,20 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       total_travelers += c.total_travelers;
     });
     return { contractors, total_amount, total_travelers };
+  }
+  returnContractorPolicyAndTotal(list: any[]) {
+    let totalTravelers = 0,
+      totalAmount = 0;
+    const contractors: ContractorPolicyResDto[] = list.map((l) => {
+      totalTravelers += +l.total_travelers;
+      totalAmount += +l.total_import;
+      return {
+        client: l.contractor_client as string,
+        start_date: l.traveler_start_date as string,
+        total_travelers: l.total_travelers as number,
+        total_import: l.total_import as number,
+      };
+    });
+    return { contractors, totalAmount, totalTravelers };
   }
 }

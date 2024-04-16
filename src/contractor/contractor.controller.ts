@@ -201,6 +201,14 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @Get('/policy_overview')
+  async getPolicyOverview(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+  ): Promise<any> {
+    console.log(filter);
+    return await this.contractService.getPolicyOverview(filter, user);
+  }
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
