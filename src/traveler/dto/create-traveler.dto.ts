@@ -10,7 +10,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { IsDateAfter } from './decorator/dateAfter.decorator';
+import { IsDateAfter } from '../../common/validation/decorator/dateAfter.decorator';
 
 export class CreateTravelerDto {
   @ApiProperty({
