@@ -24,26 +24,29 @@ export class LogginService {
   // }
 
   async create(createLogginDto: LogginModel) {
-    const { message, context, level, createdAt, errorStack } = createLogginDto;
-    const { userAgent, requestId, ip, method, url, userId } =
-      this.als.getStore();
-    const createLogEntity = this.logginRepository.create({
-      message,
-      context,
-      level,
-      userId,
-      createdAt,
-      errorStack,
-      userAgent,
-      requestId,
-      ip,
-      method,
-      url,
-    });
+    if (this.als.getStore()) {
+      const { message, context, level, createdAt, errorStack } =
+        createLogginDto;
+      const { userAgent, requestId, ip, method, url, userId } =
+        this.als.getStore();
+      const createLogEntity = this.logginRepository.create({
+        message,
+        context,
+        level,
+        userId,
+        createdAt,
+        errorStack,
+        userAgent,
+        requestId,
+        ip,
+        method,
+        url,
+      });
 
-    console.log(createLogEntity);
-    // await this.logginRepository.save(createLogEntity);
-    return 'This action adds a new loggin';
+      console.log(createLogEntity);
+      // await this.logginRepository.save(createLogEntity);
+      return 'This action adds a new loggin';
+    }
   }
 
   findAll(pag: PaginationDto, logginFilter: FilterLogginDto) {
