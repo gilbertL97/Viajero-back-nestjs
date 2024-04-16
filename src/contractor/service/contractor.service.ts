@@ -118,6 +118,15 @@ export class ContractorService {
       id = (await this.userService.getUser(user.id)).contractors[0].id;
     return await this.contractRepository.getDetailedTravelers(filter, id);
   }
+  async getPolicyOverview(
+    filter: FilterContractorDto,
+    user: UserEntity,
+  ): Promise<any> {
+    let id = undefined;
+    if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
+      id = (await this.userService.getUser(user.id)).contractors[0].id;
+    return this.contractRepository.policyOverview(filter, id);
+  }
   async exportAllContractorExcel(user: UserEntity) {
     const data = await this.getContrators(user);
     return this.contratctorExportService.exportExcel(data);
