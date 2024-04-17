@@ -206,7 +206,6 @@ export class ContractorController {
     @Query() filter: FilterContractorDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
-    console.log(filter);
     return await this.contractService.getPolicyOverview(filter, user);
   }
   @Roles(

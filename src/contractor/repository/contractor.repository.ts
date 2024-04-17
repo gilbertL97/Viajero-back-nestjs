@@ -71,7 +71,6 @@ export class ContractorRepository extends Repository<ContratorEntity> {
   async policyOverview(filter: FilterContractorDto, id: number): Promise<any> {
     // eslint-disable-next-line prefer-const
     let { dateInitFactRange, dateEndFactRange, ids } = filter; //cambio la fecha a inicio del mes
-    console.log(ids);
     if (!dateInitFactRange)
       dateInitFactRange = dayjs(new Date())
         .set('month', 0)
@@ -90,10 +89,12 @@ export class ContractorRepository extends Repository<ContratorEntity> {
     query.leftJoin('contractor.travelers', 'traveler');
 
     query
-      .where('traveler.end_date_policy > :dateInit', {
-        dateInit: '2023-01-01',
+      .where('traveler.end_date_policy > :dateInitFactRange', {
+        dateInitFactRange,
       })
-      .andWhere('traveler.start_date < :dateEnd', { dateEnd: '2024-01-01' });
+      .andWhere('traveler.start_date < :dateEndFactRange', {
+        dateEndFactRange,
+      });
 
     query.groupBy('traveler.start_date').addGroupBy('contractor.client');
     if (id) {
