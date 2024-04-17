@@ -51,4 +51,7 @@ export class DateHelper {
     // Devolver el nombre del mes correspondiente al número ingresado
     return meses[dayjs(date).month()];
   }
+  public static getFormatedDate(date: string) {
+    return dayjs(date).format('DD/MM/YYYY');
+  }
 }
