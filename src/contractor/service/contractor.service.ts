@@ -29,7 +29,7 @@ export class ContractorService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     @Inject(ContractorExportService)
-    private readonly contratctorExportService,
+    private readonly contratctorExportService: ContractorExportService,
   ) {}
   async getContrators(user: UserEntity): Promise<ContratorEntity[]> {
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
@@ -150,5 +150,9 @@ export class ContractorService {
   async exportDetailedPdf(filter: FilterContractorDto, user: UserEntity) {
     const data = await this.getDetailedContract(filter, user);
     return this.contratctorExportService.exportPdfDetailedContract(data);
+  }
+  async exportPolicyOverviewPdf(filter: FilterContractorDto, user: UserEntity) {
+    const data = await this.getPolicyOverview(filter, user);
+    return this.contratctorExportService.exportPdfPolicyOverview(data, filter);
   }
 }

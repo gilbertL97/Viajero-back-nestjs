@@ -201,13 +201,6 @@ export class ContractorController {
     });
     res.end(buffer);
   }
-  @Get('/policy_overview')
-  async getPolicyOverview(
-    @Query() filter: FilterContractorDto,
-    @GetUser() user: UserEntity,
-  ): Promise<any> {
-    return await this.contractService.getPolicyOverview(filter, user);
-  }
   @Roles(
     UserRole.ADMIN,
     UserRole.MARKAGENT,
@@ -223,6 +216,46 @@ export class ContractorController {
     @Res() res,
   ): Promise<void> {
     const buffer = await this.contractService.exportDetailedPdf(filter, user);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Resumen_Detallado.pdf',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
+  @Get('/policy_overview')
+  async getPolicyOverview(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+  ): Promise<any> {
+    return await this.contractService.getPolicyOverview(filter, user);
+  }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
+  @Get('/policy_overview/pdf')
+  async getPolicyOverviewPdf(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const buffer = await this.contractService.exportPolicyOverviewPdf(
+      filter,
+      user,
+    );
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Dispotition': 'attachment;Coberturas.pdf',
