@@ -4,6 +4,7 @@ import { ContratorEntity } from '../entity/contrator.entity';
 import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { DateHelper } from 'src/common/date/helper/date.helper';
+import { FilterContractorDto } from '../dto/filter-contractor.dto';
 
 @Injectable()
 export class ContractorExportService {
@@ -241,5 +242,40 @@ export class ContractorExportService {
       { property: 'coverage', label: 'Cobertura', width: 50 },
     ];
     return exportPdf(allTravelers, columns, 'Viajeros por Cliente');
+  }
+  exportPdfPolicyOverview(data: any, filter: FilterContractorDto) {
+    const { totalAmount, totalTravelers, contractors } = data;
+
+    const columns = [
+      { property: 'client', label: 'Nombre', width: 200, align: 'center' },
+      {
+        property: 'start_date',
+        label: 'Fecha de Inicio',
+        width: 100,
+        align: 'center',
+      },
+      {
+        property: 'total_travelers',
+        label: 'Cantidad de Viajeros',
+        width: 100,
+        align: 'center',
+      },
+      {
+        property: 'total_import',
+        label: 'Importe',
+        width: 100,
+        align: 'center',
+      },
+    ];
+    console.log(filter);
+    return exportPdf(
+      contractors,
+      columns,
+      'Resumen de Pólizas',
+      undefined,
+      undefined,
+      `Viajeros: ${totalTravelers}   Importe Total: $${totalAmount} 
+      Desde: ${DateHelper.getFormatedDate(filter.dateInitFactRange)} Hasta: ${DateHelper.getFormatedDate(filter.dateEndFactRange)}`,
+    );
   }
 }
