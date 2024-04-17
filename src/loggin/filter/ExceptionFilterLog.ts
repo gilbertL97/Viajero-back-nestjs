@@ -17,10 +17,15 @@ export class HttpExceptionFilterLog implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
+    const responseException = exception.getResponse();
+    const messageException =
+      typeof responseException == 'object'
+        ? 'message' in responseException && responseException.message
+        : responseException;
 
     // Guardar el error en el sistema de logs
     this.logsService.create({
-      message: exception.message,
+      message: `${exception.message}:${messageException}`,
       context: 'http-exception.filter',
       level: 'error',
       createdAt: new Date().toISOString(),
@@ -30,7 +35,7 @@ export class HttpExceptionFilterLog implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: exception.message,
+      message: messageException,
     });
   }
 }
