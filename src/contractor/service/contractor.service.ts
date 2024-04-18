@@ -155,4 +155,11 @@ export class ContractorService {
     const data = await this.getPolicyOverview(filter, user);
     return this.contratctorExportService.exportPdfPolicyOverview(data, filter);
   }
+  async exportPolicyOverviewExcel(
+    filter: FilterContractorDto,
+    user: UserEntity,
+  ) {
+    const data = await this.getPolicyOverview(filter, user);
+    return this.contratctorExportService.exportExcelPolicyOverview(data);
+  }
 }

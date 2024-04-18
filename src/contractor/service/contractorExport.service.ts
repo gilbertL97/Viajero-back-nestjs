@@ -1,3 +1,4 @@
+import { ContractorPolicyResDto } from './../dto/contractor-PolicyResume.dto';
 import { Injectable } from '@nestjs/common';
 import { ContratorEntity } from '../entity/contrator.entity';
 
@@ -267,7 +268,6 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
-    console.log(filter);
     return exportPdf(
       contractors,
       columns,
@@ -277,5 +277,22 @@ export class ContractorExportService {
       `Viajeros: ${totalTravelers}   Importe Total: $${totalAmount} 
       Desde: ${DateHelper.getFormatedDate(filter.dateInitFactRange)} Hasta: ${DateHelper.getFormatedDate(filter.dateEndFactRange)}`,
     );
+  }
+  exportExcelPolicyOverview(data: any) {
+    const { totalAmount, totalTravelers, contractors } = data;
+    const total = {
+      client: 'Total',
+      start_date: '-',
+      total_travelers: totalTravelers,
+      total_import: totalAmount,
+    };
+    contractors.push(total);
+    const columns = [
+      { key: 'client', header: 'Cliente' },
+      { key: 'start_date', header: 'Fecha Inicio', type: 'date' },
+      { key: 'total_travelers', header: 'Viajeros', type: 'number' },
+      { key: 'total_import', header: 'Importe', type: 'number' },
+    ];
+    return exportExcel(contractors, columns, 'Resumen de Pólizas');
   }
 }
