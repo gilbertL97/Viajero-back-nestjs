@@ -263,6 +263,24 @@ export class ContractorController {
     });
     res.end(buffer);
   }
+  @Get('/policy_overview/excel')
+  async getPolicyOverviewExcel(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const buffer = await this.contractService.exportPolicyOverviewPdf(
+      filter,
+      user,
+    );
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Get(':id')
