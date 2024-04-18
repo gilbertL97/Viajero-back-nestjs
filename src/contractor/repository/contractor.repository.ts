@@ -89,7 +89,7 @@ export class ContractorRepository extends Repository<ContratorEntity> {
     query.leftJoin('contractor.travelers', 'traveler');
 
     query
-      .where('traveler.end_date_policy > :dateInitFactRange', {
+      .where('traveler.start_date > :dateInitFactRange', {
         dateInitFactRange,
       })
       .andWhere('traveler.start_date < :dateEndFactRange', {
