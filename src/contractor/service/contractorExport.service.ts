@@ -1,4 +1,3 @@
-import { ContractorPolicyResDto } from './../dto/contractor-PolicyResume.dto';
 import { Injectable } from '@nestjs/common';
 import { ContratorEntity } from '../entity/contrator.entity';
 

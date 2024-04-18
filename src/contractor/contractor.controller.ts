@@ -269,7 +269,7 @@ export class ContractorController {
     @GetUser() user: UserEntity,
     @Res() res,
   ): Promise<void> {
-    const buffer = await this.contractService.exportPolicyOverviewPdf(
+    const buffer = await this.contractService.exportPolicyOverviewExcel(
       filter,
       user,
     );
