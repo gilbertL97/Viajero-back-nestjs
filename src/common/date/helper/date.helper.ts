@@ -54,4 +54,10 @@ export class DateHelper {
   public static getFormatedDate(date: string) {
     return dayjs(date).format('DD/MM/YYYY');
   }
+  public static getFirstDateOfYear(date: Date) {
+    return dayjs(date).set('month', 0).set('dates', 1).format('YYYY-MM-DD');
+  }
+  public static getLastDateOfYear(date: Date) {
+    return dayjs(date).set('month', 11).set('dates', 31).format('YYYY-MM-DD');
+  }
 }
