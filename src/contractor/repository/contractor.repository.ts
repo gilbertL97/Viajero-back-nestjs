@@ -82,7 +82,10 @@ export class ContractorRepository extends Repository<ContratorEntity> {
         .set('date', 31)
         .format('YYYY-MM-DD');
     const query = this.createQueryBuilder('contractor')
-      .select(['contractor.client', 'traveler.start_date'])
+      .select([
+        'contractor.client',
+        "to_char(traveler.start_date,'YYYY-MM-DD') as traveler_start_date",
+      ])
       .addSelect('SUM(traveler.total_amount)', 'total_import')
       .addSelect('COUNT(traveler.id)', 'total_travelers');
 
