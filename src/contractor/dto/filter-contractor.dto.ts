@@ -10,6 +10,7 @@ import {
   IsNumberString,
   IsArray,
 } from 'class-validator';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 import { IsDateBefore } from 'src/common/validation/decorator/dateBefore.decorator';
 import { IsRequiredIfExist } from 'src/common/validation/decorator/isRequiredIfExist';
 
@@ -107,7 +108,8 @@ export class FilterContractorDto {
   ids: number[];
 
   @ApiProperty({
-    description: 'Rango de Fecha de Facturacion Inicial',
+    description:
+      'Rango de Fecha de Facturacion Inicial el valor por defecto es el ultimo dia del año en curso',
     example: '2023-08-13',
     required: false,
   })
@@ -116,14 +118,15 @@ export class FilterContractorDto {
   })
   @IsOptional()
   @IsDateString()
-  dateInitFactRange: string;
+  dateInitFactRange: string = DateHelper.getFirstDateOfYear(new Date());
   @ApiProperty({
-    description: 'Rango de Fecha de Facturacion Final',
+    description:
+      'Rango de Fecha de Facturacion Final el valor por defecto es el ultimo dia del año en curso',
     example: '2023-08-11',
     required: false,
   })
   @IsRequiredIfExist('dateInitFactRange')
   @IsOptional()
   @IsDateString()
-  dateEndFactRange: string;
+  dateEndFactRange: string = DateHelper.getLastDateOfYear(new Date());
 }
