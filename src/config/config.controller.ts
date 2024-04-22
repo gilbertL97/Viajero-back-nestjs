@@ -6,10 +6,17 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CustomConfigService } from './service/config.service';
 import { UpdateConfigDto } from './dto/update-config.dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.auth.guard';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
+import { UserRole } from 'src/user/user.role';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN)
 @Controller('config')
 export class ConfigController {
   constructor(private readonly configService: CustomConfigService) {}
