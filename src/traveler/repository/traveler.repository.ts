@@ -147,6 +147,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       coverage,
       state,
       idContractors,
+      effective_date,
     } = filter;
 
     if (user && user.contractors[0]) contractor = user.contractors[0].id;
@@ -183,10 +184,13 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       query.andWhere('viajeros.start_date<:start_date_end', {
         start_date_end,
       });
-    if (state) {
-      const now = dayjs(new Date()).format('YYYY-MM-DD');
-      query.andWhere('viajeros.end_date_policy >=:now', { now }); //para q sea vigente debe ser mayor la fecha fin a hoy
-      query.andWhere('viajeros.start_date<=:now', { now }); // y la fecha fin mayor a la de hoy //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
+    if (effective_date) {
+      query.andWhere('viajeros.end_date_policy >=:effective_date', {
+        effective_date,
+      }); //para q sea vigente debe ser mayor la fecha fin a hoy
+      query.andWhere('viajeros.start_date<=:effective_date', {
+        effective_date,
+      }); // y la fecha fin mayor a la de hoy //   tengo q arreglar este problema con el state voy a seguri por ahora en el pdf*/
 
       //query.andWhere('viajeros.state  =:state ', { state });
     }

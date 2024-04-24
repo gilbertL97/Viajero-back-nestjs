@@ -71,4 +71,8 @@ export class FilterTravelerDto {
   @IsArray()
   @IsNumberString(undefined, { each: true })
   idContractors: number[];
+
+  @IsOptional()
+  @IsDateString()
+  effective_date: Date;
 }
