@@ -49,6 +49,7 @@ async function setDefaultFilePath(config: ConfigService) {
     findOrCreateConfig(Configuration.TEMP_FILE, config),
     findOrCreateConfig(Configuration.FIlES_PROCESSED_PATH, config),
     findOrCreateConfig(Configuration.FILES_LOGS_PATH, config),
+    findOrCreateConfig(Configuration.FIlES_UNPROCESSED_PATH, config),
   ]);
 }
 async function findOrCreateConfig(key: string, config: ConfigService) {
