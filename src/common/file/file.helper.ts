@@ -40,9 +40,21 @@ export class FileHelper {
     fs.rmSync(folder, { recursive: true, force: true });
   }
   public static async moveFile(newq: string, old: string): Promise<void> {
-    fs.rename(old, newq, (error) => {
+    await fs.rename(old, newq, (error) => {
       if (error) throw error;
     });
+  }
+  public static async moveFileAndCreateRoute(
+    dirProce: string,
+    newq: string,
+    old: string,
+  ): Promise<void> {
+    //si el archoivo no esta
+    await fsPromis.stat(dirProce).catch(async (error) => {
+      if (error.code === 'ENOENT')
+        await fsPromis.mkdir(dirProce, { recursive: true });
+    });
+    await fsPromis.rename(old, newq);
   }
   public static async deletFile(path: string): Promise<void> {
     fs.rmSync(path);
@@ -78,7 +90,6 @@ export class FileHelper {
     if (!this.existFileOrFolder(path)) this.createFolderPath(path);
     try {
       await fsPromis.writeFile(dir, data);
-      console.log('Data has been written to' + dir);
     } catch (err) {
       console.error('Error while writing data to txt file:', err);
     }
