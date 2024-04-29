@@ -28,7 +28,7 @@ export class AutoImportFileService {
   async autoImportFiles() {
     console.log('Called when the current second is 45');
     const userSystem = await this.userService.findUserByName('system'); //usuario del sistema}
-    const pathUnprocess = await this.configService.findConfigByKEy(
+    const filesPath = await this.configService.findConfigByKEy(
       Configuration.FILES_PATH,
     );
     const pathToLogs = await this.configService.findConfigByKEy(
@@ -37,15 +37,19 @@ export class AutoImportFileService {
     const procecedFiles = await this.configService.findConfigByKEy(
       Configuration.FIlES_PROCESSED_PATH,
     );
+    const unprocesedFiles = await this.configService.findConfigByKEy(
+      Configuration.FIlES_UNPROCESSED_PATH,
+    );
     await this.importFiles(
       userSystem,
-      pathUnprocess.value,
+      filesPath.value,
       pathToLogs.value,
       procecedFiles.value,
+      unprocesedFiles.value,
     );
   }
   async manuallyImportFiles(user: UserEntity) {
-    const pathUnprocess = await this.configService.findConfigByKEy(
+    const filesPath = await this.configService.findConfigByKEy(
       Configuration.FILES_PATH,
     );
     const pathToLogs = await this.configService.findConfigByKEy(
@@ -58,11 +62,15 @@ export class AutoImportFileService {
     const procecedFiles = await this.configService.findConfigByKEy(
       Configuration.FIlES_PROCESSED_PATH,
     );
+    const unprocesedFiles = await this.configService.findConfigByKEy(
+      Configuration.FIlES_UNPROCESSED_PATH,
+    );
     await this.importFiles(
       user,
-      pathUnprocess.value,
+      filesPath.value,
       pathToLogs.value,
       procecedFiles.value,
+      unprocesedFiles.value,
       tempFile.value,
     );
     return this.compressFile(tempFile.value);
@@ -70,9 +78,10 @@ export class AutoImportFileService {
 
   private async importFiles(
     user: UserEntity,
-    pathUnprocess: string,
+    filesPath: string,
     pathToLogs: string,
-    procecedFiles: string,
+    procesedFiles: string,
+    unprocesedFiles: string,
     pathTemp?: string,
   ) {
     const contractors = await this.contractorService.getContratorsActive();
@@ -84,9 +93,13 @@ export class AutoImportFileService {
     ]);
     for (const contractor of contractors) {
       //direcciones de cada carpeta de los contratantes
-      const unproceced = FileHelper.joinPath(pathUnprocess, contractor.file);
+      const unproceced = FileHelper.joinPath(filesPath, contractor.file);
       const pathLogs = FileHelper.joinPath(pathToLogs, contractor.file);
-      const procecedFile = FileHelper.joinPath(procecedFiles, contractor.file);
+      const procecedFile = FileHelper.joinPath(procesedFiles, contractor.file);
+      const unprocecedFile = FileHelper.joinPath(
+        unprocesedFiles,
+        contractor.file,
+      );
       //obtengo todos los archivos de ese contratante}
       const files = FileHelper.getAllFilesInFolder(unproceced);
 
@@ -94,6 +107,7 @@ export class AutoImportFileService {
         //uno las direcciones de cada archivo con las direcciones de cada contratante
         const pathFile = FileHelper.joinPath(unproceced, file);
         const pathtoProceced = FileHelper.joinPath(procecedFile, file);
+        const pathToUnprocesed = FileHelper.joinPath(unprocecedFile, file);
         // cargo todos los paises clientes y planes en memoria
 
         //llamo al metodo para cargar viajeros en los archivos
@@ -110,11 +124,18 @@ export class AutoImportFileService {
           log,
           FileHelper.joinPath(pathTemp, contractor.file),
         );
-        FileHelper.moveFileAndCreateRoute(
-          procecedFile,
-          pathtoProceced,
-          pathFile,
-        );
+        if (log && log.containErrors)
+          FileHelper.moveFileAndCreateRoute(
+            unprocecedFile,
+            pathToUnprocesed,
+            pathFile,
+          );
+        else
+          FileHelper.moveFileAndCreateRoute(
+            procecedFile,
+            pathtoProceced,
+            pathFile,
+          );
       }
     }
   }

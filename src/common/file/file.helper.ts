@@ -45,14 +45,15 @@ export class FileHelper {
     });
   }
   public static async moveFileAndCreateRoute(
-    dirProce: string,
+    dir: string,
     newq: string,
     old: string,
   ): Promise<void> {
-    //si el archoivo no esta
-    await fsPromis.stat(dirProce).catch(async (error) => {
+    //si el la direccion no existe
+    //crea la ruta
+    await fsPromis.stat(dir).catch(async (error) => {
       if (error.code === 'ENOENT')
-        await fsPromis.mkdir(dirProce, { recursive: true });
+        await fsPromis.mkdir(dir, { recursive: true });
     });
     await fsPromis.rename(old, newq);
   }
