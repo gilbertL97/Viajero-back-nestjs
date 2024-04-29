@@ -27,8 +27,9 @@ export class ValidateDateBefore implements ValidatorConstraintInterface {
   validate(value: string, args: ValidationArguments) {
     const [date_start] = args.constraints;
     const date_before = (args.object as Date)[date_start];
-    return dayjs(value, 'DD/MM/YYYY').isBefore(
-      dayjs(date_before, 'DD/MM/YYYY'),
+    return (
+      dayjs(value, 'DD/MM/YYYY').isBefore(dayjs(date_before, 'DD/MM/YYYY')) ||
+      dayjs(value, 'DD/MM/YYYY').isSame(dayjs(date_before, 'DD/MM/YYYY'))
     );
   }
 
