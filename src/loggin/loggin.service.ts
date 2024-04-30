@@ -43,7 +43,6 @@ export class LogginService {
         url,
       });
 
-      console.log(createLogEntity);
       // await this.logginRepository.save(createLogEntity);
       return 'This action adds a new loggin';
     }
