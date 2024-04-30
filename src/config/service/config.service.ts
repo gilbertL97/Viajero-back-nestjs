@@ -1,10 +1,11 @@
+import { ConfigEntity } from './../entities/config.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { UpdateConfigDto } from '../dto/update-config.dto';
-import { ConfigEntity } from '../entities/config.entity';
 import { Configuration } from '../config.const';
+import { CreateConfigDto } from '../dto/create-config.dto';
 @Injectable()
 export class CustomConfigService {
   constructor(
@@ -40,5 +41,10 @@ export class CustomConfigService {
       where: { key: name },
     });
     if (key) return key;
+  }
+  async insertConfig(configDto: CreateConfigDto) {
+    const configEntity = this.configRepository.create(configDto);
+    configEntity.value.replace(/\\/g, '/');
+    await this.configRepository.save(configEntity);
   }
 }
