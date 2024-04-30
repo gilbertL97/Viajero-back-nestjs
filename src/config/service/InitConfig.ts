@@ -20,7 +20,6 @@ async function userDefault(
   const defaultUser = await configUser.findUserByName(
     config.get<string>(Configuration.DEFAULT_ADMIN_USER),
   );
-  console.log(defaultUser);
   if (!defaultUser)
     await configUser.createUser({
       name: config.get<string>(Configuration.DEFAULT_ADMIN_USER),

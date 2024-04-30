@@ -104,7 +104,6 @@ export class ContractorRepository extends Repository<ContratorEntity> {
       query.andWhere('contractor.id=:id', { id });
     }
     if (ids && !id) {
-      console.log(ids);
       query.andWhereInIds(ids);
     }
     // return this.getTotal(

@@ -59,7 +59,6 @@ export class AuthService {
   async logout(token: string) {
     const user = await this.verifyRefreshToken(token);
     delete user.refresh_token;
-    console.log(user);
     return await this.userService.updateRefreshToken(user.id, '').catch(() => {
       return new NotFoundException('Oops ha ocurrido un problema');
     }); //borrando el token
