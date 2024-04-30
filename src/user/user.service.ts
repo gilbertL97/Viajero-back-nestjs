@@ -148,7 +148,7 @@ export class UserService {
   }
   async findUserByName(name: string): Promise<UserEntity> {
     await this.loggingService.create({
-      message: 'Eliminando usuario',
+      message: 'Buscando el Usuario por nombre',
       context: 'UserService',
       level: 'info',
       createdAt: new Date().toISOString(),
