@@ -34,6 +34,8 @@ export class ContractorController {
     UserRole.MARKAGENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
+    UserRole.CLIENT,
+    UserRole.CONSULTAGENT,
   )
   @Get()
   async getContracts(@GetUser() user: UserEntity): Promise<ContratorEntity[]> {
