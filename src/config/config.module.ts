@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigEntity } from './entities/config.entity';
 import { ConfigService } from '@nestjs/config';
 import { Configuration } from './config.const';
+import defaultConfig from './service/InitConfig';
+import { UserService } from 'src/user/user.service';
 //import defaultConfig from './service/InitConfig';
 @Module({
   controllers: [ConfigController],
@@ -17,8 +19,16 @@ import { Configuration } from './config.const';
   exports: [CustomConfigService],
 })
 export class CustomConfigModule implements OnModuleInit {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private configUser: UserService,
+    private customConfigService: CustomConfigService,
+  ) {}
   async onModuleInit() {
-    // defaultConfig(this.configService);
+    defaultConfig(
+      this.configService,
+      this.configUser,
+      this.customConfigService,
+    );
   }
 }
