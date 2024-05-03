@@ -44,9 +44,15 @@ export class FileHelper {
       if (error) throw error;
     });
   }
+
+  public static async moveFileAsync(newq: string, old: string): Promise<void> {
+    await fsPromis.rename(old, newq).catch((error) => {
+      if (error) throw error;
+    });
+  }
   public static async moveFileAndCreateRoute(
     dir: string,
-    newq: string,
+    newq: string,//directoriy with files
     old: string,
   ): Promise<void> {
     //si el la direccion no existe
@@ -57,8 +63,22 @@ export class FileHelper {
     });
     await fsPromis.rename(old, newq);
   }
+  public static async moveAndOverrideFile(
+    newdir: string,
+    oldDir: string,
+    dirWithFile?: string,
+  ): Promise<void> {
+    //si el archivo existe
+    const exists = await this.existFileOrFolder(dirWithFile);
+    if (exists) {
+      //borra el archivo
+      //mueve el archivo
+      this.deletFile(dirWithFile);
+      this.moveFileAsync(dirWithFile, oldDir);
+    } else this.moveFileAndCreateRoute(newdir, dirWithFile, oldDir);
+  }
   public static async deletFile(path: string): Promise<void> {
-    fs.rmSync(path);
+    await fsPromis.unlink(path);
   }
   public static async deleteDir(path: string) {
     fs.rmSync(path, { recursive: true, force: true });
@@ -83,12 +103,19 @@ export class FileHelper {
   public static joinPath(path1: string, path2: string) {
     return join(path1, path2);
   }
-  public static existFileOrFolder(path: string): boolean {
-    return fs.existsSync(path);
+  public static async existFileOrFolder(path: string): Promise<boolean> {
+    try {
+      await fsPromis.access(path);
+      // Path exists
+      return true;
+    } catch {
+      // Path does not exist
+      return false;
+    }
   }
   public static async writeIntxt(data: any, fileName: string, path: string) {
     const dir = join(path, `${fileName}.txt`);
-    if (!this.existFileOrFolder(path)) this.createFolderPath(path);
+    if (!(await this.existFileOrFolder(path))) this.createFolderPath(path);
     try {
       await fsPromis.writeFile(dir, data);
     } catch (err) {
