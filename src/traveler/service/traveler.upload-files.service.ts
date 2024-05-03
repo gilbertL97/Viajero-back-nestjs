@@ -83,7 +83,7 @@ export class TravelerUploadFilesService {
       file.originalname,
     );
 
-    //4-valido para saber si hay errores primero
+    //4-valido para saber si hay errores primero 
     const errors = await this.validateTravelersErrors(travelers, coverages);
     if (errors) {
       //si hay errores los muevo a la carpeta de no procesados
@@ -105,7 +105,6 @@ export class TravelerUploadFilesService {
       client,
       file.originalname,
       userEntity,
-      [procecedFolder, file.path, procecedFiles],
     );
   }
   async processOneFile(
@@ -194,7 +193,6 @@ export class TravelerUploadFilesService {
     client: ContratorEntity,
     file: string,
     user: UserEntity,
-    dir?: string[],
   ): Promise<ResponseErrorOrWarningDto | void> {
     const createTraveler = new CreateTravelerDto();
     const warn: FileErrorsTravelerDto[] = [];
@@ -267,9 +265,7 @@ export class TravelerUploadFilesService {
     }
     if (travelersFile.length == 0) {
       this.fileService.remove(file2.id);
-      if (dir) await FileHelper.deletFile(dir[1]);
     } else {
-      if (dir) await FileHelper.moveAndOverrideFile(dir[0], dir[1], dir[2]);
     }
 
     if (warn.length > 0) {
