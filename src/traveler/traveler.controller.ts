@@ -241,6 +241,35 @@ export class TravelerController {
     UserRole.CONSULT,
     UserRole.CONSULTAGENT,
   )
+  @Get('/manually_import')
+  async getTravelersImportManually(
+    @GetUser() user: UserEntity,
+    @Query() pag: PaginationDto,
+    @Query() travelerFilter: FilterTravelerDto,
+    @Res() res,
+  ): Promise<void> {
+    travelerFilter.empty_file = true;
+    const buffer = await this.travelerService.getTravelerExcel(
+      travelerFilter,
+      user,
+    );
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
+    });
+    res.end(buffer);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
   @Get(':id')
   async getTraveler(
     //@GetUser() user: UserEntity,
