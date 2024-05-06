@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, TransformFnParams } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
@@ -7,6 +8,9 @@ import {
   IsNumberString,
   IsOptional,
   IsBooleanString,
+  isEmpty,
+  IsEmpty,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateCoverageDto {
@@ -59,8 +63,11 @@ export class CreateCoverageDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
-  @MinLength(4)
+  @MinLength(3)
   @MaxLength(50)
+  @Transform(({ value }: TransformFnParams) =>
+    value ? value.trim() : undefined,
+  )
+  @ValidateIf((o) => o.name && o.name.trim().length > 0)
   config_string: string;
 }
