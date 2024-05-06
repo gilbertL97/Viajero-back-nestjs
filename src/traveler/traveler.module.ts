@@ -12,6 +12,7 @@ import { TravelerUploadFilesService } from './service/traveler.upload-files.serv
 import { FileModule } from 'src/file/file.module';
 import { TravelerEntity } from './entity/traveler.entity';
 import { Configuration } from 'src/config/config.const';
+import { CustomConfigModule } from 'src/config/config.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { Configuration } from 'src/config/config.const';
     forwardRef(() => CountryModule),
     forwardRef(() => UserModule),
     FileModule,
+    CustomConfigModule,
   ],
   controllers: [TravelerController],
   providers: [

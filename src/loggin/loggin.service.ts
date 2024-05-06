@@ -43,8 +43,13 @@ export class LogginService {
         url,
       });
 
+<<<<<<< HEAD
       // await this.logginRepository.save(createLogEntity);
       return 'This action adds a new loggin';
+=======
+      console.log(createLogEntity);
+      await this.logginRepository.save(createLogEntity);
+>>>>>>> b5c009de30a5436f7a0bea72d4847304f1f44ca2
     }
   }
 
