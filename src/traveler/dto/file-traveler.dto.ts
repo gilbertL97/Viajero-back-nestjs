@@ -98,7 +98,7 @@ export class FileTravelerDto {
 
   @IsOptional({ groups: ['warnings'] })
   @IsString({ groups: ['warnings'] })
-  @Length(4, 20, {
+  @Length(3, 20, {
     groups: ['warnings'],
     message: 'No se encuentra entre la longitud de letras permitidas',
   })
