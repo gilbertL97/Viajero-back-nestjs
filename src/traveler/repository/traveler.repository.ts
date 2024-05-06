@@ -146,6 +146,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       origin_country,
       coverage,
       state,
+      empty_file,
       idContractors,
       effective_date,
     } = filter;
@@ -194,7 +195,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
 
       //query.andWhere('viajeros.state  =:state ', { state });
     }
-
+    if (empty_file) query.andWhere('viajeros.file IS NULL');
     return query
       .leftJoinAndSelect('viajeros.nationality', 'CountryEntity')
       .leftJoinAndSelect('viajeros.origin_country', 'CountryEntitys')

@@ -3,6 +3,8 @@
 /node_modules
 /public
 .env
+.db
+Viajero.db
 # Logs
 logs
 *.log
