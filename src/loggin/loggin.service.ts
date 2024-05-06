@@ -42,29 +42,8 @@ export class LogginService {
         method,
         url,
       });
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       // await this.logginRepository.save(createLogEntity);
       return 'This action adds a new loggin';
-=======
-      console.log(createLogEntity);
-      await this.logginRepository.save(createLogEntity);
->>>>>>> b5c009de30a5436f7a0bea72d4847304f1f44ca2
-=======
-      console.log(createLogEntity);
-      await this.logginRepository.save(createLogEntity);
->>>>>>> b5c009de30a5436f7a0bea72d4847304f1f44ca2
-=======
-      console.log(createLogEntity);
-      await this.logginRepository.save(createLogEntity);
->>>>>>> b5c009de30a5436f7a0bea72d4847304f1f44ca2
-=======
-      console.log(createLogEntity);
-      await this.logginRepository.save(createLogEntity);
->>>>>>> f286330 (gaurdando en la bd de logs)
     }
   }
 
