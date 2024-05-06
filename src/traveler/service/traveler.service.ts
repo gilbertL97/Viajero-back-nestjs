@@ -85,7 +85,13 @@ export class TravelerService {
   async findOne(id: string): Promise<TravelerEntity> {
     const traveler = await this.travelerRepository.findOne({
       where: { id: id },
-      relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+      relations: [
+        'coverage',
+        'contractor',
+        'origin_country',
+        'nationality',
+        'file',
+      ],
     });
     //await new Promise((resolve) => setTimeout(resolve, 5000));
     if (!traveler) throw new NotFoundException('The traveler does not exist');
@@ -116,7 +122,13 @@ export class TravelerService {
       coverage = await this.coverageService.getCoverage(
         updateTraveler.coverage,
       );
-    return this.travelerRepository.updateTraveler(updateTraveler, coverage);
+    return this.travelerRepository
+      .updateTraveler(updateTraveler, coverage)
+      .catch((error) => {
+        if (error.code == 23505)
+          throw new BadRequestException('Viajero duplicado');
+        throw new BadRequestException('error in database');
+      });
   }
 
   async remove(id: string): Promise<TravelerEntity> {
