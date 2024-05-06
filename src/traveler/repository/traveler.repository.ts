@@ -92,7 +92,7 @@ export class TravelerRepository extends Repository<TravelerEntity> {
   async updateTraveler(
     updateTraveler: TravelerEntity,
     coverage: CoverageEntity,
-  ): Promise<TravelerEntity> {
+  ): Promise<any> {
     if (
       updateTraveler.end_date_policy !== undefined && //tuve qhacer este cambio xq cuando number_high_risk_days era 0 no me cogia
       updateTraveler.start_date !== undefined &&
@@ -118,7 +118,13 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         updateTraveler.amount_days_high_risk,
       );
     }
-    return await this.save(updateTraveler);
+    return await this.update(updateTraveler.id, updateTraveler).catch(
+      (error) => {
+        if (error.code == 23505)
+          throw new RepeatTravelerError('duplicado', error.code);
+        throw new BadRequestException('Ha Ocurrido un error');
+      },
+    );
   }
   async finOneTravelerWithCoverage(
     coverageOption: CoverageEntity,
