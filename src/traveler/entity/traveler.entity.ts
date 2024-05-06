@@ -94,8 +94,9 @@ export class TravelerEntity extends BaseEntity {
     else this.state = false;
   }
   @BeforeInsert()
+  @BeforeUpdate()
   makeId() {
-    // la llave primaria es el pasaporte + fecha de comienzo +mas la fecha de fin si se repite hay um error
+    // la llave primaria es el pasaporte + fecha de comienzo +el nombre si se repite hay um error
     this.id =
       this.passport +
       new Date(this.start_date).toISOString().slice(0, 10) +
