@@ -94,12 +94,16 @@ export class ContractorService {
     const traveler =
       await this.travelerService.findOneTravelerWithContractor(contractor);
     // console.log(traveler);
+    //si no tiene viajeros se elimina
     if (!traveler) {
       const deleted = await this.contractRepository.remove(contractor);
       //FileHelper.deletFolder('contractor', deleted.file);
       return deleted;
     }
+    //si tiene viajeros no se elimina se desactiva y
     contractor.isActive = false;
+    //se desactivan los usuarios de ese client
+    await this.userService.disableUser(contractor.users);
     await this.contractRepository.save(contractor);
     throw new ConflictException('cant delete the Contractor');
   }
