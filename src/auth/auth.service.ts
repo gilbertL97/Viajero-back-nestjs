@@ -17,7 +17,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.findUserByName(username);
-    if (user && (await compare(password, user.password))) {
+    if (user && (await compare(password, user.password)) && user.active) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, active, ...result } = user;
       return result;
@@ -45,7 +45,7 @@ export class AuthService {
     try {
       const payload = await this.jwtService.verify(token);
       const user = await this.userService.getToken(payload.id);
-      if (user.refresh_token !== token)
+      if (user.refresh_token !== token && user.active == false)
         throw new ForbiddenException('Invalid refresh token');
       return user;
     } catch (error) {
