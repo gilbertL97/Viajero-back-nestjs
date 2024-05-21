@@ -18,12 +18,14 @@ import { CreateCoverageDto } from './dto/create-coverage.dto';
 import { UpdateCoverageDto } from './dto/update-coverage.dto';
 import { CoverageEntity } from './entities/coverage.entity';
 import { Configuration } from 'src/config/config.const';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class CoverageService {
   constructor(
     @InjectRepository(CoverageEntity, Configuration.POSTGRESCONNECT)
     private readonly coverageRepository: Repository<CoverageEntity>,
+    private readonly loggingService: LogginService,
     @Inject(forwardRef(() => TravelerService))
     private readonly travelerService: TravelerService,
   ) {}
@@ -35,7 +37,8 @@ export class CoverageService {
     const coverage = this.coverageRepository.create(createCoverageDto);
     if (file) coverage.benefitTable = file.filename;
     if (coverage.daily) coverage.number_of_days = null;
-    else if (coverage.number_of_days == null) coverage.number_of_days = 30; // puse por defecto 30 dias
+    else if (coverage.number_of_days == null) coverage.number_of_days = 30; // puse por defecto 30 dias\
+
     const newCoverage = await this.coverageRepository
       .save(coverage)
       .catch(() => {
@@ -45,6 +48,12 @@ export class CoverageService {
           );
         throw new BadRequestException('duplicate Name or File');
       });
+    await this.loggingService.create({
+      message: `Creando una nueva cobertura con id ${newCoverage.id}`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     if (newCoverage.benefitTable)
       FileHelper.moveFile(
         join(FileHelper.uploadsPath, 'coverages', newCoverage.benefitTable),
@@ -54,12 +63,30 @@ export class CoverageService {
   }
 
   async getCoverages(): Promise<CoverageEntity[]> {
+    await this.loggingService.create({
+      message: `Obteniendo las coberturas`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return this.coverageRepository.find();
   }
   async getCoveragesActives(): Promise<CoverageEntity[]> {
+    await this.loggingService.create({
+      message: `Obteniendo las coberturas activas`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return this.coverageRepository.find({ where: { isActive: true } });
   }
   async getCoverage(id: number): Promise<CoverageEntity> {
+    await this.loggingService.create({
+      message: `Obteniendo la cobertura con id ${id}`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     const coverage = await this.coverageRepository.findOne({
       where: { id: id },
     });
@@ -97,6 +124,12 @@ export class CoverageService {
         join(FileHelper.uploadsPath, file.filename),
       );
     }
+    await this.loggingService.create({
+      message: `Actualizando la cobertura con id ${id}`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return coverageSaved;
   }
 
@@ -114,6 +147,12 @@ export class CoverageService {
             deletedCoverage.benefitTable,
           ),
         );
+      await this.loggingService.create({
+        message: `ELiminando la cobertura con id ${id}`,
+        context: 'Coverage Service',
+        level: 'info',
+        createdAt: new Date().toISOString(),
+      });
       return deletedCoverage;
     }
     coverage.isActive = false;
@@ -121,7 +160,7 @@ export class CoverageService {
     throw new ConflictException('cant delete the Coverage');
   }
 
-  exportExcel(coverage: CoverageEntity[]) {
+  async exportExcel(coverage: CoverageEntity[]) {
     const columns = [
       { key: 'name', header: 'Nombre' },
       {
@@ -149,9 +188,15 @@ export class CoverageService {
         header: 'Cadena de Configuracion',
       },
     ];
+    await this.loggingService.create({
+      message: `Exportando las coberturas a Excel`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return exportExcel(coverage, columns, 'Covertura');
   }
-  exportToPdf(coverage: CoverageEntity[]) {
+  async exportToPdf(coverage: CoverageEntity[]) {
     const columns = [
       { label: 'Nombre', property: 'name', width: 100 },
       {
@@ -189,6 +234,12 @@ export class CoverageService {
         width: 100,
       },
     ];
+    await this.loggingService.create({
+      message: `Exportando las coberturas a PDF`,
+      context: 'Coverage Service',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return exportPdf(coverage, columns, 'Cobertura');
   }
 }
