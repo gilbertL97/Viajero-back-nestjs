@@ -159,7 +159,10 @@ export class UserService {
       .addSelect('usuarios.password')
       .getOne();
   }
-
+  async disableUser(users: UserEntity[]): Promise<void> {
+    users.map((user) => (user.active = false));
+    await this.userRepository.save(users);
+  }
   async insertClientUser(
     idContract: string,
     user: UserEntity,
