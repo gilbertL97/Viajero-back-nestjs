@@ -5,9 +5,11 @@ import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { DateHelper } from 'src/common/date/helper/date.helper';
 import { FilterContractorDto } from '../dto/filter-contractor.dto';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class ContractorExportService {
+  constructor(private readonly loggingService: LogginService) {}
   async exportExcel(contractor: ContratorEntity[]) {
     const columns = [
       { key: 'client', header: 'Nombre' },
@@ -36,6 +38,7 @@ export class ContractorExportService {
         header: 'Estado',
       },
     ];
+    await this.log('Exportando a Excel los contratantes ');
     return exportExcel(contractor, columns, 'Clientes');
   }
 
@@ -63,9 +66,10 @@ export class ContractorExportService {
         header: 'Importe',
       },
     ];
+    await this.log('Exportando a Excel Facturacion Mensual');
     return exportExcel(contractor.contractors, columns, 'Clientes');
   }
-  exportExcelDetailedContract(data: ContratorEntity[]) {
+  async exportExcelDetailedContract(data: ContratorEntity[]) {
     let allTravelers = [];
     data.map((contractor) => {
       allTravelers = allTravelers.concat(contractor.travelers);
@@ -121,9 +125,10 @@ export class ContractorExportService {
 
       { key: 'coverage', header: 'Cobertura' },
     ];
+    await this.log('Exportando a Excel  Facturacion detallada');
     return exportExcel(allTravelers, columns, 'Viajeros por Cliente');
   }
-  exportAllContractorToPdf(contractor: ContratorEntity[]) {
+  async exportAllContractorToPdf(contractor: ContratorEntity[]) {
     const columns = [
       { property: 'client', label: 'Nombre', width: 100 },
       {
@@ -154,9 +159,10 @@ export class ContractorExportService {
         width: 50,
       },
     ];
+    await this.log('Exportando a PDF los contratantes');
     return exportPdf(contractor, columns, 'Clientes');
   }
-  exportPdfInvoicing(contractor: any, date: Date) {
+  async exportPdfInvoicing(contractor: any, date: Date) {
     //creo un objeto nuevo para q al final se agrege una fila con los totales
     const { total_amount, total_travelers } = contractor;
     const total = {
@@ -186,6 +192,7 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
+    await this.log('Exportando a PDF Facturacion');
     const month = DateHelper.getMonthByDate(date);
     return exportPdf(
       contractor.contractors,
@@ -196,7 +203,7 @@ export class ContractorExportService {
       `Viajeros: ${total_travelers}    Importe Total: $${total_amount}    Mes: ${month}`,
     );
   }
-  exportPdfDetailedContract(data: ContratorEntity[]) {
+  async exportPdfDetailedContract(data: ContratorEntity[]) {
     let allTravelers = [];
     data.map((contractor) => {
       allTravelers = allTravelers.concat(contractor.travelers);
@@ -241,9 +248,10 @@ export class ContractorExportService {
 
       { property: 'coverage', label: 'Cobertura', width: 50 },
     ];
+    await this.log('Exportando a PDF Facturacion Detallada');
     return exportPdf(allTravelers, columns, 'Viajeros por Cliente');
   }
-  exportPdfPolicyOverview(data: any, filter: FilterContractorDto) {
+  async exportPdfPolicyOverview(data: any, filter: FilterContractorDto) {
     const { totalAmount, totalTravelers, contractors } = data;
 
     const columns = [
@@ -267,6 +275,7 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
+    await this.log('Exportando a PDF Resumen Poliza');
     return exportPdf(
       contractors,
       columns,
@@ -277,7 +286,7 @@ export class ContractorExportService {
       Desde: ${DateHelper.getFormatedDate(filter.dateInitFactRange)} Hasta: ${DateHelper.getFormatedDate(filter.dateEndFactRange)}`,
     );
   }
-  exportExcelPolicyOverview(data: any) {
+  async exportExcelPolicyOverview(data: any) {
     const { totalAmount, totalTravelers, contractors } = data;
     const total = {
       client: 'Total',
@@ -292,6 +301,15 @@ export class ContractorExportService {
       { key: 'total_travelers', header: 'Viajeros', type: 'number' },
       { key: 'total_import', header: 'Importe', type: 'number' },
     ];
+    await this.log('Exportando a Excel Resumen Polizas Resumen Polizas');
     return exportExcel(contractors, columns, 'Resumen de Pólizas');
+  }
+  async log(message: string, level = 'info') {
+    await this.loggingService.create({
+      message,
+      context: 'Coverage export Service',
+      level,
+      createdAt: new Date().toISOString(),
+    });
   }
 }
