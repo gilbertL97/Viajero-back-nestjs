@@ -3,12 +3,14 @@ import { Configuration } from 'src/config/config.const';
 import { UserRole } from 'src/user/user.role';
 import { UserService } from 'src/user/user.service';
 import { CustomConfigService } from './config.service';
+import { LogginService } from 'src/loggin/loggin.service';
 
 async function userDefault(
   config: ConfigService,
   configUser: UserService,
+  logginService: LogginService,
 ): Promise<void> {
-  this.loggingService.create({
+  logginService.create({
     message: `Insertando usuario por defecto`,
     context: 'InitConfig',
     level: 'info',
@@ -74,8 +76,9 @@ async function userDefault(
 async function setDefaultFilePath(
   config: ConfigService,
   customConfigService: CustomConfigService,
+  logginService: LogginService,
 ) {
-  this.loggingService.create({
+  logginService.create({
     message: `Inertando configuracion por defecto de las carpetas`,
     context: 'InitConfig',
     level: 'info',
@@ -118,10 +121,11 @@ async function defaultConfig(
   config: ConfigService,
   configUser: UserService,
   customConfigService: CustomConfigService,
+  logginService: LogginService,
 ) {
   await Promise.all([
-    userDefault(config, configUser),
-    setDefaultFilePath(config, customConfigService),
+    userDefault(config, configUser, logginService),
+    setDefaultFilePath(config, customConfigService, logginService),
   ]);
 }
 export default defaultConfig;
