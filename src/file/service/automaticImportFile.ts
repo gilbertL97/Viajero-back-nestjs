@@ -11,6 +11,7 @@ import { ExportToTxt } from './exportToTxt';
 import { ExternalFilesHelper } from 'src/common/file/externalServiceFiles.helper';
 import { CoverageService } from 'src/coverage/coverage.service';
 import { CountryService } from 'src/country/country.service';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class AutoImportFileService {
@@ -22,11 +23,14 @@ export class AutoImportFileService {
     private readonly travelerService: TravelerUploadFilesService,
     private readonly userService: UserService,
     private readonly configService: CustomConfigService,
+    private readonly logginService: LogginService,
   ) {}
 
   //@Cron('* 1 * * * *')
   async autoImportFiles() {
-    console.log('Called when the current second is 45');
+    this.log(
+      `Comenzando la importación de archivos automática a una hora especificada`,
+    );
     const userSystem = await this.userService.findUserByName('system'); //usuario del sistema}
     const filesPath = await this.configService.findConfigByKEy(
       Configuration.FILES_PATH,
@@ -49,6 +53,7 @@ export class AutoImportFileService {
     );
   }
   async manuallyImportFiles(user: UserEntity) {
+    this.log(`Ejecutando la importación de archivos automática`);
     const filesPath = await this.configService.findConfigByKEy(
       Configuration.FILES_PATH,
     );
@@ -91,6 +96,7 @@ export class AutoImportFileService {
       this.coverageService.getCoveragesActives(),
       this.userService.getUser(user.id),
     ]);
+    this.log(`Procesamiento de archivos con las rutas de las carpetas en Bd`);
     for (const contractor of contractors) {
       //direcciones de cada carpeta de los contratantes
       const unproceced = FileHelper.joinPath(filesPath, contractor.file);
@@ -101,6 +107,7 @@ export class AutoImportFileService {
         contractor.file,
       );
       //obtengo todos los archivos de ese contratante}
+
       const files = FileHelper.getAllFilesInFolder(unproceced);
 
       for (const file of files) {
@@ -111,6 +118,7 @@ export class AutoImportFileService {
         // cargo todos los paises clientes y planes en memoria
 
         //llamo al metodo para cargar viajeros en los archivos
+        await this.log(`Procesando archivo:${file}`);
         const log = await this.travelerService.processBulkFile(
           pathFile,
           contractor,
@@ -118,6 +126,7 @@ export class AutoImportFileService {
           coverages,
           userEntity,
         );
+
         await this.writeLogs(
           pathLogs,
           file,
@@ -141,6 +150,7 @@ export class AutoImportFileService {
   }
   private async compressFile(path: string): Promise<Buffer> {
     const buffer = await ExternalFilesHelper.compressFolder(path);
+    this.log(`Comprimiendo archivo para enviar en la ruta: ${path}`);
     this.exportToTxt.deleteAllfolderIntemp(path);
     //FileHelper.deleteDir(path);
     // if(buffer)FileHelper.m
@@ -154,5 +164,14 @@ export class AutoImportFileService {
   ) {
     this.exportToTxt.insertTableInTxt(logs, path, filename);
     if (temp) this.exportToTxt.insertTableInTxt(logs, temp, filename);
+    this.log(`Escribiendo logs :${filename}`);
+  }
+  async log(message: string, level = 'info') {
+    await this.logginService.create({
+      message,
+      context: 'File Automatic Import Service',
+      level,
+      createdAt: new Date().toISOString(),
+    });
   }
 }
