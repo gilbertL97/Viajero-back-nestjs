@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Configuration } from './config.const';
 import defaultConfig from './service/InitConfig';
 import { UserService } from 'src/user/user.service';
+import { LogginService } from 'src/loggin/loggin.service';
 //import defaultConfig from './service/InitConfig';
 @Module({
   controllers: [ConfigController],
@@ -23,12 +24,14 @@ export class CustomConfigModule implements OnModuleInit {
     private configService: ConfigService,
     private configUser: UserService,
     private customConfigService: CustomConfigService,
+    private logginService: LogginService,
   ) {}
   async onModuleInit() {
     defaultConfig(
       this.configService,
       this.configUser,
       this.customConfigService,
+      this.logginService,
     );
   }
 }
