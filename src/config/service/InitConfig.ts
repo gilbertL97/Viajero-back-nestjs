@@ -8,6 +8,12 @@ async function userDefault(
   config: ConfigService,
   configUser: UserService,
 ): Promise<void> {
+  this.loggingService.create({
+    message: `Insertando usuario por defecto`,
+    context: 'InitConfig',
+    level: 'info',
+    createdAt: new Date().toISOString(),
+  });
   const systemUser = await configUser.findUserByName('system');
   if (!systemUser)
     await configUser.createUser({
@@ -69,6 +75,12 @@ async function setDefaultFilePath(
   config: ConfigService,
   customConfigService: CustomConfigService,
 ) {
+  this.loggingService.create({
+    message: `Inertando configuracion por defecto de las carpetas`,
+    context: 'InitConfig',
+    level: 'info',
+    createdAt: new Date().toISOString(),
+  });
   await Promise.all([
     findOrCreateConfig(Configuration.FILES_PATH, config, customConfigService),
     findOrCreateConfig(Configuration.TEMP_FILE, config, customConfigService),
