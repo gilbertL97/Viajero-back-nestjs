@@ -1,6 +1,6 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LogginModel } from './dto/logginModel.dto';
+import { LogginModel, Logs } from './dto/logginModel.dto';
 import { LogginRepository } from './repository/loggin.repository';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { FilterLogginDto } from './dto/filter-loggin.dto';
@@ -29,7 +29,7 @@ export class LogginService {
         createLogginDto;
       const { userAgent, requestId, ip, method, url, userId } =
         this.als.getStore();
-      const createLogEntity = this.logginRepository.create({
+      await this.saveLog({
         message,
         context,
         level,
@@ -42,9 +42,37 @@ export class LogginService {
         method,
         url,
       });
-      // await this.logginRepository.save(createLogEntity);
-      return 'This action adds a new loggin';
     }
+  }
+  async saveLog(log: Logs) {
+    const {
+      message,
+      context,
+      level,
+      userId,
+      createdAt,
+      errorStack,
+      userAgent,
+      requestId,
+      ip,
+      method,
+      url,
+    } = log;
+    const createLogEntity = this.logginRepository.create({
+      message,
+      context,
+      level,
+      userId,
+      createdAt,
+      errorStack,
+      userAgent,
+      requestId,
+      ip,
+      method,
+      url,
+    });
+    await this.logginRepository.save(createLogEntity);
+    return 'This action adds a new loggin';
   }
 
   findAll(pag: PaginationDto, logginFilter: FilterLogginDto) {
