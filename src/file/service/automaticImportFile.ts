@@ -28,10 +28,11 @@ export class AutoImportFileService {
 
   //@Cron('* 1 * * * *')
   async autoImportFiles() {
-    this.log(
-      `Comenzando la importación de archivos automática a una hora especificada`,
-    );
     const userSystem = await this.userService.findUserByName('system'); //usuario del sistema}
+    this.saveSystemUserLog(
+      'Comenzando la importación de archivos automática a una hora especificada',
+      userSystem.id,
+    );
     const filesPath = await this.configService.findConfigByKEy(
       Configuration.FILES_PATH,
     );
@@ -133,18 +134,19 @@ export class AutoImportFileService {
           log,
           FileHelper.joinPath(pathTemp, contractor.file),
         );
-        if (log && log.containErrors)
+        if (log && log.containErrors) {
           FileHelper.moveFileAndCreateRoute(
             unprocecedFile,
             pathToUnprocesed,
             pathFile,
           );
-        else
+        } else {
           FileHelper.moveFileAndCreateRoute(
             procecedFile,
             pathtoProceced,
             pathFile,
           );
+        }
       }
     }
   }
@@ -172,6 +174,21 @@ export class AutoImportFileService {
       context: 'File Automatic Import Service',
       level,
       createdAt: new Date().toISOString(),
+    });
+  }
+  async saveSystemUserLog(message: string, userid: number, level = 'info') {
+    await this.logginService.saveLog({
+      message,
+      context: 'File Automatic Import Service',
+      level,
+      createdAt: new Date().toISOString(),
+      errorStack: '-',
+      userAgent: '-',
+      requestId: '-',
+      ip: '-',
+      method: '',
+      url: '-',
+      userId: userid,
     });
   }
 }
