@@ -1,9 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class LogEntity {
@@ -19,8 +14,8 @@ export class LogEntity {
   @Column({ type: 'varchar', nullable: false, length: 50 })
   level: string;
 
-  @CreateDateColumn({ type: 'varchar', nullable: false, length: 50 })
-  createdAt: Date;
+  @Column({ type: 'varchar', nullable: false, length: 50 })
+  createdAt: string;
   @Column({ type: 'varchar', nullable: false, length: 50 })
   userAgent: string;
   @Column({ type: 'varchar', nullable: false, length: 50 })
