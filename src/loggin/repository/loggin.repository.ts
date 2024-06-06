@@ -57,6 +57,7 @@ export class LogginRepository extends Repository<LogEntity> {
     if (userAgent) {
       query.where('loggin.userAgent = :userAgent', { userAgent });
     }
+    query.orderBy('loggin.id', 'DESC');
     return await paginate(query, pag);
   }
 }
