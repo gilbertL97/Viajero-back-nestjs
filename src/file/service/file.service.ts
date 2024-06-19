@@ -31,14 +31,14 @@ export class FileService {
     file.user = user;
     file.name = name;
     file.contractor = client;
-    await this.log(`Insertando archivo`);
+    this.log(`Insertando archivo`);
     return await this.fileRepository.save(file);
   }
 
   async findAll(user: UserEntity): Promise<FileEntity[]> {
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
       const userC = await this.userService.getUser(user.id);
-      await this.log(
+      this.log(
         `Obteniendo archivos del Contratante del Usuario ${userC.id}`,
       );
       return this.fileRepository.find({
@@ -46,7 +46,7 @@ export class FileService {
         relations: ['contractor', 'user'],
       });
     }
-    await this.log(`Obteniendo archivos`);
+    this.log(`Obteniendo archivos`);
     return this.fileRepository.find({
       relations: ['contractor', 'user'],
     });
@@ -58,7 +58,7 @@ export class FileService {
       relations: ['travelers'],
     });
     if (!file) throw new NotFoundException('file does not exist');
-    await this.log(
+    this.log(
       `Obteniendo el archivo ${file.name} del Contratante ${file.contractor.id}`,
     );
     return file;
@@ -76,13 +76,13 @@ export class FileService {
       relations: ['travelers'],
     });
     if (!file) throw new NotFoundException('file does not exist');
-    await this.log(
+    this.log(
       `Obteniendo el archivo ${id} del Contratante ${file.contractor.id}`,
     );
     return file;
   }
   async findByName(name: string): Promise<FileEntity> {
-    await this.log(`Obteniendo el archivo ${name} por nombre`);
+    this.log(`Obteniendo el archivo ${name} por nombre`);
     const file = await this.fileRepository.findOne({
       where: { name: name },
     });
@@ -93,14 +93,14 @@ export class FileService {
     const file = await this.findOne(id);
     /* if (file.travelers.length > 0 && !confirm)
       throw new ConflictException(file.travelers.length);*/
-    await this.log(`eliminando el archvo ${file.name}`);
+    this.log(`eliminando el archvo ${file.name}`);
     return this.fileRepository.remove(file);
   }
   async filterFileQuery(
     file: FilterFileDto,
     user: UserEntity,
   ): Promise<SelectQueryBuilder<FileEntity>> {
-    await this.log(`Obteniendo archivos filtrados y paginados`);
+    this.log(`Obteniendo archivos filtrados y paginados`);
     let contractor = file.contractor;
 
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
@@ -179,7 +179,7 @@ export class FileService {
     return exportPdf(files, columns, 'Archivos');
   }
   async log(message: string, level = 'info') {
-    await this.loggingService.create({
+    this.loggingService.create({
       message,
       context: 'File Service',
       level,

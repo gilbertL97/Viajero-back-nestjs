@@ -36,15 +36,15 @@ export class ContractorService {
   async getContrators(user: UserEntity): Promise<ContratorEntity[]> {
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT) {
       const userC = await this.userService.getUser(user.id);
-      await this.log(`Obteniendo  el contratante del Usuario actual`);
+      this.log(`Obteniendo  el contratante del Usuario actual`);
       return userC.contractors;
     }
-    await this.log(`Obteniendo contratantes`);
+    this.log(`Obteniendo contratantes`);
     return await this.contractRepository.find(); //aqui elimine todos los usuarios
   }
 
   async getAllContrators(): Promise<ContratorEntity[]> {
-    await this.log(`Obteniendo contratantes`);
+    this.log(`Obteniendo contratantes`);
     return await this.contractRepository.find();
   }
   async getContractor(id: number): Promise<ContratorEntity> {
@@ -53,11 +53,11 @@ export class ContractorService {
     });
     if (!contractor)
       throw new NotFoundException('The contractor does not exist');
-    await this.log(`Obteniendo el contratantes con id ${contractor.id}`);
+    this.log(`Obteniendo el contratantes con id ${contractor.id}`);
     return contractor;
   }
   async getContratorsActive(): Promise<ContratorEntity[]> {
-    await this.log(`Obteniendo los contratante activos`);
+    this.log(`Obteniendo los contratante activos`);
     return await this.contractRepository.find({
       relations: ['users'],
       where: { isActive: true },
@@ -70,7 +70,7 @@ export class ContractorService {
     });
     if (!contractor)
       throw new NotFoundException('The contractor does not exist');
-    await this.log(`Obteniendo los contratante con usuarios`);
+    this.log(`Obteniendo los contratante con usuarios`);
     return contractor;
   }
   async createContractor(
@@ -83,7 +83,7 @@ export class ContractorService {
       .catch(() => {
         throw new BadRequestException('duplicate name or email');
       });
-    await this.log(`Creando un contratante`);
+    this.log(`Creando un contratante`);
     // await FileHelper.createFolder('contractor', newContractor.file);
     return newContractor;
   }
@@ -95,7 +95,7 @@ export class ContractorService {
     //const oldFolder = contractor.file;
     const editedContract = Object.assign(contractor, updateContractorDto);
     const contractorSaved = await this.contractRepository.save(editedContract);
-    await this.log(`Actualizando un contratante`);
+    this.log(`Actualizando un contratante`);
     //FileHelper.updateFolder('contractor', contractorSaved.file, oldFolder);
     return contractorSaved;
   }
@@ -107,7 +107,7 @@ export class ContractorService {
     //si no tiene viajeros se elimina
     if (!traveler) {
       const deleted = await this.contractRepository.remove(contractor);
-      await this.log(`Eliminando un contratante`);
+      this.log(`Eliminando un contratante`);
       //FileHelper.deletFolder('contractor', deleted.file);
       return deleted;
     }
@@ -116,14 +116,14 @@ export class ContractorService {
     //se desactivan los usuarios de ese client
     await this.userService.disableUser(contractor.users);
     await this.contractRepository.save(contractor);
-    await this.log(`Intentando eliminar un contratante`);
+    this.log(`Intentando eliminar un contratante`);
     throw new ConflictException('cant delete the Contractor');
   }
   async getInvoicing(date: Date, user: UserEntity): Promise<any> {
     let id = undefined;
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
-    await this.log(`Obteniendo la facturacion mensual`);
+    this.log(`Obteniendo la facturacion mensual`);
     return await this.contractRepository.getInvoicingOfMonth(date, id);
   }
   async getDetailedContract(
@@ -133,7 +133,7 @@ export class ContractorService {
     let id = undefined;
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
-    await this.log(`Obteniendo la Facturacion detallada`);
+    this.log(`Obteniendo la Facturacion detallada`);
     return await this.contractRepository.getDetailedTravelers(filter, id);
   }
   async getPolicyOverview(
@@ -143,7 +143,7 @@ export class ContractorService {
     let id = undefined;
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
       id = (await this.userService.getUser(user.id)).contractors[0].id;
-    await this.log(`Obteniendo el resumen de Polizas`);
+    this.log(`Obteniendo el resumen de Polizas`);
     return this.contractRepository.policyOverview(filter, id);
   }
   async exportAllContractorExcel(user: UserEntity) {
@@ -182,7 +182,7 @@ export class ContractorService {
     return this.contratctorExportService.exportExcelPolicyOverview(data);
   }
   async log(message: string, level = 'info') {
-    await this.loggingService.create({
+    this.loggingService.create({
       message,
       context: 'Coverage Service',
       level,

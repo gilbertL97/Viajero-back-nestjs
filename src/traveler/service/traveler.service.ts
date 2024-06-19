@@ -22,6 +22,7 @@ import { TravelerRepository } from '../repository/traveler.repository';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { PaginationResult } from 'src/common/pagination/interface/pagination.type';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class TravelerService {
@@ -32,6 +33,7 @@ export class TravelerService {
     private readonly countryService: CountryService,
     private readonly coverageService: CoverageService,
     private readonly userService: UserService,
+    private readonly loggingService: LogginService,
   ) {}
 
   async create(createTravelerDto: CreateTravelerDto): Promise<TravelerEntity> {
@@ -65,6 +67,7 @@ export class TravelerService {
           throw new BadRequestException('Viajero duplicado');
         throw new BadRequestException('error in database');
       });
+    this.log('agregando un viajero');
     return traveler;
   }
 
@@ -95,6 +98,7 @@ export class TravelerService {
     });
     //await new Promise((resolve) => setTimeout(resolve, 5000));
     if (!traveler) throw new NotFoundException('The traveler does not exist');
+    this.log('Buscando un viajero');
     return traveler;
   }
   async findByFile(id: number): Promise<TravelerEntity[]> {
@@ -104,6 +108,7 @@ export class TravelerService {
     });
     //await new Promise((resolve) => setTimeout(resolve, 5000));
     if (!travelers) throw new NotFoundException('The traveler does not exist');
+    this.log('Buscando viajeros por archivos');
     return travelers;
   }
 
@@ -298,5 +303,14 @@ export class TravelerService {
       { property: 'coverage', label: 'Cobertura', width: 70 },
     ];
     return exportPdf(travelers, columns, 'Viajeros', undefined, 'landscape');
+  }
+
+  async log(message: string, level = 'info') {
+    this.loggingService.create({
+      message,
+      context: 'Traveler Service',
+      level,
+      createdAt: new Date().toISOString(),
+    });
   }
 }

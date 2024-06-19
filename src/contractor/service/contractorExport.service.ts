@@ -38,7 +38,7 @@ export class ContractorExportService {
         header: 'Estado',
       },
     ];
-    await this.log('Exportando a Excel los contratantes ');
+    this.log('Exportando a Excel los contratantes ');
     return exportExcel(contractor, columns, 'Clientes');
   }
 
@@ -66,7 +66,7 @@ export class ContractorExportService {
         header: 'Importe',
       },
     ];
-    await this.log('Exportando a Excel Facturacion Mensual');
+    this.log('Exportando a Excel Facturacion Mensual');
     return exportExcel(contractor.contractors, columns, 'Clientes');
   }
   async exportExcelDetailedContract(data: ContratorEntity[]) {
@@ -125,7 +125,7 @@ export class ContractorExportService {
 
       { key: 'coverage', header: 'Cobertura' },
     ];
-    await this.log('Exportando a Excel  Facturacion detallada');
+    this.log('Exportando a Excel  Facturacion detallada');
     return exportExcel(allTravelers, columns, 'Viajeros por Cliente');
   }
   async exportAllContractorToPdf(contractor: ContratorEntity[]) {
@@ -159,7 +159,7 @@ export class ContractorExportService {
         width: 50,
       },
     ];
-    await this.log('Exportando a PDF los contratantes');
+    this.log('Exportando a PDF los contratantes');
     return exportPdf(contractor, columns, 'Clientes');
   }
   async exportPdfInvoicing(contractor: any, date: Date) {
@@ -192,7 +192,7 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
-    await this.log('Exportando a PDF Facturacion');
+    this.log('Exportando a PDF Facturacion');
     const month = DateHelper.getMonthByDate(date);
     return exportPdf(
       contractor.contractors,
@@ -248,7 +248,7 @@ export class ContractorExportService {
 
       { property: 'coverage', label: 'Cobertura', width: 50 },
     ];
-    await this.log('Exportando a PDF Facturacion Detallada');
+    this.log('Exportando a PDF Facturacion Detallada');
     return exportPdf(allTravelers, columns, 'Viajeros por Cliente');
   }
   async exportPdfPolicyOverview(data: any, filter: FilterContractorDto) {
@@ -275,7 +275,7 @@ export class ContractorExportService {
         align: 'center',
       },
     ];
-    await this.log('Exportando a PDF Resumen Poliza');
+    this.log('Exportando a PDF Resumen Poliza');
     return exportPdf(
       contractors,
       columns,
@@ -301,11 +301,11 @@ export class ContractorExportService {
       { key: 'total_travelers', header: 'Viajeros', type: 'number' },
       { key: 'total_import', header: 'Importe', type: 'number' },
     ];
-    await this.log('Exportando a Excel Resumen Polizas Resumen Polizas');
+    this.log('Exportando a Excel Resumen Polizas Resumen Polizas');
     return exportExcel(contractors, columns, 'Resumen de Pólizas');
   }
   async log(message: string, level = 'info') {
-    await this.loggingService.create({
+    this.loggingService.create({
       message,
       context: 'Coverage export Service',
       level,

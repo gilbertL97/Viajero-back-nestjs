@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TravelerRepository } from '../repository/traveler.repository';
 import * as PDF from 'pdfkit';
 import * as fs from 'fs';
-
 import { TravelerEntity } from '../entity/traveler.entity';
 import { PDFDocument } from 'pdf-lib';
 import { join } from 'path';
@@ -11,11 +8,6 @@ import { FileHelper } from 'src/common/file/file.helper';
 
 @Injectable()
 export class TravelerPdfService {
-  constructor(
-    @InjectRepository(TravelerRepository)
-    private readonly travelerRepository: TravelerRepository,
-  ) {}
-
   async generateCerticate(traveler: TravelerEntity): Promise<Uint8Array> {
     const pantoneColor = '#1b1462';
     const blackColor = 'black';
