@@ -7,6 +7,12 @@ import { FileHelper } from 'src/common/file/file.helper';
 
 @Injectable()
 export class ExportToTxt {
+  deleteAllfolderIntemp(path: string) {
+    const routes = FileHelper.getAllFilesInFolder(path);
+    routes.map((rou) => {
+      FileHelper.deleteDir(FileHelper.joinPath(path, rou));
+    });
+  }
   insertTableInTxt(
     logs: ResponseErrorOrWarningDto | void,
     path: string,

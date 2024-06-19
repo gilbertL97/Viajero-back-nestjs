@@ -103,7 +103,7 @@ export class TravelerController {
       'De vuelve un objeto con las advertencias y errores sobre la no importacion',
     type: FileErrorsTravelerDto,
   })
-  @Throttle(1, 15) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
+  @Throttle({ default: { limit: 1, ttl: 15000 } }) //agregando mas tiempo a esta peticion ya q lleva mayor tiempo de respuesta
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT, UserRole.CLIENT)
   @Post('/file/:id')
@@ -208,7 +208,7 @@ export class TravelerController {
     UserRole.CONSULTAGENT,
   )
   @Get('/file/:id')
-  async getTravelersBfile(@Param() id: number) {
+  async getTravelersBfile(@Param('id') id: number) {
     const data = await this.travelerService.findByFile(id);
     return data;
   }
@@ -229,6 +229,35 @@ export class TravelerController {
       'Content-Type': 'application/pdf',
       'Content-Dispotition': 'attachment;' + traveler.name + '.pdf',
       'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
+  @UseGuards(RolesGuard)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.COMAGENT,
+    UserRole.CLIENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
+  @Get('/manually_import')
+  async getTravelersImportManually(
+    @GetUser() user: UserEntity,
+    @Query() pag: PaginationDto,
+    @Query() travelerFilter: FilterTravelerDto,
+    @Res() res,
+  ): Promise<void> {
+    travelerFilter.empty_file = true;
+    const buffer = await this.travelerService.getTravelerExcel(
+      travelerFilter,
+      user,
+    );
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
     });
     res.end(buffer);
   }

@@ -25,6 +25,8 @@ import { ResponseErrorOrWarningDto } from '../dto/responseErrorOrWarning.dto';
 import { RepeatTravelerError } from '../error/errorRepeatTraveler';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
+import { CustomConfigService } from 'src/config/service/config.service';
+import { Configuration } from 'src/config/config.const';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -36,7 +38,9 @@ export class TravelerUploadFilesService {
     private readonly coverageService: CoverageService,
     private readonly fileService: FileService,
     private readonly userService: UserService,
+    private readonly configService: CustomConfigService,
   ) {}
+  //este es el metodo q esllamado para subir el archivo
   async processFile(
     file: Express.Multer.File,
     idClient: number,
@@ -55,17 +59,45 @@ export class TravelerUploadFilesService {
       throw new BadRequestException(
         'El fichero esta vacio o no se encuentran viajeros',
       );
-    } // 3-elimino el archivo
-    await FileHelper.deletFile(file.path);
-    //4-valido para saber si hay errores primero cambiar todo para maNhaba
+    } // 3-obtengo la direccion unida al cliente de donde lo voy a copiar esdecir procesados y no procesados
+    let [procecedFolder, unprocesedFolder] = await Promise.all([
+      (
+        await this.configService.findConfigByKEy(
+          Configuration.FIlES_PROCESSED_PATH,
+        )
+      ).value,
+      (
+        await this.configService.findConfigByKEy(
+          Configuration.FIlES_UNPROCESSED_PATH,
+        )
+      ).value,
+    ]);
+    procecedFolder = FileHelper.joinPath(procecedFolder, client.file);
+    unprocesedFolder = FileHelper.joinPath(unprocesedFolder, client.file);
+    const procecedFiles = FileHelper.joinPath(
+      procecedFolder,
+      file.originalname,
+    );
+    const unprocesedFiles = FileHelper.joinPath(
+      unprocesedFolder,
+      file.originalname,
+    );
 
+    //4-valido para saber si hay errores primero
     const errors = await this.validateTravelersErrors(travelers, coverages);
-    if (errors)
+    if (errors) {
+      //si hay errores los muevo a la carpeta de no procesados
+      await FileHelper.moveAndOverrideFile(
+        unprocesedFolder,
+        file.path,
+        unprocesedFiles,
+      );
+      //envia los errores al cliente
       return this.bindWarningsAndErrors(
         errors,
         await this.validateTravelersWarnings(travelers, countries),
       );
-    //5-inserto y verifico si hay viajeros repetidos
+    } //5-inserto y verifico si hay viajeros repetidos
     return await this.insertTraveler(
       travelers,
       coverages,
@@ -73,6 +105,7 @@ export class TravelerUploadFilesService {
       client,
       file.originalname,
       userEntity,
+      [procecedFolder, file.path, procecedFiles],
     );
   }
   async processOneFile(
@@ -116,14 +149,12 @@ export class TravelerUploadFilesService {
   async processBulkFile(
     file: string,
     client: ContratorEntity,
-    user: UserEntity,
+    countries: CountryEntity[],
+    coverages: CoverageEntity[],
+    userEntity: UserEntity,
   ): Promise<ResponseErrorOrWarningDto | void> {
     //1-pirmero cargo todos los paises clientes y planes en memoria
-    const [countries, coverages, userEntity] = await Promise.all([
-      this.countryService.findAll(),
-      this.coverageService.getCoveragesActives(),
-      this.userService.getUser(user.id),
-    ]);
+
     //2-cargo el archivo dependiendo del tipo de archivo
     const travelers = await ExcelJSCOn.getTravelerByFileBulk(file, coverages);
 
@@ -163,6 +194,7 @@ export class TravelerUploadFilesService {
     client: ContratorEntity,
     file: string,
     user: UserEntity,
+    dir?: string[],
   ): Promise<ResponseErrorOrWarningDto | void> {
     const createTraveler = new CreateTravelerDto();
     const warn: FileErrorsTravelerDto[] = [];
@@ -235,6 +267,9 @@ export class TravelerUploadFilesService {
     }
     if (travelersFile.length == 0) {
       this.fileService.remove(file2.id);
+      if (dir) await FileHelper.deletFile(dir[1]);
+    } else {
+      if (dir) await FileHelper.moveAndOverrideFile(dir[0], dir[1], dir[2]);
     }
 
     if (warn.length > 0) {
@@ -299,7 +334,6 @@ export class TravelerUploadFilesService {
       validationError: { target: false },
     });
     const validationWarnings = this.handleErrors(validatorWarnings);
-
     const validations = this.manualValidationsWarnings(
       traveler,
       countries,
@@ -437,8 +471,10 @@ export class TravelerUploadFilesService {
     traveler: FileTravelerDto,
     coverage: CoverageEntity,
   ) {
-    delete validationErrors.number_days;
-    traveler.end_date_policy = dayjs(traveler.start_date) //creo una instancia de dayjs con el inicio
+    if (validationErrors) {
+      delete validationErrors.number_days;
+    }
+    traveler.end_date_policy = dayjs(traveler.start_date, 'DD/MM/YYYY') //creo una instancia de dayjs con el inicio
       .add(coverage.number_of_days, 'days') //agrego al inicio la cantidad de dias de la cobertura
       .format('DD/MM/YYYY'); //lo llevo al formato y se lo asigno al final
   }

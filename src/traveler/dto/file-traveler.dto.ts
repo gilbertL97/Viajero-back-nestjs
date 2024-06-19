@@ -7,10 +7,10 @@ import {
   Length,
   Min,
 } from 'class-validator';
-import { IsCustomDateBefore } from './decorator/customDateBefore.decorator';
-import { IsDateFile } from './decorator/customDateExcel.decorator';
-import { CalculateNumberOfDays } from './decorator/customNumberdays.decorator';
-import { IsNumberLessThan } from './decorator/customNumberlessthan.decorator';
+import { IsCustomDateBefore } from '../../common/validation/decorator/customDateBefore.decorator';
+import { IsDateFile } from '../../common/validation/decorator/customDateExcel.decorator';
+import { CalculateNumberOfDays } from '../../common/validation/decorator/customNumberdays.decorator';
+import { IsNumberLessThan } from '../../common/validation/decorator/customNumberlessthan.decorator';
 
 export class FileTravelerDto {
   @IsString({ groups: ['errors'], message: 'No es de tipo string' })
@@ -98,7 +98,7 @@ export class FileTravelerDto {
 
   @IsOptional({ groups: ['warnings'] })
   @IsString({ groups: ['warnings'] })
-  @Length(4, 20, {
+  @Length(3, 20, {
     groups: ['warnings'],
     message: 'No se encuentra entre la longitud de letras permitidas',
   })

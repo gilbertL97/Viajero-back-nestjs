@@ -22,6 +22,7 @@ import { TravelerRepository } from '../repository/traveler.repository';
 import { exportPdf } from 'src/common/export/exportPdf';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { PaginationResult } from 'src/common/pagination/interface/pagination.type';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class TravelerService {
@@ -32,6 +33,7 @@ export class TravelerService {
     private readonly countryService: CountryService,
     private readonly coverageService: CoverageService,
     private readonly userService: UserService,
+    private readonly loggingService: LogginService,
   ) {}
 
   async create(createTravelerDto: CreateTravelerDto): Promise<TravelerEntity> {
@@ -65,6 +67,7 @@ export class TravelerService {
           throw new BadRequestException('Viajero duplicado');
         throw new BadRequestException('error in database');
       });
+    this.log('agregando un viajero');
     return traveler;
   }
 
@@ -85,19 +88,27 @@ export class TravelerService {
   async findOne(id: string): Promise<TravelerEntity> {
     const traveler = await this.travelerRepository.findOne({
       where: { id: id },
-      relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
+      relations: [
+        'coverage',
+        'contractor',
+        'origin_country',
+        'nationality',
+        'file',
+      ],
     });
     //await new Promise((resolve) => setTimeout(resolve, 5000));
     if (!traveler) throw new NotFoundException('The traveler does not exist');
+    this.log('Buscando un viajero');
     return traveler;
   }
   async findByFile(id: number): Promise<TravelerEntity[]> {
     const travelers = await this.travelerRepository.find({
-      where: { file: id },
+      where: { file: { id: id } },
       relations: ['coverage', 'contractor', 'origin_country', 'nationality'],
     });
     //await new Promise((resolve) => setTimeout(resolve, 5000));
     if (!travelers) throw new NotFoundException('The traveler does not exist');
+    this.log('Buscando viajeros por archivos');
     return travelers;
   }
 
@@ -116,7 +127,13 @@ export class TravelerService {
       coverage = await this.coverageService.getCoverage(
         updateTraveler.coverage,
       );
-    return this.travelerRepository.updateTraveler(updateTraveler, coverage);
+    return this.travelerRepository
+      .updateTraveler(updateTraveler, coverage)
+      .catch((error) => {
+        if (error.code == 23505)
+          throw new BadRequestException('Viajero duplicado');
+        throw new BadRequestException('error in database');
+      });
   }
 
   async remove(id: string): Promise<TravelerEntity> {
@@ -165,9 +182,6 @@ export class TravelerService {
       pag,
     );
   }
-  async getCurrrentTravelers(filter: FilterTravelerDto) {
-    return this.travelerRepository.getCurrentTravelers(filter);
-  }
   async getTravelerExcel(filter: FilterTravelerDto, user: UserEntity) {
     let userC: UserEntity = undefined;
     if (user.role == UserRole.CLIENT || user.role == UserRole.CONSULTAGENT)
@@ -180,10 +194,6 @@ export class TravelerService {
       );
     const columns = [
       { key: 'name', header: 'Nombre' },
-      {
-        key: 'contractor',
-        header: 'Cliente',
-      },
       { key: 'sex', header: 'Sexo' },
       { key: 'born_date', header: 'Fecha de Nacimiento' },
       { key: 'email', header: 'Correo' },
@@ -206,17 +216,17 @@ export class TravelerService {
 
       {
         key: 'amount_days_high_risk',
-        header: 'Monto de dias de alto riesgo',
+        header: 'Importe de dias de alto riesgo',
       },
 
       {
         key: 'amount_days_covered',
-        header: 'Monto de dias cubiertos',
+        header: 'Importe de dias cubiertos',
       },
 
-      { key: 'total_amount', header: 'Monto total' },
+      { key: 'total_amount', header: 'Importe total' },
 
-      { key: 'state', header: 'Estado' },
+      { key: 'state', header: 'Vigente' },
 
       { key: 'contractor', header: 'Cliente' },
 
@@ -256,29 +266,51 @@ export class TravelerService {
       {
         property: 'number_high_risk_days',
         label: 'Cant dias Alto Riesgo',
-        width: 30,
+        width: 60,
+        align: 'center',
       },
 
-      { property: 'number_days', label: 'Num de Dias', width: 30 },
+      {
+        property: 'number_days',
+        label: 'Num de Dias',
+        width: 60,
+        align: 'center',
+      },
 
       {
         property: 'amount_days_high_risk',
-        label: 'Monto alto riesgo',
-        width: 30,
+        label: 'Importe alto riesgo',
+        width: 60,
+        align: 'center',
       },
 
       {
         property: 'amount_days_covered',
-        label: 'Monto dias cubiertos',
-        width: 30,
+        label: 'Importe dias cubiertos',
+        width: 60,
+        align: 'center',
       },
 
-      { property: 'total_amount', label: 'Monto total', width: 30 },
+      {
+        property: 'total_amount',
+        label: 'Importe total',
+        width: 60,
+        align: 'center',
+      },
 
-      { property: 'contractor', label: 'Cliente', width: 50 },
+      { property: 'contractor', label: 'Cliente', width: 70 },
 
-      { property: 'coverage', label: 'Cobertura', width: 50 },
+      { property: 'coverage', label: 'Cobertura', width: 70 },
     ];
-    return exportPdf(travelers, columns, 'Viajeros');
+    return exportPdf(travelers, columns, 'Viajeros', undefined, 'landscape');
+  }
+
+  async log(message: string, level = 'info') {
+    this.loggingService.create({
+      message,
+      context: 'Traveler Service',
+      level,
+      createdAt: new Date().toISOString(),
+    });
   }
 }

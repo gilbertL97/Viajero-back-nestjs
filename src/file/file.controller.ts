@@ -129,7 +129,6 @@ export class FileController {
   @Roles(UserRole.ADMIN, UserRole.MARKAGENT, UserRole.COMAGENT)
   @Post('/task')
   async executeAutoImport(@Res() res, @GetUser() user: UserEntity) {
-    console.log(user);
     const buffer = await this.autoImportService.manuallyImportFiles(user);
     if (buffer.length > 0) {
       res.set({

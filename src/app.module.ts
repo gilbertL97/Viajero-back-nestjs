@@ -1,9 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { typeOrmConfigAsync } from './config/config.typeorm';
+import {
+  typeOrmConfigAsync,
+  typeOrmSQliteConfigAsync,
+} from './config/config.connect';
 import { AuthModule } from './auth/auth.module';
 import { ContractorModule } from './contractor/contractor.module';
 import { TravelerModule } from './traveler/traveler.module';
@@ -13,8 +16,14 @@ import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { CustomConfigModule } from './config/config.module';
+import { storeData } from './common/store/middleware/store.middleware';
+import { LogginModule } from './loggin/loggin.module';
+import { RequestLogginMiddleware } from './loggin/middleware/requestLogginMiddleware';
+
+import { LogginResponseInterceptor } from './loggin/interceptor/responseLoggin.interceptor';
+import { HttpExceptionFilterLog } from './loggin/filter/ExceptionFilterLog';
 
 @Module({
   imports: [
@@ -22,6 +31,7 @@ import { CustomConfigModule } from './config/config.module';
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
+    TypeOrmModule.forRootAsync(typeOrmSQliteConfigAsync),
     TravelerModule,
     ContractorModule,
     CoverageModule,
@@ -30,11 +40,14 @@ import { CustomConfigModule } from './config/config.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    ThrottlerModule.forRoot({
-      ttl: 60, // time to live in seconds
-      limit: 25, // number of requests allowed within the TTL 25 request por minuto
-    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 6000, // time to live in seconds
+        limit: 25, // number of requests allowed within the TTL 25 request por minuto
+      },
+    ]),
     CustomConfigModule,
+    LogginModule,
   ],
   controllers: [AppController],
   providers: [
@@ -42,6 +55,21 @@ import { CustomConfigModule } from './config/config.module';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LogginResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilterLog,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(storeData).forRoutes('*');
+    consumer
+      .apply(RequestLogginMiddleware) // Pasar el string como parámetro
+      .forRoutes('*');
+  }
+}

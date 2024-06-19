@@ -3,6 +3,8 @@
 /node_modules
 /public
 .env
+.db
+Viajero.db
 # Logs
 logs
 *.log
@@ -19,6 +21,7 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
+.db
 # IDEs and editors
 /.idea
 .project

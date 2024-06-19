@@ -32,4 +32,32 @@ export class DateHelper {
     const end = dayjs(finalDate, 'DD-MM-YYYY');
     return end.diff(start, 'day'); //el numero de dias es la diferencia mas un dia
   }
+  public static getMonthByDate(date: Date) {
+    // Array con los nombres de los meses en español
+    const meses = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
+    // Devolver el nombre del mes correspondiente al número ingresado
+    return meses[dayjs(date).month()];
+  }
+  public static getFormatedDate(date: string) {
+    return dayjs(date).format('DD/MM/YYYY');
+  }
+  public static getFirstDateOfYear(date: Date) {
+    return dayjs(date).set('month', 0).set('dates', 1).format('YYYY-MM-DD');
+  }
+  public static getLastDateOfYear(date: Date) {
+    return dayjs(date).set('month', 11).set('dates', 31).format('YYYY-MM-DD');
+  }
 }

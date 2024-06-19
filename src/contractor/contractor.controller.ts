@@ -34,6 +34,8 @@ export class ContractorController {
     UserRole.MARKAGENT,
     UserRole.COMAGENT,
     UserRole.CONSULT,
+    UserRole.CLIENT,
+    UserRole.CONSULTAGENT,
   )
   @Get()
   async getContracts(@GetUser() user: UserEntity): Promise<ContratorEntity[]> {
@@ -218,8 +220,66 @@ export class ContractorController {
     const buffer = await this.contractService.exportDetailedPdf(filter, user);
     res.set({
       'Content-Type': 'application/pdf',
+      'Content-Dispotition': 'attachment;Resumen_Detallado.pdf',
+      'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
+  @Get('/policy_overview')
+  async getPolicyOverview(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+  ): Promise<any> {
+    return await this.contractService.getPolicyOverview(filter, user);
+  }
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.MARKAGENT,
+    UserRole.CLIENT,
+    UserRole.COMAGENT,
+    UserRole.CONSULT,
+    UserRole.CONSULTAGENT,
+  )
+  @Get('/policy_overview/pdf')
+  async getPolicyOverviewPdf(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const buffer = await this.contractService.exportPolicyOverviewPdf(
+      filter,
+      user,
+    );
+    res.set({
+      'Content-Type': 'application/pdf',
       'Content-Dispotition': 'attachment;Coberturas.pdf',
       'Content-Lenght': buffer.length,
+    });
+    res.end(buffer);
+  }
+  @Get('/policy_overview/excel')
+  async getPolicyOverviewExcel(
+    @Query() filter: FilterContractorDto,
+    @GetUser() user: UserEntity,
+    @Res() res,
+  ): Promise<void> {
+    const buffer = await this.contractService.exportPolicyOverviewExcel(
+      filter,
+      user,
+    );
+    res.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Dispotition': 'attachment;filename= Archivos.xlsx',
+      'Content-Lenght': buffer.byteLength,
     });
     res.end(buffer);
   }

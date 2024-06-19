@@ -3,9 +3,13 @@ import { ContratorEntity } from '../entity/contrator.entity';
 
 import { exportExcel } from 'src/common/export/exportExcel';
 import { exportPdf } from 'src/common/export/exportPdf';
+import { DateHelper } from 'src/common/date/helper/date.helper';
+import { FilterContractorDto } from '../dto/filter-contractor.dto';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class ContractorExportService {
+  constructor(private readonly loggingService: LogginService) {}
   async exportExcel(contractor: ContratorEntity[]) {
     const columns = [
       { key: 'client', header: 'Nombre' },
@@ -16,6 +20,10 @@ export class ContractorExportService {
       {
         key: 'email',
         header: 'Correo',
+      },
+      {
+        key: 'addres',
+        header: 'Direccion',
       },
       {
         key: 'telf',
@@ -30,6 +38,7 @@ export class ContractorExportService {
         header: 'Estado',
       },
     ];
+    this.log('Exportando a Excel los contratantes ');
     return exportExcel(contractor, columns, 'Clientes');
   }
 
@@ -57,9 +66,10 @@ export class ContractorExportService {
         header: 'Importe',
       },
     ];
+    this.log('Exportando a Excel Facturacion Mensual');
     return exportExcel(contractor.contractors, columns, 'Clientes');
   }
-  exportExcelDetailedContract(data: ContratorEntity[]) {
+  async exportExcelDetailedContract(data: ContratorEntity[]) {
     let allTravelers = [];
     data.map((contractor) => {
       allTravelers = allTravelers.concat(contractor.travelers);
@@ -115,9 +125,10 @@ export class ContractorExportService {
 
       { key: 'coverage', header: 'Cobertura' },
     ];
+    this.log('Exportando a Excel  Facturacion detallada');
     return exportExcel(allTravelers, columns, 'Viajeros por Cliente');
   }
-  exportAllContractorToPdf(contractor: ContratorEntity[]) {
+  async exportAllContractorToPdf(contractor: ContratorEntity[]) {
     const columns = [
       { property: 'client', label: 'Nombre', width: 100 },
       {
@@ -148,9 +159,10 @@ export class ContractorExportService {
         width: 50,
       },
     ];
+    this.log('Exportando a PDF los contratantes');
     return exportPdf(contractor, columns, 'Clientes');
   }
-  exportPdfInvoicing(contractor: any) {
+  async exportPdfInvoicing(contractor: any, date: Date) {
     //creo un objeto nuevo para q al final se agrege una fila con los totales
     const { total_amount, total_travelers } = contractor;
     const total = {
@@ -165,24 +177,33 @@ export class ContractorExportService {
       {
         property: 'poliza',
         label: 'Poliza',
-        width: 80,
+        width: 100,
       },
       {
         property: 'total_travelers',
         label: 'Total de Viajeros',
-        width: 50,
+        width: 80,
         align: 'center',
       },
       {
         property: 'total_import',
         label: 'Importe',
-        width: 50,
+        width: 70,
         align: 'center',
       },
     ];
-    return exportPdf(contractor.contractors, columns, 'Facturacion Mensual');
+    this.log('Exportando a PDF Facturacion');
+    const month = DateHelper.getMonthByDate(date);
+    return exportPdf(
+      contractor.contractors,
+      columns,
+      'Reporte Facturación Mensual',
+      undefined,
+      undefined,
+      `Viajeros: ${total_travelers}    Importe Total: $${total_amount}    Mes: ${month}`,
+    );
   }
-  exportPdfDetailedContract(data: ContratorEntity[]) {
+  async exportPdfDetailedContract(data: ContratorEntity[]) {
     let allTravelers = [];
     data.map((contractor) => {
       allTravelers = allTravelers.concat(contractor.travelers);
@@ -227,6 +248,68 @@ export class ContractorExportService {
 
       { property: 'coverage', label: 'Cobertura', width: 50 },
     ];
+    this.log('Exportando a PDF Facturacion Detallada');
     return exportPdf(allTravelers, columns, 'Viajeros por Cliente');
+  }
+  async exportPdfPolicyOverview(data: any, filter: FilterContractorDto) {
+    const { totalAmount, totalTravelers, contractors } = data;
+
+    const columns = [
+      { property: 'client', label: 'Nombre', width: 200, align: 'center' },
+      {
+        property: 'start_date',
+        label: 'Fecha de Inicio',
+        width: 100,
+        align: 'center',
+      },
+      {
+        property: 'total_travelers',
+        label: 'Cantidad de Viajeros',
+        width: 100,
+        align: 'center',
+      },
+      {
+        property: 'total_import',
+        label: 'Importe',
+        width: 100,
+        align: 'center',
+      },
+    ];
+    this.log('Exportando a PDF Resumen Poliza');
+    return exportPdf(
+      contractors,
+      columns,
+      'Resumen de Pólizas',
+      undefined,
+      undefined,
+      `Viajeros: ${totalTravelers}   Importe Total: $${totalAmount} 
+      Desde: ${DateHelper.getFormatedDate(filter.dateInitFactRange)} Hasta: ${DateHelper.getFormatedDate(filter.dateEndFactRange)}`,
+    );
+  }
+  async exportExcelPolicyOverview(data: any) {
+    const { totalAmount, totalTravelers, contractors } = data;
+    const total = {
+      client: 'Total',
+      start_date: '-',
+      total_travelers: totalTravelers,
+      total_import: totalAmount,
+    };
+    contractors.push(total);
+    const columns = [
+      { key: 'client', header: 'Cliente' },
+      { key: 'start_date', header: 'Fecha Inicio', type: 'date' },
+      { key: 'total_travelers', header: 'Viajeros', type: 'number' },
+      { key: 'total_import', header: 'Importe', type: 'number' },
+    ];
+    this.log('Exportando a Excel Resumen Polizas Resumen Polizas');
+    return exportExcel(contractors, columns, 'Resumen de Pólizas');
+  }
+  async log(message: string, level = 'info') {
+    this.loggingService.create({
+      message,
+      context: 'Coverage export Service',
+      level,
+      createdAt: new Date().toISOString(),
+    });
   }
 }
