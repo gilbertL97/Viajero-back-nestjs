@@ -48,7 +48,7 @@ export class CoverageService {
           );
         throw new BadRequestException('duplicate Name or File');
       });
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Creando una nueva cobertura con id ${newCoverage.id}`,
       context: 'Coverage Service',
       level: 'info',
@@ -63,7 +63,7 @@ export class CoverageService {
   }
 
   async getCoverages(): Promise<CoverageEntity[]> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Obteniendo las coberturas`,
       context: 'Coverage Service',
       level: 'info',
@@ -72,7 +72,7 @@ export class CoverageService {
     return this.coverageRepository.find();
   }
   async getCoveragesActives(): Promise<CoverageEntity[]> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Obteniendo las coberturas activas`,
       context: 'Coverage Service',
       level: 'info',
@@ -81,7 +81,7 @@ export class CoverageService {
     return this.coverageRepository.find({ where: { isActive: true } });
   }
   async getCoverage(id: number): Promise<CoverageEntity> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Obteniendo la cobertura con id ${id}`,
       context: 'Coverage Service',
       level: 'info',
@@ -124,7 +124,7 @@ export class CoverageService {
         join(FileHelper.uploadsPath, file.filename),
       );
     }
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Actualizando la cobertura con id ${id}`,
       context: 'Coverage Service',
       level: 'info',
@@ -147,7 +147,7 @@ export class CoverageService {
             deletedCoverage.benefitTable,
           ),
         );
-      await this.loggingService.create({
+      this.loggingService.create({
         message: `ELiminando la cobertura con id ${id}`,
         context: 'Coverage Service',
         level: 'info',
@@ -188,7 +188,7 @@ export class CoverageService {
         header: 'Cadena de Configuracion',
       },
     ];
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Exportando las coberturas a Excel`,
       context: 'Coverage Service',
       level: 'info',
@@ -234,7 +234,7 @@ export class CoverageService {
         width: 100,
       },
     ];
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Exportando las coberturas a PDF`,
       context: 'Coverage Service',
       level: 'info',

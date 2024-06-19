@@ -29,7 +29,7 @@ export class UserService {
   ) {}
 
   async getUsers(): Promise<UserEntity[]> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Obteniendo todos los usuarios',
       context: 'UserService',
       level: 'info',
@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async getUser(id: number): Promise<UserEntity> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Obteniendo usuario con id: ${id}`,
       context: 'UserService',
       level: 'info',
@@ -54,7 +54,7 @@ export class UserService {
     return user;
   }
   async getUserWithPass(id: number): Promise<UserEntity> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: `Obteniendo usuario con id: ${id} con datos completos`,
       context: 'UserService',
       level: 'info',
@@ -82,7 +82,7 @@ export class UserService {
         user.contractors = [contrator];
       }
     } else delete userDto.contractor;
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Dando de alta a un usuario',
       context: 'UserService',
       level: 'info',
@@ -113,7 +113,7 @@ export class UserService {
         delete editedUser.contractor;
       }
     } else delete updateUserDto.contractor;
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Actualizando usuario',
       context: 'UserService',
       level: 'info',
@@ -131,7 +131,7 @@ export class UserService {
     if (updateProfile.passwordNew1 !== updateProfile.passwordNew2)
       throw new UnauthorizedException('The passwords do not match');
     user.password = updateProfile.passwordNew1;
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Actualizando perfil',
       context: 'UserService',
       level: 'info',
@@ -147,7 +147,7 @@ export class UserService {
     if (user) return await this.userRepository.remove(user);
   }
   async findUserByName(name: string): Promise<UserEntity> {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Buscando el Usuario por nombre',
       context: 'UserService',
       level: 'info',
@@ -179,7 +179,7 @@ export class UserService {
   async updateRefreshToken(id: number, token: string) {
     const user = await this.getUser(id);
     user.refresh_token = token;
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Actualizando el refresh token',
       context: 'UserService',
       level: 'info',
@@ -188,7 +188,7 @@ export class UserService {
     return (await this.userRepository.save(user)).refresh_token;
   }
   async getToken(id: number) {
-    await this.loggingService.create({
+    this.loggingService.create({
       message: 'Obteniendo el token desde el usuario',
       context: 'UserService',
       level: 'info',

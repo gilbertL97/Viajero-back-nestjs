@@ -23,13 +23,13 @@ export class LogginService {
   //   return this.logs;
   // }
 
-  async create(createLogginDto: LogginModel) {
+  create(createLogginDto: LogginModel) {
     if (this.als.getStore()) {
       const { message, context, level, createdAt, errorStack } =
         createLogginDto;
       const { userAgent, requestId, ip, method, url, userId } =
         this.als.getStore();
-      await this.saveLog({
+      this.saveLog({
         message,
         context,
         level,
@@ -44,7 +44,7 @@ export class LogginService {
       });
     }
   }
-  async saveLog(log: Logs) {
+  saveLog(log: Logs) {
     const {
       message,
       context,
@@ -71,8 +71,7 @@ export class LogginService {
       method,
       url,
     });
-    await this.logginRepository.save(createLogEntity);
-    return 'This action adds a new loggin';
+    this.logginRepository.save(createLogEntity);
   }
 
   findAll(pag: PaginationDto, logginFilter: FilterLogginDto) {

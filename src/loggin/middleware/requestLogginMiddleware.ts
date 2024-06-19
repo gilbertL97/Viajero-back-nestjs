@@ -8,7 +8,7 @@ export class RequestLogginMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    await this.logginService.create({
+    this.logginService.create({
       message: 'Tratando de acceder a un recurso',
       context: 'middleware',
       level: 'info',

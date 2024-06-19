@@ -151,7 +151,6 @@ export class TravelerRepository extends Repository<TravelerEntity> {
       nationality,
       origin_country,
       coverage,
-      state,
       empty_file,
       idContractors,
       effective_date,

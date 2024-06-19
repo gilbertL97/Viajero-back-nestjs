@@ -119,7 +119,7 @@ export class AutoImportFileService {
         // cargo todos los paises clientes y planes en memoria
 
         //llamo al metodo para cargar viajeros en los archivos
-        await this.log(`Procesando archivo:${file}`);
+        this.log(`Procesando archivo:${file}`);
         const log = await this.travelerService.processBulkFile(
           pathFile,
           contractor,
@@ -169,7 +169,7 @@ export class AutoImportFileService {
     this.log(`Escribiendo logs :${filename}`);
   }
   async log(message: string, level = 'info') {
-    await this.logginService.create({
+    this.logginService.create({
       message,
       context: 'File Automatic Import Service',
       level,
@@ -177,7 +177,7 @@ export class AutoImportFileService {
     });
   }
   async saveSystemUserLog(message: string, userid: number, level = 'info') {
-    await this.logginService.saveLog({
+    this.logginService.saveLog({
       message,
       context: 'File Automatic Import Service',
       level,
