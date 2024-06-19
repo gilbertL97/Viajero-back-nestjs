@@ -9,13 +9,19 @@ import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> migration
 import {
   typeOrmConfigAsync,
   typeOrmSQliteConfigAsync,
 } from './config/config.connect';
+<<<<<<< HEAD
 =======
 import { typeOrmConfigAsync } from './config/config.connect';
 >>>>>>> 4f78340 (change throttle to miliseconds)
+=======
+>>>>>>> migration
 import { AuthModule } from './auth/auth.module';
 import { ContractorModule } from './contractor/contractor.module';
 import { TravelerModule } from './traveler/traveler.module';
