@@ -4,6 +4,7 @@ import {
   MaxLength,
   IsOptional,
   IsDateString,
+  IsNumberString,
 } from 'class-validator';
 
 export class FilterLogginDto {
@@ -48,9 +49,7 @@ export class FilterLogginDto {
   @MaxLength(30)
   url?: string;
   @IsOptional()
-  @IsString()
-  @MinLength(4)
-  @MaxLength(30)
+  @IsNumberString()
   userId?: number;
   @IsOptional()
   @IsDateString()
