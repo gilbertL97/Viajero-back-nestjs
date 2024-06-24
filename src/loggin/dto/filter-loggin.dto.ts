@@ -11,42 +11,42 @@ export class FilterLogginDto {
   @IsString()
   @MinLength(4)
   @MaxLength(30)
-  message: string;
+  message?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(50)
-  context: string;
+  context?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(30)
-  level: string;
+  level?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(100)
-  userAgent: string;
+  userAgent?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(30)
-  requestId: string;
+  requestId?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(30)
-  ip: string;
+  ip?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(30)
-  method: string;
+  method?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(30)
-  url: string;
+  url?: string;
   @IsOptional()
   @IsString()
   @MinLength(4)
@@ -54,9 +54,9 @@ export class FilterLogginDto {
   userId?: number;
   @IsOptional()
   @IsDateString()
-  createdAtInit: string;
+  createdAtInit?: string;
   @IsOptional()
   @IsString()
   @IsDateString()
-  createdAtEnd: string;
+  createdAtEnd?: string;
 }
