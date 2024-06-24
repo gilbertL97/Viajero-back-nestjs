@@ -27,6 +27,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 import { CustomConfigService } from 'src/config/service/config.service';
 import { Configuration } from 'src/config/config.const';
+import { LogginService } from 'src/loggin/loggin.service';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -39,6 +40,7 @@ export class TravelerUploadFilesService {
     private readonly fileService: FileService,
     private readonly userService: UserService,
     private readonly configService: CustomConfigService,
+    private readonly loggingService: LogginService,
   ) {}
   //este es el metodo q esllamado para subir el archivo
   async processFile(
@@ -55,6 +57,7 @@ export class TravelerUploadFilesService {
     ]);
     //2-cargo el archivo dependiendo del tipo de archivo
     const travelers = await ExcelJSCOn.getTravelerByFile(file, coverages);
+    this.log('Leyendo los datos del fichero');
     if (travelers.length == 0) {
       throw new BadRequestException(
         'El fichero esta vacio o no se encuentran viajeros',
@@ -265,8 +268,12 @@ export class TravelerUploadFilesService {
       }
       row++;
     }
+    this.log('Insertados viajeros del fichero: ' + file2.name);
     if (travelersFile.length == 0) {
       this.fileService.remove(file2.id);
+      this.log(
+        'Eliminando al fichero insertado ya que no se insertaron viajeros',
+      );
       if (dir) await FileHelper.deletFile(dir[1]);
     } else {
       if (dir) await FileHelper.moveAndOverrideFile(dir[0], dir[1], dir[2]);
@@ -301,6 +308,7 @@ export class TravelerUploadFilesService {
       }
       i++;
     }
+    this.log('Verificando si hay errores en los datos de los viajeros');
     if (listFileErrors.length > 0) return listFileErrors;
   }
 
@@ -321,6 +329,7 @@ export class TravelerUploadFilesService {
       }
       i++;
     }
+    this.log('Verificando si hay advertencias en los datos de los viajeros');
     if (listWarnings.length > 0) return listWarnings;
   }
 
@@ -487,5 +496,13 @@ export class TravelerUploadFilesService {
     )
       return true;
     return false;
+  }
+  log(message: string, level = 'info') {
+    this.loggingService.create({
+      message,
+      context: 'Traveler Service',
+      level,
+      createdAt: new Date().toISOString(),
+    });
   }
 }

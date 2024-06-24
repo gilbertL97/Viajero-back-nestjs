@@ -139,6 +139,7 @@ export class TravelerService {
   async remove(id: string): Promise<TravelerEntity> {
     //console.log(id);
     const traveler = await this.findOne(id);
+    this.log('eliminando un viajero');
     return this.travelerRepository.remove(traveler);
   }
   async findOneTravelerWithCoverage(
@@ -238,6 +239,7 @@ export class TravelerService {
 
       { key: 'coverage', header: 'Cobertura' },
     ];
+    this.log('exportando todos los viajeros a excel');
     return exportExcel(travelers, columns, 'Viajeros');
   }
   async getTravelerPdf(filter: FilterTravelerDto, user: UserEntity) {
@@ -302,10 +304,11 @@ export class TravelerService {
 
       { property: 'coverage', label: 'Cobertura', width: 70 },
     ];
+    this.log('exportando todos los viajeros a pdf');
     return exportPdf(travelers, columns, 'Viajeros', undefined, 'landscape');
   }
 
-  async log(message: string, level = 'info') {
+  log(message: string, level = 'info') {
     this.loggingService.create({
       message,
       context: 'Traveler Service',

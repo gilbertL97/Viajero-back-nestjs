@@ -1,6 +1,5 @@
 import { PaginationResult } from './../../common/pagination/interface/pagination.type';
 import { BadRequestException } from '@nestjs/common';
-import * as dayjs from 'dayjs';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
 import { CountryEntity } from 'src/country/entities/country.entity';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
@@ -16,11 +15,13 @@ import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 import { paginate } from 'src/common/pagination/service/pagination.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Configuration } from 'src/config/config.const';
+import { LogginService } from 'src/loggin/loggin.service';
 
 export class TravelerRepository extends Repository<TravelerEntity> {
   constructor(
     @InjectRepository(TravelerEntity, Configuration.POSTGRESCONNECT)
     repository: Repository<TravelerEntity>,
+    private readonly loggingService: LogginService,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);
   }
@@ -86,6 +87,12 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         throw new RepeatTravelerError('duplicado', error.code);
       throw new BadRequestException('error in database');
     });
+    this.loggingService.create({
+      message: `Insertando un viajero `,
+      context: 'TravelerRepository',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return newTraveler;
   }
 
@@ -118,6 +125,12 @@ export class TravelerRepository extends Repository<TravelerEntity> {
         updateTraveler.amount_days_high_risk,
       );
     }
+    this.loggingService.create({
+      message: `Actualizando un viajero `,
+      context: 'TravelerRepository',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return await this.update(updateTraveler.id, updateTraveler).catch(
       (error) => {
         if (error.code == 23505)
@@ -214,6 +227,12 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     user: UserEntity,
     pag: PaginationDto,
   ): Promise<PaginationResult<TravelerEntity>> {
+    this.loggingService.create({
+      message: `Obteniendo viajeros con  paginacion `,
+      context: 'TravelerRepository',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return await paginate(
       await this.finAdllWithFiltersQuery(filter, user),
       pag,
@@ -223,6 +242,12 @@ export class TravelerRepository extends Repository<TravelerEntity> {
     filter: FilterTravelerDto,
     user: UserEntity,
   ): Promise<TravelerEntity[]> {
+    this.loggingService.create({
+      message: `Obteniendo viajeros sin paginacion `,
+      context: 'TravelerRepository',
+      level: 'info',
+      createdAt: new Date().toISOString(),
+    });
     return await (await this.finAdllWithFiltersQuery(filter, user)).getMany();
   }
 }
