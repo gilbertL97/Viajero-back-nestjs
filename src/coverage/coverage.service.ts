@@ -81,16 +81,16 @@ export class CoverageService {
     return this.coverageRepository.find({ where: { isActive: true } });
   }
   async getCoverage(id: number): Promise<CoverageEntity> {
+    const coverage = await this.coverageRepository.findOne({
+      where: { id: id },
+    });
+    if (!coverage) throw new NotFoundException('does not exist coverage');
     this.loggingService.create({
       message: `Obteniendo la cobertura con id ${id}`,
       context: 'Coverage Service',
       level: 'info',
       createdAt: new Date().toISOString(),
     });
-    const coverage = await this.coverageRepository.findOne({
-      where: { id: id },
-    });
-    if (!coverage) throw new NotFoundException('does not exist coverage');
     return coverage;
   }
 
