@@ -30,4 +30,6 @@ export class LogEntity {
   userId?: number;
   @Column({ type: 'varchar', nullable: true, length: 500 })
   errorStack?: string;
+  @Column({ type: 'json', nullable: true })
+  importFileInfo: string;
 }
