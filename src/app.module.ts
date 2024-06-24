@@ -69,7 +69,8 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(storeData).forRoutes('*');
     consumer
-      .apply(RequestLogginMiddleware) // Pasar el string como parámetro
+      .apply(RequestLogginMiddleware)
+      .exclude('loggin') // Pasar el string como parámetro
       .forRoutes('*');
   }
 }
