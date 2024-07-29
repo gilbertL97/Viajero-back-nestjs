@@ -80,14 +80,14 @@ export class ExcelJSCOn {
 
     return traveler;
   }
-  static isEmptyString(ch: string): string | undefined {
-    return ch.length == 0 ? undefined : ch;
+  static isEmptyString(characters: string): string | undefined {
+    return characters.length == 0 ? undefined : characters;
   }
   static isDate(date: Excel.Cell): string | undefined {
-    const newDate = this.isEmptyString(date.text);
+    const newDate = date.value;
     if (!newDate) return undefined;
-    if (newDate.includes('/')) return newDate; //si tiene / esta barra es tipo DD/MM/YYYY
-    return dayjs(newDate).format('DD/MM/YYYY');
+    //if (newDate.includes('/')) return newDate; //si tiene / esta barra es tipo DD/MM/YYYY
+    return dayjs(newDate as Date).format('DD/MM/YYYY');
   }
   static isFormula(row: any): number {
     // verifico q no tengan formula ni null ni nada

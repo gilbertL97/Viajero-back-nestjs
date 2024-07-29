@@ -80,7 +80,7 @@ export class TravelerController {
       properties: {
         travelers: {
           type: 'Archivo',
-          format: '.xls , xlsx, cs',
+          format: '.xls , xlsx, csv',
         },
       },
     },
