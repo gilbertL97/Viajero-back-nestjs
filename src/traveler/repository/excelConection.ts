@@ -84,10 +84,10 @@ export class ExcelJSCOn {
     return characters.length == 0 ? undefined : characters;
   }
   static isDate(date: Excel.Cell): string | undefined {
-    const newDate = date.value;
+    const newDate = this.isEmptyString(date.text);
     if (!newDate) return undefined;
-    //if (newDate.includes('/')) return newDate; //si tiene / esta barra es tipo DD/MM/YYYY
-    return dayjs(newDate as Date).format('DD/MM/YYYY');
+    if (newDate.includes('/')) return newDate; //si tiene / esta barra es tipo DD/MM/YYYY
+    return dayjs(newDate).format('DD/MM/YYYY');
   }
   static isFormula(row: any): number {
     // verifico q no tengan formula ni null ni nada
