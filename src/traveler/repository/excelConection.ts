@@ -80,8 +80,8 @@ export class ExcelJSCOn {
 
     return traveler;
   }
-  static isEmptyString(ch: string): string | undefined {
-    return ch.length == 0 ? undefined : ch;
+  static isEmptyString(characters: string): string | undefined {
+    return characters.length == 0 ? undefined : characters;
   }
   static isDate(date: Excel.Cell): string | undefined {
     const newDate = this.isEmptyString(date.text);
