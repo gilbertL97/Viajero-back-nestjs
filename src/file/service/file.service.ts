@@ -56,7 +56,9 @@ export class FileService {
       relations: ['travelers'],
     });
     if (!file) throw new NotFoundException('file does not exist');
-    this.log(`Obteniendo el archivo ${file.name} `);
+    this.log(
+      `Obteniendo el archivo ${file.name} del Contratante ${file.contractor.id}`,
+    );
     return file;
   }
 
