@@ -51,13 +51,13 @@ export class FileService {
   }
 
   async findOne(id: number): Promise<FileEntity> {
-    const file = await this.fileRepository.findOne({
+    const file: FileEntity = await this.fileRepository.findOne({
       where: { id: id },
-      relations: ['travelers'],
+      relations: ['travelers', 'contractor'],
     });
     if (!file) throw new NotFoundException('file does not exist');
     this.log(
-      `Obteniendo el archivo ${file.name} del Contratante ${file.contractor.id}`,
+      `Obteniendo el archivo ${file.name} del Contratante ${file.contractor.client}`,
     );
     return file;
   }
