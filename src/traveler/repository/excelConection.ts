@@ -1,9 +1,9 @@
 import { FileTravelerDto } from '../dto/file-traveler.dto';
 import Excel = require('exceljs');
-import dayjs = require('dayjs');
 import { ValidateFile } from '../helper/validation.file';
 import { CoverageEntity } from 'src/coverage/entities/coverage.entity';
 import { FileHelper } from 'src/common/file/file.helper';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 export class ExcelJSCOn {
   static async getTravelerByFile(
     file: Express.Multer.File,
@@ -87,7 +87,7 @@ export class ExcelJSCOn {
     const newDate = this.isEmptyString(date.text);
     if (!newDate) return undefined;
     if (newDate.includes('/')) return newDate; //si tiene / esta barra es tipo DD/MM/YYYY
-    return dayjs(newDate).format('DD/MM/YYYY');
+    return DateHelper.getFormatedDateDDMMYYYY(newDate, date);
   }
   static isFormula(row: any): number {
     // verifico q no tengan formula ni null ni nada
