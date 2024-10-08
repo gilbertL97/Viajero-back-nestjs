@@ -283,7 +283,7 @@ export class ContractorExportService {
       undefined,
       undefined,
       `Viajeros: ${totalTravelers}   Importe Total: $${totalAmount} 
-      Desde: ${DateHelper.getFormatedDate(filter.dateInitFactRange)} Hasta: ${DateHelper.getFormatedDate(filter.dateEndFactRange)}`,
+      Desde: ${DateHelper.getFormatedDateYYYYMMDD(filter.dateInitFactRange)} Hasta: ${DateHelper.getFormatedDateYYYYMMDD(filter.dateEndFactRange)}`,
     );
   }
   async exportExcelPolicyOverview(data: any) {
