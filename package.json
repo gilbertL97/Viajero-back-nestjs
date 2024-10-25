@@ -60,7 +60,8 @@
     "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.0",
     "table": "^6.8.1",
-    "typeorm": "^0.3.00"
+    "typeorm": "^0.3.00",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.3.2",
