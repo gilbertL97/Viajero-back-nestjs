@@ -70,10 +70,10 @@ export class ConfigTypeorm {
   ): TypeOrmModuleOptions {
     return {
       type: 'sqlite',
-      database: configService.get('SQLITE_DB'),
+      database: configService.get(Configuration.SQLITECONNECT),
       // entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-      logging: true,
+      logging: false,
       entities: [LogEntity],
     };
   }
