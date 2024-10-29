@@ -87,7 +87,7 @@ export class ExcelJSCOn {
     const newDate = this.isEmptyString(date.text);
     if (!newDate) return undefined;
     if (newDate.includes('/')) return newDate; //si tiene / esta barra es tipo DD/MM/YYYY
-    return DateHelper.getFormatedDateDDMMYYYY(newDate, date);
+    return DateHelper.getFormatedDateDDMMYYYY(newDate);
   }
   static isFormula(row: any): number {
     // verifico q no tengan formula ni null ni nada

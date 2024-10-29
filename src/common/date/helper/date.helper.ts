@@ -67,9 +67,7 @@ export class DateHelper {
   public static getFormatedDateYYYYMMDD(date: ConfigType) {
     return dayjs(date).format('YYYY-MM-DD');
   }
-  public static getFormatedDateDDMMYYYY(date: ConfigType, date2: Excel.Cell) {
-    console.log(date2.text, date2.value);
-
+  public static getFormatedDateDDMMYYYY(date: ConfigType) {
     return dayjs(date).format('DD/MM/YYYY');
   }
 }
