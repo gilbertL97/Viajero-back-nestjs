@@ -27,6 +27,7 @@ import { HttpExceptionFilterLog } from './loggin/filter/ExceptionFilterLog';
 
 @Module({
   imports: [
+    CustomConfigModule,
     AuthModule,
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -46,7 +47,7 @@ import { HttpExceptionFilterLog } from './loggin/filter/ExceptionFilterLog';
         limit: 25, // number of requests allowed within the TTL 25 request por minuto
       },
     ]),
-    CustomConfigModule,
+
     LogginModule,
   ],
   controllers: [AppController],

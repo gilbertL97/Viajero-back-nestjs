@@ -52,7 +52,7 @@ export class FileHelper {
   }
   public static async moveFileAndCreateRoute(
     dir: string,
-    newq: string,//directoriy with files
+    newq: string, //directoriy with files
     old: string,
   ): Promise<void> {
     //si el la direccion no existe
@@ -121,5 +121,8 @@ export class FileHelper {
     } catch (err) {
       console.error('Error while writing data to txt file:', err);
     }
+  }
+  public static existFolder(path: string) {
+    return fs.existsSync(path);
   }
 }

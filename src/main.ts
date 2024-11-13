@@ -9,12 +9,15 @@ import { CountryModule } from './country/country.module';
 import { CoverageModule } from './coverage/coverage.module';
 import { FileModule } from './file/file.module';
 import { TravelerModule } from './traveler/traveler.module';
+import { validateEnv } from './config/envValidation';
 
 async function bootstrap() {
+  validateEnv();
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
   app.setGlobalPrefix('viajero');
+
   const configSwagger = new DocumentBuilder()
     .setTitle('Viajeros Api')
     .setDescription('Documentacion y demo de la aplicacion Viajeros Online')
