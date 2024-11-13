@@ -2,7 +2,6 @@ import * as dayjs from 'dayjs';
 // import utc from 'dayjs/plugin/utc';
 // import timezone from 'dayjs/plugin/timezone';
 import { ConfigType } from 'dayjs';
-import Excel from 'exceljs';
 
 export class DateHelper {
   public static timeDifference(initialDate: Date, finalDate: Date) {
@@ -67,9 +66,7 @@ export class DateHelper {
   public static getFormatedDateYYYYMMDD(date: ConfigType) {
     return dayjs(date).format('YYYY-MM-DD');
   }
-  public static getFormatedDateDDMMYYYY(date: ConfigType, date2: Excel.Cell) {
-    console.log(date2.text, date2.value);
-
+  public static getFormatedDateDDMMYYYY(date: ConfigType) {
     return dayjs(date).format('DD/MM/YYYY');
   }
 }
