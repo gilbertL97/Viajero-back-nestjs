@@ -64,10 +64,26 @@ export class DateHelper {
   }
 
   //Format Dates
-  public static getFormatedDateYYYYMMDD(date: ConfigType) {
-    return dayjs(date).format('YYYY-MM-DD');
+  public static getFormatedDateYYYYMMDD(
+    date: ConfigType,
+    format?: dayjs.OptionType,
+  ) {
+    return dayjs(date, format).format('YYYY-MM-DD');
   }
-  public static getFormatedDateDDMMYYYY(date: ConfigType) {
+
+  public static getFormatedDateDDMMYYYY(
+    date: ConfigType,
+    format?: dayjs.OptionType,
+  ) {
     return dayjs(date).format('DD/MM/YYYY');
+  }
+  public static addIngDates(
+    date: ConfigType,
+    value: number,
+    unit?: dayjs.ManipulateType,
+    format?: dayjs.OptionType,
+  ) {
+    return dayjs(date, format) //creo una instancia de dayjs con el inicio
+      .add(value, unit);
   }
 }

@@ -17,7 +17,7 @@ import { ValidateFile } from '../helper/validation.file';
 import { ExcelJSCOn } from '../repository/excelConection';
 import { CreateTravelerDto } from '../dto/create-traveler.dto';
 import { ContratorEntity } from 'src/contractor/entity/contrator.entity';
-import dayjs = require('dayjs');
+
 import { FileErrorsTravelerDto } from '../dto/fileErrorsTravelers.dto';
 import { FileService } from 'src/file/service/file.service';
 import { TravelerEntity } from '../entity/traveler.entity';
@@ -28,6 +28,7 @@ import { UserService } from 'src/user/user.service';
 import { CustomConfigService } from 'src/config/service/config.service';
 import { Configuration } from 'src/config/config.const';
 import { LogginService } from 'src/loggin/loggin.service';
+import { DateHelper } from 'src/common/date/helper/date.helper';
 
 @Injectable()
 export class TravelerUploadFilesService {
@@ -225,19 +226,22 @@ export class TravelerUploadFilesService {
       const obj = Object.assign(createTraveler, traveler);
       if (obj.born_date) {
         obj.born_date = new Date(
-          dayjs(traveler.born_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+          DateHelper.getFormatedDateYYYYMMDD(traveler.born_date, 'DD/MM/YYYY'),
         );
       }
 
       if (obj.sale_date)
         obj.sale_date = new Date(
-          dayjs(traveler.sale_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+          DateHelper.getFormatedDateYYYYMMDD(traveler.sale_date, 'DD/MM/YYYY'),
         );
       obj.start_date = new Date(
-        dayjs(traveler.start_date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        DateHelper.getFormatedDateYYYYMMDD(traveler.start_date, 'DD/MM/YYYY'),
       );
       obj.end_date_policy = new Date(
-        dayjs(traveler.end_date_policy, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        DateHelper.getFormatedDateYYYYMMDD(
+          traveler.end_date_policy,
+          'DD/MM/YYYY',
+        ),
       );
       const travelerfil = await this.travelerRepository
         .createTraveler(
@@ -483,9 +487,14 @@ export class TravelerUploadFilesService {
     if (validationErrors) {
       delete validationErrors.number_days;
     }
-    traveler.end_date_policy = dayjs(traveler.start_date, 'DD/MM/YYYY') //creo una instancia de dayjs con el inicio
-      .add(coverage.number_of_days, 'days') //agrego al inicio la cantidad de dias de la cobertura
-      .format('DD/MM/YYYY'); //lo llevo al formato y se lo asigno al final
+    traveler.end_date_policy = DateHelper.getFormatedDateYYYYMMDD(
+      DateHelper.addIngDates(
+        traveler.start_date, //fecha inicio
+        coverage.number_of_days, //cantidad de dias
+        'days', //unidad que hay que sumar
+        'DD/MM/YYYY', //unidad que acepta la suma de fechas
+      ),
+    ); //sale en formato yyyy-mm-dd
   }
   haveValidationsDate(validation: FileErrorsTravelerDto): boolean {
     if (!validation) return true;
