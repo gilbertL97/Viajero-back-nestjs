@@ -122,6 +122,16 @@ export class FileHelper {
       console.error('Error while writing data to txt file:', err);
     }
   }
+public static async createTxtBuffer(
+  data: string, 
+  fileName: string
+): Promise<{ buffer: Buffer; fileName: string }> {
+  const buffer = Buffer.from(data, 'utf-8');
+  return { 
+    buffer, 
+    fileName: fileName.endsWith('.txt') ? fileName : `${fileName}.txt`
+  };
+}
   public static existFolder(path: string) {
     return fs.existsSync(path);
   }
